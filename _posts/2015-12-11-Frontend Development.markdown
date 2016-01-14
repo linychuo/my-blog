@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Frontend Develop"
+title:  "Frontend Development"
 date:   2015-12-11 09:07:32
-categories: Javascript, NodeJs
+categories: Javascript
 ---
 
 Javascript, NodeJs, Browserify, Gulp, less
