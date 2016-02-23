@@ -1,0 +1,12 @@
+---
+layout: post
+title: "tmux"
+date: 2016-2-23 22:45:30
+categories: terminal
+---
+
+Tmux
+
+tmux is a terminal multiplexer
+![tmux](../imgs/ss-tmux4.png)
+
