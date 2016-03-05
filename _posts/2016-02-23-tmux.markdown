@@ -8,5 +8,5 @@ categories: terminal
 Tmux
 
 tmux is a terminal multiplexer
-![tmux](../imgs/ss-tmux4.png)
+![tmux](/imgs/ss-tmux4.png)
 
