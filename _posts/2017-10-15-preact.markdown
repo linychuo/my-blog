@@ -10,7 +10,7 @@ categories: Javascript
 </h1>
 <p>Fast 3kB alternative to React with the same ES6 API.</p>
 
-## Pixel data demo by preact
+### Pixel data demo by preact
 [preact-demo](https://github.com/linychuo/preact-demo)
 
 ![preact-pixel-data](/imgs/preact-pixel-data.png)
