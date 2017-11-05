@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "Decorator of python"
-date:   2014-10-30 09:51:32
-categories: python decorator
+title: "Decorator of python"
+date: 2014-10-30 09:51:32
 ---
 
 在python2.4的添加一个新的特性叫装饰器，它用来包装函数（一个函数能够接受一个函数类型的参数，然后扩展这个函数，返回其调用的结果），这样让我们更容易阅读和了解一个函数的定义。老的语法里可以将一个类里的函数定义成static method，这种语法可以认为是decorator的前身，通常是这样：

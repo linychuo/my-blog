@@ -1,7 +1,5 @@
 ---
-layout: post
-title:  "first using jeklly"
-date:   2014-10-29 23:55:32
-categories: default
+title: "first using jeklly"
+date: 2014-10-29 23:55:32
 ---
 Many years, I always looking for some where put something about life and study, but today I'm got it! GitHub.

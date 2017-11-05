@@ -1,8 +1,7 @@
 ---
 layout: post
-title:  "clojure namespaces"
-date:   2014-10-30 09:35:32
-categories: clojure
+title: "Clojure namespaces"
+date: 2014-10-30 09:35:32
 ---
 
 	(resolve sym)

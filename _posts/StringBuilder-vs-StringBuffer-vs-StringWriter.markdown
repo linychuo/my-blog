@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "StringBuilder vs StringBuffer vs StringWriter"
-date:   2014-10-30 09:07:32
-categories: java
+title: "StringBuilder vs StringBuffer vs StringWriter"
+date: 2014-10-30 09:07:32
 ---
 
 In java programming, We often using these three class about string building. Then, what difference about them?

@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "Iterators of python"
-date:   2014-10-30 09:52:32
-categories: python iterator
+title: "Iterators of python"
+date: 2014-10-30 09:52:32
 ---
 
 在python中，iterator是一个容器对象，它实现了iterator协议，它的实现基于下面2个方法：

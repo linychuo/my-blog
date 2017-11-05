@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "eval usage"
-date:   2014-10-30 09:21:32
-categories: javascript
+title: "Eval usage"
+date: 2014-10-30 09:21:32
 ---
 eval()函数
 

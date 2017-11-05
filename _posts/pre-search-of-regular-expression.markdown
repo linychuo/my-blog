@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "Pre-Search on regular expression"
-date:   2014-10-30 09:19:32
-categories: regular expression
+title: "Pre-Search on regular expression"
+date: 2014-10-30 09:19:32
 ---
 
 预搜索分为正向预搜索和反向预搜索。

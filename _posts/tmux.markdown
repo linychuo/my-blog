@@ -1,8 +1,6 @@
 ---
-layout: post
-title: "tmux"
+title: "Tmux"
 date: 2016-2-23 22:45:30
-categories: terminal
 ---
 
 Tmux

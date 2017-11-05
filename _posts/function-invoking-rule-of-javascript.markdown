@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "Function invoking rule of javascript"
-date:   2014-10-30 09:23:32
-categories: javascript
+title: "Function invoking rule of javascript"
+date: 2014-10-30 09:23:32
 ---
 
 - JavaScript函数调用规则一

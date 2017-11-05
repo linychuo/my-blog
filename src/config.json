@@ -3,27 +3,27 @@
 	"email": "linychuo@gmail.com",
 	"articles": [
 		{
-			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/2017-10-15-preact.markdown",
+			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/preact.markdown",
 			"name": "preact",
 			"created": "Oct 17, 2017"
 		},
 		{
-			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/2016-02-23-tmux.markdown",
+			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/tmux.markdown",
 			"name": "tmux",
 			"created": "Feb 23, 2016"
 		},
 		{
-			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/2015-12-11-frontend-development.markdown",
+			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/frontend-development.markdown",
 			"name": "frontend devleopment",
 			"created": "Dec 11, 2015"
 		},
 		{
-			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/2014-10-30-clojure-namesapces.markdown",
+			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/clojure-namesapces.markdown",
 			"name": "clojure namespaces",
 			"created": "Oct 30, 2014"
 		},
 		{
-			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/2014-10-30-css-framework.markdown",
+			"url": "https://raw.githubusercontent.com/linychuo/linychuo.github.io/master/_posts/css-framework.markdown",
 			"name": "css framework",
 			"created": "Oct 30, 2014"
 
