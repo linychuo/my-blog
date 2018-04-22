@@ -3,7 +3,7 @@ title: "Java8 new features [1]"
 date: 2018-4-22 19:14:32
 ---
 
-1. [forEach() method in Iterable interface](#forEach()-method-in-Iterable-interface)
+1. [forEach() method in Iterable interface](#forEach-method-in-Iterable-interface)
 2. [default and static methods in Interfaces](#default-and-static-methods-in-Interfaces)
 
 ## forEach() method in Iterable interface
