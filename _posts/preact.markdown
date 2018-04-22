@@ -11,4 +11,4 @@ date: 2017-10-17 22:37:32
 ### Pixel data demo by preact
 [preact-demo](https://github.com/linychuo/preact-demo)
 
-![preact-pixel-data](/imgs/preact-pixel-data.png)
+![preact-pixel-data](https://raw.githubusercontent.com/linychuo/my-blog/master/imgs/preact-pixel-data.png)

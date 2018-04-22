@@ -6,7 +6,7 @@ date: 2016-2-23 22:45:30
 Tmux
 
 tmux is a terminal multiplexer
-![tmux](/imgs/ss-tmux4.png)
+![tmux](https://raw.githubusercontent.com/linychuo/my-blog/master/imgs/ss-tmux4.png)
 
 usage:
 
