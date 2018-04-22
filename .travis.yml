@@ -19,5 +19,6 @@ deploy:
   provider: pages
   skip-cleanup: true
   github-token: $github_access_token
+  keep-history: true
   on:
     branch: master
