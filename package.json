@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "yongchao.li",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "build": "preact build --dest build",
+    "dev": "preact watch",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "if-env": "^1.0.0",
+    "preact-cli": "^2.0.0",
+    "eslint": "^4.5.0",
+    "eslint-config-synacor": "^1.1.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-synacor"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "highlight.js": "^9.12.0",
+    "marked": "^0.3.6",
+    "preact": "^8.2.1",
+    "preact-markup": "^1.6.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "yaml": "^0.3.0"
+  }
+}
