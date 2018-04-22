@@ -1,0 +1,1 @@
+cp ./domain/CNAME ./build
