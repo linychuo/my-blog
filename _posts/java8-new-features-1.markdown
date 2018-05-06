@@ -3,10 +3,10 @@ title: "Java8 new features [1]"
 date: 2018-4-22 19:14:32
 ---
 
-1. [forEach() method in Iterable interface](#forEach-method-in-Iterable-interface)
-2. [default and static methods in Interfaces](#default-and-static-methods-in-Interfaces)
+1. [forEach() method in Iterable interface](#first)
+2. [default and static methods in Interfaces](#second)
 
-## forEach() method in Iterable interface
+## <a id="first"></a>forEach() method in Iterable interface
 Whenever we need to traverse through a Collection, we need to create an Iterator whose whole purpose is to iterate over and then we have business logic in a loop for each of the elements in the Collection. We might get ConcurrentModificationException if iterator is not used properly.
 
 Java 8 has introduced forEach method in java.lang.Iterable interface so that while writing code we focus on business logic only. forEach method takes java.util.function.Consumer object as argument, so it helps in having our business logic at a separate location that we can reuse. Let’s see forEach usage with simple example.
@@ -64,7 +64,7 @@ class MyConsumer implements Consumer<Integer>{
 ```
 The number of lines might increase but forEach method helps in having the logic for iteration and business logic at separate place resulting in higher separation of concern and cleaner code.
 
-## default and static methods in Interfaces
+## <a id="second"></a>default and static methods in Interfaces
 If you read forEach method details carefully, you will notice that it’s defined in Iterable interface but we know that interfaces can’t have method body. From Java 8, interfaces are enhanced to have method with implementation. We can use default and static keyword to create interfaces with method implementation. forEach method implementation in Iterable interface is:
 
 ```java
