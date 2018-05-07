@@ -69,6 +69,7 @@ public class StreamExample {
 ```
 
 If you will run above example code, you will get output like this:
+```bash
 High Nums parallel=91
 High Nums parallel=96
 High Nums parallel=93
@@ -87,6 +88,7 @@ High Nums sequential=96
 High Nums sequential=97
 High Nums sequential=98
 High Nums sequential=99
+```
 
 Notice that parallel processing values are not in order, so parallel processing will be very helpful while working with huge collections.
 Covering everything about Stream API is not possible in this post, you can read everything about Stream API at [Java 8 Stream API Example Tutorial](https://www.journaldev.com/2774/java-8-stream).
