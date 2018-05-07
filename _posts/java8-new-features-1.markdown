@@ -1,5 +1,5 @@
 ---
-title: "Java8 new features [1]"
+title: "Java8 new features 1"
 date: 2018-4-22 19:14:32
 ---
 
