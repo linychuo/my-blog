@@ -66,9 +66,9 @@ public class StreamExample {
 		highNumsSeq.forEach(p -> System.out.println("High Nums sequential="+p));
 	}
 }
-```
+
+```java
 If you will run above example code, you will get output like this:
-```
 High Nums parallel=91
 High Nums parallel=96
 High Nums parallel=93
