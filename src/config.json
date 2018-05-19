@@ -4,6 +4,11 @@
 	"post_url": "https://raw.githubusercontent.com/linychuo/my-blog/master/_posts/",
 	"articles": [
 		{
+			"url": "best-practices-on-how-to-work-with-collections-in-javascript.markdown",
+			"name": "Best Practices on how to work with collections in javascript",
+			"created": "May 19, 2018"
+		},
+		{
 			"url": "java8-new-features-3.markdown",
 			"name": "Java8 new features 3",
 			"created": "May 7, 2018"
