@@ -17,7 +17,7 @@ script:
 
 before_deploy:
   - echo "yongchao.li" > ./build/CNAME
-  - cp imgs/favicon.ico > ./build/favicon.ico
+  - cp ./imgs/favicon.ico > ./build/favicon.ico
 
 deploy:
   provider: pages
