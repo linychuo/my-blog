@@ -10,7 +10,7 @@ const Home = () => (
 		<div class="wrapper">
 			<div>
 				<ul class="post-list">
-					{config.articles.fitler(article => article.showOnMain).map(article => (
+					{config.articles.filter(article => article.showOnMain).map(article => (
 						<li>
 							<span class="post-meta">{article.created}</span>
 							<h2><Link class="post-link" to={`/article/${article.name}`}>{article.name}</Link></h2>
