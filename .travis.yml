@@ -8,7 +8,7 @@ node_js:
 cache:
   directories:
     - "node_modules"
-  
+
 install:
   - npm install
 
@@ -17,6 +17,7 @@ script:
 
 before_deploy:
   - echo "yongchao.li" > ./build/CNAME
+  - copy imgs/favicon.ico > ./build/favicon.ico
 
 deploy:
   provider: pages

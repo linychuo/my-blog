@@ -1,10 +1,9 @@
 ---
-title: "About me"
+title: "About Me"
 date: 2018-8-17 22:45:30
 ---
 
 ## Ivan Li(Chinese Name: 李永超)
-## Tech Lead
 
 ### Professional Summary
 - Overall 10 years of experience in development of Web & J2EE Technologies.
