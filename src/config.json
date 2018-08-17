@@ -6,103 +6,128 @@
 		{
 			"url": "best-practices-on-how-to-work-with-collections-in-javascript.markdown",
 			"name": "Best Practices on how to work with collections in javascript",
-			"created": "May 19, 2018"
+			"created": "May 19, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "java8-new-features-3.markdown",
 			"name": "Java8 new features 3",
-			"created": "May 7, 2018"
+			"created": "May 7, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "java8-new-features-2.markdown",
 			"name": "Java8 new features 2",
-			"created": "May 6, 2018"
+			"created": "May 6, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "java8-new-features-1.markdown",
 			"name": "Java8 new features 1",
-			"created": "Apr 22, 2018"
+			"created": "Apr 22, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "cefpython.markdown",
 			"name": "CEFPython",
-			"created": "Jan 8, 2018"
+			"created": "Jan 8, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "local-fulltext-search-engine.markdown",
 			"name": "Local Fulltext Search Engine",
-			"created": "Jan 6, 2018"
+			"created": "Jan 6, 2018",
+			"showOnMain": true
 		},
 		{
 			"url": "new-blog-using-preact.markdown",
 			"name": "New blog using preact",
-			"created": "Nov 5, 2017"
+			"created": "Nov 5, 2017",
+			"showOnMain": true
 		},
 		{
 			"url": "preact.markdown",
 			"name": "Preact",
-			"created": "Oct 17, 2017"
+			"created": "Oct 17, 2017",
+			"showOnMain": true
 		},
 		{
 			"url": "tmux.markdown",
 			"name": "Tmux",
-			"created": "Feb 23, 2016"
+			"created": "Feb 23, 2016",
+			"showOnMain": true
 		},
 		{
 			"url": "frontend-development.markdown",
 			"name": "Frontend devleopment",
-			"created": "Dec 11, 2015"
+			"created": "Dec 11, 2015",
+			"showOnMain": true
 		},
 		{
 			"url": "clojure-namesapces.markdown",
 			"name": "Clojure namespaces",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "css-framework.markdown",
 			"name": "CSS framework",
-			"created": "Oct 30, 2014"
-
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "stringbuilder-vs-stringbuffer-vs-stringwriter.markdown",
 			"name": "StringBuilder vs StringBuffer vs StringWriter",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "decorator-of-python.markdown",
 			"name": "Decorator of python",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "eval-on-javascript.markdown",
 			"name": "Eval usage",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "function-invoking-rule-of-javascript.markdown",
 			"name": "Function invoking rule of javascript",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "iterators-of-python.markdown",
 			"name": "Iterators of python",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "list-process-of-python.markdown",
 			"name": "List process in python",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "pre-search-of-regular-expression.markdown",
 			"name": "Pre-Search on regular expression",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
 		},
 		{
 			"url": "three-things-you-should-never-put-in-your-database.markdown",
 			"name": "Three things you should never put in your database",
-			"created": "Oct 30, 2014"
+			"created": "Oct 30, 2014",
+			"showOnMain": true
+		},
+		{
+			"url": "about.markdown",
+			"name": "",
+			"created": "",
+			"showOnMain": false
 		}
 	],
 	"socialSites": [
