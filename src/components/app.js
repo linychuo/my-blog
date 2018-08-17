@@ -28,7 +28,6 @@ const App = () => (
 		<div>
 			<Header />
 			<Route exact path="/" component={Home} />
-			<Route path="/article/about" component={Article} />
 			<Route path="/article/:name" component={Article} />
 			<Footer />
 		</div>

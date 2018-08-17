@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "build": "preact build --dest build --clean false",
+    "build": "preact build --dest build --clean false --template src/template.html",
     "dev": "preact watch",
     "lint": "eslint src"
   },
