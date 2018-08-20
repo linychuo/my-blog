@@ -1,6 +1,7 @@
 import { Route, Link } from 'react-router-dom';
 import style from './style';
 import config from '../../config';
+import Article from '../../routes/article';
 
 const Header = () => (
 	<header class={style.header}>
@@ -16,7 +17,7 @@ const Header = () => (
 				</Link>
 				<div class={style.trigger}>
 					<Link to="/article/about" class={style.page_link}>About</Link>
-					<Route path="/article/about" component={ProfileMenu} />
+					<Route path="/article/about" component={Article} />
 				</div>
 			</nav>
 		</div>
