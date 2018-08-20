@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import style from './style';
 import config from '../../config';
 
@@ -16,6 +16,7 @@ const Header = () => (
 				</Link>
 				<div class={style.trigger}>
 					<Link to="/article/about" class={style.page_link}>About</Link>
+					<Route path="/article/about" component={ProfileMenu} />
 				</div>
 			</nav>
 		</div>

@@ -27,7 +27,7 @@ const App = () => (
 	<MemoryRouter>
 		<div>
 			<Header />
-			<Route path="/" component={Home} />
+			<Route exact path="/" component={Home} />
 			<Route path="/article/:name" component={Article} />
 			<Footer />
 		</div>
