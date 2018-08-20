@@ -17,7 +17,7 @@ const Header = () => (
 				</Link>
 				<div class={style.trigger}>
 					<Link to="/article/about" class={style.page_link}>About</Link>
-					<Route path="/article/about" component={Article} />
+					<Route path="/article/:name" component={Article} />
 				</div>
 			</nav>
 		</div>
