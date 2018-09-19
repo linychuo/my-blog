@@ -53,7 +53,7 @@ export default class Article extends Component {
 					<div class="post">
 						<header class="post-header">
 							<h1 class="post-title">{meta && meta.title}</h1>
-							<p class="post-meta">{meta && meta.date}</p>
+							<p class="post-meta">{meta && meta.date.toUTCString()}</p>
 						</header>
 
 						<article class="post-content">{_content}</article>

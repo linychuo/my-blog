@@ -28,7 +28,11 @@ const Home = () => (
 class About extends Component {
 	componentDidMount() {
 		let urlPreix = process.env.NODE_ENV === 'production' ? config.post_url : 'http://localhost:8000/';
-		fetch(`${urlPreix}about.markdown`).then(r => this.setState(r.text()))
+		fetch(`${urlPreix}about.markdown`).then(r => {
+			return r.text();
+		}).then(txt => {
+			this.setState({ content: txt });
+		});
 	}
 
 	render({ }, { content }) {
