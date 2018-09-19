@@ -5,7 +5,7 @@ const rootDir = process.argv[3] || './_posts';
 
 http.createServer(function (req, res) {
 	console.log(`${req.method} ${req.url}`);
-	let fullpath = `${rootDir}${req.url}`;
+	let fullpath = `${rootDir}/${req.url}`;
 
 	fs.exists(fullpath, function (exist) {
 		if (!exist) {
@@ -21,7 +21,7 @@ http.createServer(function (req, res) {
 			} else {
 				res.statusCode = 200;
 				res.setHeader('Access-Control-Allow-Origin', '*');
-				//res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+				res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 				res.end(data);
 			}
 		});

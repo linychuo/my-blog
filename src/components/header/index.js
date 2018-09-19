@@ -15,7 +15,7 @@ const Header = () => (
 					</svg>
 				</Link>
 				<div class={style.trigger}>
-					<Link to="/article/about" class={style.page_link}>About</Link>
+					<Link to="/about" class={style.page_link}>About</Link>
 				</div>
 			</nav>
 		</div>

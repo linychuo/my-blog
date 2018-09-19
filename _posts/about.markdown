@@ -1,8 +1,3 @@
----
-title: "About Me"
-date: 2018-8-17 22:45:30
----
-
 ## Ivan Li(Chinese Name: 李永超)
 
 ### Professional Summary
