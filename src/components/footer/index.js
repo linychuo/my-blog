@@ -16,7 +16,7 @@ const Col2 = () => (
 		<ul class={style.social_media_list}>
 			{config.socialSites.map(site => (
 				<li>
-					<a href={site.url}>
+					<a href={site.url} alt={site.name}>
 						<span class={style.icon}>
 							<svg viewBox="0 0 16 16"><path fill="#828282" d={site.icon} /></svg>
 						</span>
