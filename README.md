@@ -6,6 +6,4 @@
 ## Dependencies
 [preact](https://preactjs.com/)
 
-## Directory
-- [_posts]: all blog article
-- [imgs]: article with images
+纯静态blog，页面使用preact渲染，所有文章通过fetch从github上仓库读取
