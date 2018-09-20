@@ -26,7 +26,7 @@ Runnable r1 = () -> {
 If you have single statement in method implementation, we don’t need curly braces also. For example above Interface1 anonymous class can be instantiated using lambda as follows:
 ```java
 Interface1 i1 = (s) -> System.out.println(s);
-		
+
 i1.method1("abc");
 ```
 A new package java.util.function has been added with bunch of functional interfaces to provide target types for lambda expressions and method references. Lambda expressions are a huge topic, I will write a separate article on that in future.
@@ -47,21 +47,21 @@ import java.util.stream.Stream;
 public class StreamExample {
 
 	public static void main(String[] args) {
-		
+
 		List<Integer> myList = new ArrayList<>();
 		for(int i=0; i<100; i++) myList.add(i);
-		
+
 		//sequential stream
 		Stream<Integer> sequentialStream = myList.stream();
-		
+
 		//parallel stream
 		Stream<Integer> parallelStream = myList.parallelStream();
-		
+
 		//using lambda with Stream API, filter example
 		Stream<Integer> highNums = parallelStream.filter(p -> p > 90);
 		//using lambda in forEach
 		highNums.forEach(p -> System.out.println("High Nums parallel="+p));
-		
+
 		Stream<Integer> highNumsSeq = sequentialStream.filter(p -> p > 90);
 		highNumsSeq.forEach(p -> System.out.println("High Nums sequential="+p));
 	}

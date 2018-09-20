@@ -17,17 +17,17 @@ A common mistake is to write functions that do many things:
 ```javascript
 // a user is {name: string, active: boolean, score: number}
 
-users.filter(({active, score}) => 
+users.filter(({active, score}) =>
 	active && score > 0.5
 )
 ```
 Instead, break them into smaller parts, each responsible for one part of the logic:
 ```javascript
 users
-	.filter(({active}) => 
+	.filter(({active}) =>
 		active
 	)
-	.filter(({score}) => 
+	.filter(({score}) =>
 		score > 0.5
 	)
 ```
@@ -66,13 +66,13 @@ When you need only a subset of the parameter objects, use destructuring.
 
 Instead of:
 ```javascript
-.filter((user) => 
+.filter((user) =>
 	user.active
 )
 ```
 use:
 ```javascript
-.filter(({active}) => 
+.filter(({active}) =>
 	active
 )
 ```
@@ -106,14 +106,14 @@ While Javascript’s basic functions process the elements in the order they are 
 
 Instead of:
 ```javascript
-let index = 0; 
-users.map(({name}) => 
+let index = 0;
+users.map(({name}) =>
 	name + (index++ === 0 ? " First user!": "")
 )
 ```
 Use the index argument most of the functions get:
 ```javascript
-users.map(({name}, index) => 
+users.map(({name}, index) =>
 	name + (index === 0 ? " First user!": "")
 )
 ```
@@ -273,7 +273,7 @@ Immutable.List(users)
 As usual, there are exceptions. For example, when you need processing inside a processing step:
 ```javascript
 users
-	.map((user) => 
+	.map((user) =>
 		posts
 			.filter(...)
 			.map(...)

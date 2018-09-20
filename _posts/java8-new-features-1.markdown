@@ -23,18 +23,18 @@ import java.lang.Integer;
 public class Java8ForEachExample {
 
 	public static void main(String[] args) {
-		
+
 		//creating sample Collection
 		List<Integer> myList = new ArrayList<Integer>();
 		for(int i=0; i<10; i++) myList.add(i);
-		
+
 		//traversing using Iterator
 		Iterator<Integer> it = myList.iterator();
 		while(it.hasNext()){
 			Integer i = it.next();
 			System.out.println("Iterator Value::"+i);
 		}
-		
+
 		//traversing through forEach method of Iterable with anonymous class
 		myList.forEach(new Consumer<Integer>() {
 
@@ -43,11 +43,11 @@ public class Java8ForEachExample {
 			}
 
 		});
-		
+
 		//traversing with Consumer interface implementation
 		MyConsumer action = new MyConsumer();
 		myList.forEach(action);
-		
+
 	}
 
 }
@@ -84,21 +84,21 @@ package com.journaldev.java8.defaultmethod;
 public interface Interface1 {
 
 	void method1(String str);
-	
+
 	default void log(String str){
 		System.out.println("I1 logging::"+str);
 	}
-	
+
 	static void print(String str){
 		System.out.println("Printing "+str);
 	}
-	
+
     // trying to override Object method gives compile time error as
     // "A default method cannot override a method from java.lang.Object"
-	
+
     //	default String toString(){
     //		return "i1";
-    //	}	
+    //	}
 }
 ```
 
@@ -109,7 +109,7 @@ package com.journaldev.java8.defaultmethod;
 public interface Interface2 {
 
 	void method2();
-	
+
 	default void log(String str){
 		System.out.println("I2 logging::"+str);
 	}
@@ -137,7 +137,7 @@ public class MyClass implements Interface1, Interface2 {
 		System.out.println("MyClass logging::"+str);
 		Interface1.print("abc");
 	}
-	
+
 }
 ```
 

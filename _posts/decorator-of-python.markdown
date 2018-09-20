@@ -10,10 +10,10 @@ class WhatFor(object):
 	def it(cls):
 		print 'work with %s' % cls
 	it = classmethod(it)
-	
+
 	def uncommon():
 		print 'I could be a global function'
-	
+
 	uncommon = staticmethod(uncommon)
 ```
 
@@ -44,7 +44,7 @@ I could be a global function
 def mydecorator(function):
 	def _mydecorator(*args, **kw):
 		# do some stuff before the rea
-		# function gets called 
+		# function gets called
 		res = function(*args, **kw)
 		# do some stuff after
 		return res
@@ -59,7 +59,7 @@ def mydecorator(arg1, arg2):
 	def _mydecorator(function):
 		def __mydecorator(*args, **kw):
 			# do some stuff before the real
-			# function gets called 
+			# function gets called
 			res = function(*args, **kw)
 			# do some stuff after
 			return res

@@ -25,11 +25,11 @@ function parseContent(text) {
 
 export default class Article extends Component {
 	componentDidMount() {
-		let name = this.props.match.params.name;
-		let article = config.articles.filter(item => item.name === name);
+		let title = this.props.match.params.name;
+		let article = config.posts.filter(item => item.title === title);
 		article = article && article[0];
 		let urlPreix = process.env.NODE_ENV === 'production' ? config.post_url : 'http://localhost:8000/';
-		fetch(`${urlPreix}${article.url}`)
+		fetch(`${urlPreix}${article.filename}`)
 			.then(r => r.text())
 			.then(r => {
 				this.setState(parseContent(r));

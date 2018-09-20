@@ -16,16 +16,16 @@ alert("the un-evaled answer is " + the_unevaled_answer + " and the evaled answer
 var name="Jimmy",
 var age=23;
 var json="{name:'"+name+"',age:"+age+"}";
-//这里通过eval函数可以将一个字符串转换成json. 
+//这里通过eval函数可以将一个字符串转换成json.
 json = eval('('+json+')');
 alert(json.name+"="+json.age);
 
 
 
-//也可以用以下的办法，也可以将一个字符串转换成json 
+//也可以用以下的办法，也可以将一个字符串转换成json
 var fun = new Function("return "+arr);
 var obj = fun();
 alert(obj.name+"="+obj.age);
 ```
 
-不过这种方法明显没有eval用起来方便。 
+不过这种方法明显没有eval用起来方便。
