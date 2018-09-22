@@ -16,6 +16,8 @@ const Header = () => (
 				</Link>
 				<div class={style.trigger}>
 					<Link to="/about" class={style.page_link}>About</Link>
+					&nbsp;
+					<Link to="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class={style.page_link}>IPFS File</Link>
 				</div>
 			</nav>
 		</div>

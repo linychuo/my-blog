@@ -5,6 +5,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Article from './routes/article';
 import About from './routes/about';
+import IPFSFile from './routes/ipfs-file';
 import config from './config';
 
 const Home = () => (
@@ -31,6 +32,7 @@ const App = () => (
 			<Route exact path="/" component={Home} />
 			<Route path="/about" component={About} />
 			<Route path="/post/:name" component={Article} />
+			<Route path="/ipfs/:hash" component={IPFSFile} />
 			<Footer />
 		</div>
 	</MemoryRouter>
