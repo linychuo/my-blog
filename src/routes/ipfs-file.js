@@ -5,9 +5,7 @@ import loading from './loading.gif';
 
 export default class IPFSFile extends Component {
 	componentDidMount() {
-		console.log(this.props);
-		let title =
-		fetch(`https://cloudflare-ipfs.com/${this.props.match.url}`).then(r => {
+		fetch(`https://cloudflare-ipfs.com${this.props.match.url}`).then(r => {
 			return r.text();
 		}).then(txt => {
 			this.setState({ content: txt });
