@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import style from './style';
 import config from '../../config';
 import cx from 'classnames';
@@ -34,6 +35,7 @@ const Footer = () => (
 			<div class={style.footer_col_wrapper}>
 				<Col1 />
 				<Col2 />
+				<Link to="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class={style.page_link}>IPFS File</Link>
 			</div>
 		</div>
 	</footer>
