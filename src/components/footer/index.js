@@ -8,6 +8,7 @@ const Col1 = () => (
 		<ul class={style.contact_list}>
 			<li>{config.title}</li>
 			<li><a href={'mailto:' + config.email}>{config.email}</a></li>
+			<li><Link to="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class={style.page_link}>IPFS File</Link></li>
 		</ul>
 	</div>
 );
@@ -35,7 +36,6 @@ const Footer = () => (
 			<div class={style.footer_col_wrapper}>
 				<Col1 />
 				<Col2 />
-				<Link to="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class={style.page_link}>IPFS File</Link>
 			</div>
 		</div>
 	</footer>
