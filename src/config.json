@@ -4,6 +4,11 @@
 	"post_url": "https://raw.githubusercontent.com/linychuo/my-blog/master/_posts/",
 	"posts": [
 		{
+			"filename": "13-linux-terminal-shortcuts-every-power-linux-user-must-know.markdown",
+			"title": "13 Linux Terminal Shortcuts Every Power Linux User Must Know",
+			"createdDate": "Sep 23, 2018"
+		},
+		{
 			"filename": "best-practices-on-how-to-work-with-collections-in-javascript.markdown",
 			"title": "Best Practices on how to work with collections in javascript",
 			"createdDate": "May 19, 2018"
