@@ -4,6 +4,11 @@
 	"post_url": "https://raw.githubusercontent.com/linychuo/my-blog/master/_posts/",
 	"posts": [
 		{
+			"filename": "my-assistant.markdown",
+			"title": "My Assistant",
+			"createdDate": "Nov 11, 2018"
+		},
+		{
 			"filename": "oh-shit-git.markdown",
 			"title": "Oh shit, git!",
 			"createdDate": "Sep 26, 2018"
