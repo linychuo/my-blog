@@ -1,6 +1,6 @@
 ---
 title: "Oh shit, git!"
-date: 2018-9-26 20:58:32
+date_time: 2018-9-26 20:58:32
 ---
 
 Git is hard: screwing up is easy, and figuring out how to fix your mistakes is fucking impossible. Git documentation has this chicken and egg problem where you can't search for how to get yourself out of a mess, unless you already know the name of the thing you need to know about in order to fix your problem.

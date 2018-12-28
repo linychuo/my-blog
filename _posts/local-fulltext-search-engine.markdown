@@ -1,12 +1,12 @@
 ---
 title: " Local Fulltext Search Engine"
-date: 2018-1-6 22:07:32
+date_time: 2018-1-6 22:07:32
 ---
 
 在很多年之前Google还在中国的时候，曾经用过一个本地的搜索工具(具体名字忘记了，就是可以快速检索个人电脑中的文档)，搜索了[wiki](https://en.wikipedia.org/wiki/Google_Desktop)显示这个工具已经在2011年不更新了，不过还是放了几张图供大家看看
 
-![searchbar](https://raw.githubusercontent.com/linychuo/my-blog/master/imgs/Googledesktopquickfindbox200906.png)
-![searchresult](https://raw.githubusercontent.com/linychuo/my-blog/master/imgs/Desktop_scrshotmac.jpg)
+![searchbar](/imgs/Googledesktopquickfindbox200906.png)
+![searchresult](/imgs/Desktop_scrshotmac.jpg)
 
 后来想想这工具即然不更新了，何不自己做一个，说干就干，首先要对电脑上所有的文件进行索引，然后再做一个界面来响应用户输入的关键字，就这样一个大概的过程，同时还要响应新添加的文件和修改的文件进行重新索引。
 

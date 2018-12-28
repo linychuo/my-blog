@@ -1,6 +1,6 @@
 ---
 title: "List process in python"
-date: 2014-10-30 09:44:32
+date_time: 2014-10-30 09:44:32
 ---
 
 1. merge two lists:

@@ -1,6 +1,6 @@
 ---
 title: "Clojure namespaces"
-date: 2014-10-30 09:35:32
+date_time: 2014-10-30 09:35:32
 ---
 
 ```clojure

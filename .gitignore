@@ -3,3 +3,7 @@ _site
 node_modules
 /*.log
 build
+
+/target
+**/*.rs.bk
+.idea/

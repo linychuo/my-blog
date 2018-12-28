@@ -1,6 +1,6 @@
 ---
 title: "Best Practices on how to work with collections in javascript"
-date: 2018-5-19 15:14:32
+date_time: 2018-5-19 15:14:32
 ---
 
 # Motivation

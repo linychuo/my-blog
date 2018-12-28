@@ -1,6 +1,6 @@
 ---
 title: "Function invoking rule of javascript"
-date: 2014-10-30 09:23:32
+date_time: 2014-10-30 09:23:32
 ---
 
 ## 1. JavaScript函数调用规则一
