@@ -67,7 +67,8 @@ fn main() -> io::Result<()> {
 	render_other(&root_dir, "about", &hbs,
 				 json!({"parent": "layout", "contents": contents}));
 
-	copy_static_files(Path::new("static"), Path::new("build"))?;
+	copy_static_files(Path::new("static/imgs"), Path::new("build/imgs"))?;
+	copy_static_files(Path::new("static/styles"), Path::new("build/styles"))?;
 	Ok(())
 }
 
@@ -129,12 +130,16 @@ fn render_other(parent_dir: &str, file_name: &str, hbs: &Handlebars, data: serde
 fn copy_static_files(src_dir: &Path, dest_dir: &Path) -> io::Result<()> {
 	for entry in fs::read_dir(src_dir)? {
 		let entry_path = entry?.path();
+		let entry_path_name = entry_path.file_name().unwrap().to_str().unwrap();
 		if entry_path.is_dir() {
-			let new_dir = dest_dir.join(&entry_path);
+			let new_dir = dest_dir.join(entry_path_name);
 			fs::create_dir_all(&new_dir)?;
 			copy_static_files(entry_path.as_path(), &new_dir)?;
 		} else {
-			let new_file_path = dest_dir.join(entry_path.file_name().unwrap().to_str().unwrap());
+			if !dest_dir.exists() {
+				fs::create_dir_all(&dest_dir)?;
+			}
+			let new_file_path = dest_dir.join(entry_path_name);
 			fs::copy(&entry_path, &new_file_path)?;
 		}
 	}
