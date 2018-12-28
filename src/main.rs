@@ -130,10 +130,12 @@ fn copy_static_files(src_dir: &Path, dest_dir: &Path) -> io::Result<()> {
 	for entry in fs::read_dir(src_dir)? {
 		let entry_path = entry?.path();
 		if entry_path.is_dir() {
-			fs::create_dir_all(dest_dir.join(&entry_path))?;
-			copy_static_files(entry_path.as_path(), dest_dir);
+			let new_dir = dest_dir.join(&entry_path);
+			fs::create_dir_all(&new_dir)?;
+			copy_static_files(entry_path.as_path(), &new_dir)?;
 		} else {
-			fs::copy(&entry_path, dest_dir.join(src_dir).join(&entry_path))?;
+			let new_file_path = dest_dir.join(entry_path.file_name().unwrap().to_str().unwrap());
+			fs::copy(&entry_path, &new_file_path)?;
 		}
 	}
 
