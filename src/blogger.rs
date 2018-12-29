@@ -111,8 +111,7 @@ impl Blogger {
     }
 
     fn render_other(&self, file_name: &str, data: serde_json::Value) {
-        self.dest_dir.join(file_name).set_extension("html");
-        let mut n_f = PathBuf::from(&self.dest_dir.join(file_name));
+        let mut n_f = self.dest_dir.join(file_name);
         n_f.set_extension("html");
 
         let file = File::create(n_f).expect("create file failed!");
