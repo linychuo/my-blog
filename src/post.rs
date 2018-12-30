@@ -1,7 +1,7 @@
 use std::fs::{self, File};
 use std::path::PathBuf;
 
-use handlebars::Handlebars;
+use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -37,20 +37,21 @@ impl Post {
         }
     }
 
-    pub fn render(&self, hbs: &Handlebars) {
+    pub fn render(&self, hbs: &Handlebars) -> Result<(), RenderError> {
         let full_path = format!("{}{}", self.parent_dir, self.dir);
-        fs::create_dir_all(&full_path).expect("create sub folder failed!");
+        fs::create_dir_all(&full_path).unwrap();
 
         let mut new_f = PathBuf::from(full_path).join(&self.file_name);
         new_f.set_extension("html");
-        let file = File::create(new_f).expect("create file failed!");
+        let file = File::create(new_f).unwrap();
         hbs.render_to_write(
             "post",
             &json!({
                 "parent": "layout",
                 "post": self}),
             file,
-        )
-        .expect("render post failed!");
+        )?;
+
+        Ok(())
     }
 }
