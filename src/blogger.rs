@@ -52,7 +52,7 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn copy_static_files(&self, src_dir: PathBuf, dest_dir: PathBuf) {
+    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) {
         for entry in fs::read_dir(src_dir).unwrap() {
             let entry_path = entry.unwrap().path();
             let entry_path_name = entry_path.file_name().unwrap().to_str().unwrap();
@@ -61,7 +61,7 @@ impl Blogger {
                 if !new_dir.exists() {
                     fs::create_dir_all(&new_dir).unwrap();
                 }
-                self.copy_static_files(entry_path, new_dir);
+                Blogger::copy_static_files(entry_path, new_dir);
             } else {
                 if !dest_dir.exists() {
                     fs::create_dir_all(&dest_dir).unwrap();

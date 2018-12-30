@@ -1,10 +1,11 @@
+use crate::blogger::Blogger;
 use std::path::PathBuf;
 
 mod blogger;
 mod post;
 
 fn main() {
-    let blog = blogger::Blogger::new(
+    let blog = Blogger::new(
         PathBuf::from("./build"),
         PathBuf::from("./_posts"),
         PathBuf::from("./templates"),
@@ -15,8 +16,8 @@ fn main() {
     blog.render("./_posts/about.markdown")
         .expect("render about file failed!");
 
-    blog.copy_static_files(PathBuf::from("static/imgs"), PathBuf::from("build/imgs"));
-    blog.copy_static_files(
+    Blogger::copy_static_files(PathBuf::from("static/imgs"), PathBuf::from("build/imgs"));
+    Blogger::copy_static_files(
         PathBuf::from("static/styles"),
         PathBuf::from("build/styles"),
     );
