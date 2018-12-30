@@ -47,10 +47,13 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
-        let f_path = PathBuf::from(file_path);
+    pub fn render(&self, dest_file_name: &str, src_file_path: &str) -> Result<(), RenderError> {
+        let f_path = PathBuf::from(src_file_path);
         let (_, contents) = self.parse_content(&f_path);
-        self.render_other("about", json!({"parent": "layout", "contents": contents}))?;
+        self.render_other(
+            dest_file_name,
+            json!({"parent": "layout", "contents": contents}),
+        )?;
 
         Ok(())
     }
@@ -113,12 +116,12 @@ impl Blogger {
         }
     }
 
-    fn render_other(&self, file_name: &str, data: Value) -> Result<(), RenderError> {
-        let mut n_f = self.dest_dir.join(file_name);
+    fn render_other(&self, template_name: &str, data: Value) -> Result<(), RenderError> {
+        let mut n_f = self.dest_dir.join(template_name);
         n_f.set_extension("html");
 
         let file = File::create(n_f).unwrap();
-        self.hbs.render_to_write(file_name, &data, file)?;
+        self.hbs.render_to_write(template_name, &data, file)?;
 
         Ok(())
     }
