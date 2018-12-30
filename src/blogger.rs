@@ -61,7 +61,7 @@ impl Blogger {
     pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) {
         for entry in fs::read_dir(src_dir).unwrap() {
             let entry_path = entry.unwrap().path();
-            let entry_path_name = entry_path.file_name().unwrap().to_str().unwrap();
+            let entry_path_name = entry_path.file_name().unwrap();
             if entry_path.is_dir() {
                 let new_dir = dest_dir.join(entry_path_name);
                 if !new_dir.exists() {
