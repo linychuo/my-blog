@@ -64,9 +64,6 @@ impl Blogger {
             let entry_path_name = entry_path.file_name().unwrap();
             if entry_path.is_dir() {
                 let new_dir = dest_dir.join(entry_path_name);
-                if !new_dir.exists() {
-                    fs::create_dir_all(&new_dir).unwrap();
-                }
                 Blogger::copy_static_files(entry_path, new_dir);
             } else {
                 if !dest_dir.exists() {

@@ -4,4 +4,4 @@
 
 
 - Pure static blog using rust
-- Please visit my site[Yongchao.Li](https://yongchao.li), welcome push a [issue](https://github.com/linychuo/my-blog/issues) if you found any problem, Thanks!
+- Please visit my site [Yongchao.Li](https://yongchao.li), welcome push a [issue](https://github.com/linychuo/my-blog/issues) if you found any problem, Thanks!

@@ -16,9 +16,5 @@ fn main() {
     blog.render("about", "./_posts/about.markdown")
         .expect("render about file failed!");
 
-    Blogger::copy_static_files(PathBuf::from("static/imgs"), PathBuf::from("build/imgs"));
-    Blogger::copy_static_files(
-        PathBuf::from("static/styles"),
-        PathBuf::from("build/styles"),
-    );
+    Blogger::copy_static_files(PathBuf::from("static"), PathBuf::from("build"));
 }
