@@ -8,9 +8,9 @@ use serde_json::json;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Post {
     title: String,
-    created_date_time: String,
+    pub created_date_time: String,
     parent_dir: String,
-    dir: String,
+    pub dir: String,
     file_name: String,
     contents: String,
 }

@@ -1,6 +1,6 @@
 ---
 title: "Java8 new features 1"
-date_time: 2018-4-22 19:14:32
+date_time: 2018-04-22 19:14:32
 ---
 
 1. [forEach() method in Iterable interface](#first)

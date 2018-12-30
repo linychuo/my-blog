@@ -1,6 +1,6 @@
 ---
 title: "Java8 new features 3"
-date_time: 2018-5-7 19:05:32
+date_time: 2018-05-07 19:05:32
 ---
 
 1. [Java Time API](#first)

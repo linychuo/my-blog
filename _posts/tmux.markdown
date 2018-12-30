@@ -1,6 +1,6 @@
 ---
 title: "Tmux"
-date_time: 2016-2-23 22:45:30
+date_time: 2016-02-23 22:45:30
 ---
 
 Tmux

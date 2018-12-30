@@ -35,7 +35,10 @@ impl Blogger {
     }
 
     pub fn render_posts(&self, exclude: Vec<&str>) -> Result<(), RenderError> {
-        let all_posts = self.load_posts(exclude);
+        let mut all_posts = self.load_posts(exclude);
+        all_posts.sort_by_key(|post| post.created_date_time.clone());
+        all_posts.reverse();
+
         self.render_other("index", json!({"parent": "layout", "posts": all_posts}))?;
         for item in all_posts {
             item.render(&self.hbs)?;

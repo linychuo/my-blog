@@ -1,6 +1,6 @@
 ---
 title: "Java8 new features 2"
-date_time: 2018-5-6 22:42:32
+date_time: 2018-05-06 22:42:32
 ---
 
 1. [Functional Interfaces and Lambda Expressions](#first)
