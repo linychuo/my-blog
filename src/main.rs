@@ -11,10 +11,10 @@ fn main() {
         PathBuf::from("./templates"),
     );
 
-    blog.render_posts(vec!["about.markdown"])
+    blog.render_posts(&["about.markdown"])
         .expect("render all posts failed!");
     blog.render("about", "./_posts/about.markdown")
         .expect("render about file failed!");
 
-    Blogger::copy_static_files(PathBuf::from("static"), PathBuf::from("build"));
+    Blogger::copy_static_files(PathBuf::from("static"), &PathBuf::from("build"));
 }

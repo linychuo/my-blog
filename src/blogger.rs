@@ -34,12 +34,12 @@ impl Blogger {
         }
     }
 
-    pub fn render_posts(&self, exclude: Vec<&str>) -> Result<(), RenderError> {
+    pub fn render_posts(&self, exclude: &[&str]) -> Result<(), RenderError> {
         let mut all_posts = self.load_posts(exclude);
         all_posts.sort_by_key(|post| post.created_date_time.clone());
         all_posts.reverse();
 
-        self.render_other("index", json!({"parent": "layout", "posts": all_posts}))?;
+        self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
         for item in all_posts {
             item.render(&self.hbs)?;
         }
@@ -52,19 +52,19 @@ impl Blogger {
         let (_, contents) = self.parse_content(&f_path);
         self.render_other(
             dest_file_name,
-            json!({"parent": "layout", "contents": contents}),
+            &json!({"parent": "layout", "contents": contents}),
         )?;
 
         Ok(())
     }
 
-    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) {
+    pub fn copy_static_files(src_dir: PathBuf, dest_dir: &PathBuf) {
         for entry in fs::read_dir(src_dir).unwrap() {
             let entry_path = entry.unwrap().path();
             let entry_path_name = entry_path.file_name().unwrap();
             if entry_path.is_dir() {
                 let new_dir = dest_dir.join(entry_path_name);
-                Blogger::copy_static_files(entry_path, new_dir);
+                Blogger::copy_static_files(entry_path, &new_dir);
             } else {
                 if !dest_dir.exists() {
                     fs::create_dir_all(&dest_dir).unwrap();
@@ -75,7 +75,7 @@ impl Blogger {
         }
     }
 
-    fn load_posts(&self, exclude: Vec<&str>) -> Vec<Post> {
+    fn load_posts(&self, exclude: &[&str]) -> Vec<Post> {
         let mut all_posts: Vec<Post> = vec![];
         for entry in fs::read_dir(&self.post_dir).unwrap() {
             let entry_path = entry.unwrap().path();
@@ -113,12 +113,12 @@ impl Blogger {
         }
     }
 
-    fn render_other(&self, template_name: &str, data: Value) -> Result<(), RenderError> {
+    fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
         let mut n_f = self.dest_dir.join(template_name);
         n_f.set_extension("html");
 
         let file = File::create(n_f).unwrap();
-        self.hbs.render_to_write(template_name, &data, file)?;
+        self.hbs.render_to_write(template_name, data, file)?;
 
         Ok(())
     }
