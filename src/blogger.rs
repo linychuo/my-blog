@@ -10,22 +10,22 @@ use crate::post::{Header, Post};
 #[derive(Debug)]
 pub struct Blogger {
     dest_dir: PathBuf,
-    post_dir: PathBuf,
+    posts_dir: PathBuf,
     hbs: Handlebars,
     comrak_options: ComrakOptions,
 }
 
 impl Blogger {
-    pub fn new(dest_dir: PathBuf, post_dir: PathBuf, template_dir: PathBuf) -> Blogger {
+    pub fn new(dest_dir: &str, posts_dir: &str, template_dir: &str) -> Blogger {
         let mut hbs = Handlebars::new();
         hbs.set_strict_mode(true);
-        hbs.register_templates_directory(".hbs", template_dir)
+        hbs.register_templates_directory(".hbs", PathBuf::from(template_dir))
             .unwrap();
         fs::create_dir_all(&dest_dir).unwrap();
 
         Blogger {
-            dest_dir,
-            post_dir,
+            dest_dir: PathBuf::from(dest_dir),
+            posts_dir: PathBuf::from(posts_dir),
             hbs,
             comrak_options: ComrakOptions {
                 ext_header_ids: Some(String::new()),
@@ -34,7 +34,7 @@ impl Blogger {
         }
     }
 
-    pub fn render_posts(&self, exclude: &[&str]) -> Result<(), RenderError> {
+    pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
         let mut all_posts = self.load_posts(exclude);
         all_posts.sort_by_key(|post| post.created_date_time.clone());
         all_posts.reverse();
@@ -47,8 +47,10 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn render(&self, dest_file_name: &str, src_file_path: &str) -> Result<(), RenderError> {
-        let f_path = PathBuf::from(src_file_path);
+    pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
+        let new_path = PathBuf::from(file_path);
+        let dest_file_name = new_path.file_stem().unwrap().to_str().unwrap();
+        let f_path = self.posts_dir.join(file_path);
         let (_, contents) = self.parse_content(&f_path);
         self.render_other(
             dest_file_name,
@@ -58,13 +60,13 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn copy_static_files(src_dir: PathBuf, dest_dir: &PathBuf) {
+    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) {
         for entry in fs::read_dir(src_dir).unwrap() {
             let entry_path = entry.unwrap().path();
             let entry_path_name = entry_path.file_name().unwrap();
             if entry_path.is_dir() {
                 let new_dir = dest_dir.join(entry_path_name);
-                Blogger::copy_static_files(entry_path, &new_dir);
+                Blogger::copy_static_files(entry_path, new_dir);
             } else {
                 if !dest_dir.exists() {
                     fs::create_dir_all(&dest_dir).unwrap();
@@ -75,13 +77,14 @@ impl Blogger {
         }
     }
 
-    fn load_posts(&self, exclude: &[&str]) -> Vec<Post> {
+    fn load_posts(&self, exclude: &[String]) -> Vec<Post> {
         let mut all_posts: Vec<Post> = vec![];
-        for entry in fs::read_dir(&self.post_dir).unwrap() {
+        for entry in fs::read_dir(&self.posts_dir).unwrap() {
             let entry_path = entry.unwrap().path();
             if entry_path.is_file() {
                 let file_name = entry_path.file_name().unwrap();
-                if !exclude.contains(&file_name.to_str().unwrap()) {
+                dbg!(&file_name);
+                if !exclude.contains(&file_name.to_str().unwrap().to_string()) {
                     let (header, contents) = self.parse_content(&entry_path);
                     let file_stem = entry_path.file_stem().unwrap();
                     all_posts.push(Post::new(
