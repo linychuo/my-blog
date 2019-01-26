@@ -22,7 +22,7 @@ This project was built rust language, rust has lots of features. no gc, no runti
     <br/>it was represented a blogger object, it has a few methods, render all posts, index page and copy static files
     - [post.rs](./src/post.rs)
     <br/>it was represented a article object and behaviors
-- post **all of the original posts**
+- posts **all of the original posts**
 - static **all of the resources, it includes css, js, images**
 - templates **kinds of template file**
     - [about.hbs](./templates/about.hbs)
