@@ -7,7 +7,7 @@
 
 
 ## Overview
-This project was built rust language, rust has lots of features. no gc, no runtime, safety and so on. all of content was placed directory of posts, they were written by markdown. and template engine using handlerbars for rust. any person could fork this project and building youself blog site.
+This project was built rust language, rust has lots of features. no gc, no runtime, safety and so on. all of content was placed directory of posts, they were written by markdown. and template engine using handlerbars for rust. any person could fork this project and building yourself blog site.
 
 ## Code structure
 - src
