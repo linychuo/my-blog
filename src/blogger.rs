@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
@@ -19,7 +19,7 @@ impl Blogger {
     pub fn new(dest_dir: &str, posts_dir: &str, template_dir: &str) -> Blogger {
         let mut hbs = Handlebars::new();
         hbs.set_strict_mode(true);
-        hbs.register_templates_directory(".hbs", PathBuf::from(template_dir))
+        hbs.register_templates_directory(".hbs", Path::new(template_dir))
             .unwrap();
         fs::create_dir_all(&dest_dir).unwrap();
 
@@ -48,7 +48,7 @@ impl Blogger {
     }
 
     pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
-        let new_path = PathBuf::from(file_path);
+        let new_path = Path::new(file_path);
         let dest_file_name = new_path.file_stem().unwrap().to_str().unwrap();
         let f_path = self.posts_dir.join(file_path);
         let (_, contents) = self.parse_content(&f_path);
