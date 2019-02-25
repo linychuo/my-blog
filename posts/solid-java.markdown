@@ -3,8 +3,6 @@ title: "SOLID Java"
 date_time: 2019-02-25 21:45:32
 ---
 
-# SOLID Java
-
 SOLID states for five design principles that help a developer build easy to extend and maintain software:
 
 **S** – Single-responsibility principle
