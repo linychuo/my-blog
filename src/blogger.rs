@@ -51,6 +51,11 @@ impl Blogger {
             item.render(&self.hbs)?;
         }
 
+        let tags_dir = self.dest_dir.join("tags");
+        if !tags_dir.exists() {
+            fs::create_dir(tags_dir)?;
+        }
+
         for (k, v) in &post_by_tag {
             self.render_tags(
                 format!("tags/{}", k),
