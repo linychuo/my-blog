@@ -1,6 +1,7 @@
 ---
 title: "SOLID Java"
 date_time: 2019-02-25 21:45:32
+tags: java
 ---
 
 SOLID states for five design principles that help a developer build easy to extend and maintain software:

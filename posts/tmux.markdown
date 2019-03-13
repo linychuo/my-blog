@@ -1,6 +1,7 @@
 ---
 title: "Tmux"
 date_time: 2016-02-23 22:45:30
+tags: tmux terminal
 ---
 
 Tmux

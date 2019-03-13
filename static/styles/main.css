@@ -22,7 +22,7 @@ img {
 	vertical-align: middle
 }
 
-figure > img {
+figure>img {
 	display: block
 }
 
@@ -34,7 +34,7 @@ ul, ol {
 	margin-left: 30px
 }
 
-li > ul, li > ol {
+li>ul, li>ol {
 	margin-bottom: 0
 }
 
@@ -65,11 +65,11 @@ blockquote {
 	font-style: italic
 }
 
-blockquote > :last-child {
+blockquote> :last-child {
 	margin-bottom: 0
 }
 
-pre > code {
+pre>code {
 	border-radius: 2px;
 }
 
@@ -110,13 +110,22 @@ pre > code {
 	list-style: none
 }
 
-.post-list > li {
+.post-list>li {
 	margin-bottom: 30px
 }
 
 .post-meta {
 	font-size: 14px;
 	color: #828282
+}
+
+.post-tag {
+	font-size: 14px;
+	color: #39739d;
+	background-color: #E1ECF4;
+	padding: .25em .5em;
+	text-decoration: none;
+	margin: 0px 5px 0 0 !important;
 }
 
 .post-link {
@@ -221,7 +230,6 @@ pre > code {
 		border-radius: 5px;
 		text-align: right
 	}
-
 	.nav .menu_icon {
 		display: block;
 		float: right;
@@ -231,26 +239,21 @@ pre > code {
 		padding-top: 10px;
 		text-align: center
 	}
-
-	.nav .menu_icon > svg {
+	.nav .menu_icon>svg {
 		width: 18px;
 		height: 15px
 	}
-
-	.nav .menu_icon > svg path {
+	.nav .menu_icon>svg path {
 		fill: #424242
 	}
-
 	.nav .trigger {
 		clear: both;
 		display: none
 	}
-
 	.nav:hover .trigger {
 		display: block;
 		padding-bottom: 5px
 	}
-
 	.nav .page_link {
 		display: block;
 		padding: 5px 10px
@@ -304,7 +307,6 @@ pre > code {
 		width: -webkit-calc(50% - (30px / 2));
 		width: calc(50% - (30px / 2))
 	}
-
 	.footer_col_3 {
 		width: -webkit-calc(100% - (30px / 2));
 		width: calc(100% - (30px / 2))
@@ -319,13 +321,13 @@ pre > code {
 	}
 }
 
-.icon > svg {
+.icon>svg {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
 	vertical-align: middle
 }
 
-.icon > svg path {
+.icon>svg path {
 	fill: #828282
 }

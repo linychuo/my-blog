@@ -1,6 +1,7 @@
 ---
 title: "13 Linux Terminal Shortcuts Every Power Linux User Must Know"
 date_time: 2018-09-23 20:01:32
+tags: linux terminal
 ---
 
 # Must Know Linux Shortcuts

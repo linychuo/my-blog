@@ -1,6 +1,7 @@
 ---
 title: "Java8 new features 3"
 date_time: 2018-05-07 19:05:32
+tags: java java8
 ---
 
 1. [Java Time API](#first)

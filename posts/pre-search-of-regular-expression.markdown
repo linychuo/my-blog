@@ -1,6 +1,7 @@
 ---
 title: "Pre-Search on regular expression"
 date_time: 2014-10-30 09:19:32
+tags: javascript regexp
 ---
 
 预搜索分为正向预搜索和反向预搜索。

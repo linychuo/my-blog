@@ -1,6 +1,7 @@
 ---
 title: "My Assistant"
 date_time: 2018-11-10 21:12:32
+tags: nodejs javascript
 ---
 
 ## An assistant, A robot, In now days, it is very popular words.

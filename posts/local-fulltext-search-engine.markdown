@@ -1,6 +1,7 @@
 ---
 title: " Local Fulltext Search Engine"
 date_time: 2018-01-06 22:07:32
+tags: lucene kotlin
 ---
 
 在很多年之前Google还在中国的时候，曾经用过一个本地的搜索工具(具体名字忘记了，就是可以快速检索个人电脑中的文档)，搜索了[wiki](https://en.wikipedia.org/wiki/Google_Desktop)显示这个工具已经在2011年不更新了，不过还是放了几张图供大家看看

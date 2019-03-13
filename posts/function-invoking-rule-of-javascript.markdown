@@ -1,6 +1,7 @@
 ---
 title: "Function invoking rule of javascript"
 date_time: 2014-10-30 09:23:32
+tags: javascript function
 ---
 
 ## 1. JavaScript函数调用规则一

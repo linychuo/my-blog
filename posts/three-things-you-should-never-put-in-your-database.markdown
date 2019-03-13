@@ -1,6 +1,7 @@
 ---
 title: "Three things you should never put in your database"
 date_time: 2014-10-30 09:55:32
+tags: database
 ---
 
 As I've said in a few talks, the best way to improve your systems is by first not doing "dumb things". I don't mean you or your development staff is "dumb", it's easy to overlook the implications of these types of decisions and not realize how bad they are for maintainability let alone scaling. As a consultant I see this stuff all of the time and I have yet to ever see it work out well for anyone.

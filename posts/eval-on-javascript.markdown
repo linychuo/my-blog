@@ -1,6 +1,7 @@
 ---
 title: "Eval usage"
 date_time: 2014-10-30 09:21:32
+tags: javascript eval
 ---
 eval()函数
 

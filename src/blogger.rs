@@ -1,11 +1,11 @@
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
+use crate::post::{Header, Post};
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
 use serde_json::{json, Value};
-
-use crate::post::{Header, Post};
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Blogger {
@@ -40,8 +40,23 @@ impl Blogger {
         all_posts.reverse();
 
         self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
+        let mut post_by_tag: HashMap<String, Vec<Post>> = HashMap::new();
         for item in all_posts {
+            for tag in &item.tags {
+                if !post_by_tag.contains_key(tag) {
+                    post_by_tag.insert(tag.to_string(), vec![]);
+                }
+                post_by_tag.get_mut(tag).unwrap().push(item.clone());
+            }
             item.render(&self.hbs)?;
+        }
+
+        for (k, v) in &post_by_tag {
+            self.render_tags(
+                format!("tags/{}", k),
+                "tags",
+                &json!({"parent": "layout", "tag":k, "posts": v}),
+            )?;
         }
 
         Ok(())
@@ -83,7 +98,6 @@ impl Blogger {
             let entry_path = entry.unwrap().path();
             if entry_path.is_file() {
                 let file_name = entry_path.file_name().unwrap();
-                dbg!(&file_name);
                 if !exclude.contains(&file_name.to_str().unwrap().to_string()) {
                     let (header, contents) = self.parse_content(&entry_path);
                     let file_stem = entry_path.file_stem().unwrap();
@@ -118,6 +132,21 @@ impl Blogger {
 
     fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
         let mut n_f = self.dest_dir.join(template_name);
+        n_f.set_extension("html");
+
+        let file = File::create(n_f).unwrap();
+        self.hbs.render_to_write(template_name, data, file)?;
+
+        Ok(())
+    }
+
+    fn render_tags(
+        &self,
+        parent_path: String,
+        template_name: &str,
+        data: &Value,
+    ) -> Result<(), RenderError> {
+        let mut n_f = self.dest_dir.join(parent_path);
         n_f.set_extension("html");
 
         let file = File::create(n_f).unwrap();

@@ -2,13 +2,14 @@
 <div class="page-content">
 	<div class="wrapper">
 		<div>
+			<header class="post-header">
+				<h2 class="post-title">{{tag}}</h2>
+			</header>
 			<ul class="post-list">
 				{{#each posts}}
 				<li>
 					<span class="post-meta">{{created_date_time}}</span>
 					<h2><a class="post-link" href="{{dir}}/{{file_name}}.html">{{title}}</a></h2>
-					{{#each tags as |tag|}}<span class="post-tag"><a
-							href="/tags/{{tag}}.html">{{tag}}</a></span>{{/each}}
 				</li>
 				{{/each}}
 			</ul>

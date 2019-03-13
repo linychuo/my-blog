@@ -1,6 +1,7 @@
 ---
 title: "Best Practices on how to work with collections in javascript"
 date_time: 2018-05-19 15:14:32
+tags: javascript collection
 ---
 
 # Motivation
