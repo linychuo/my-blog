@@ -1,4 +1,5 @@
 use std::fs::{self, File};
+use std::io;
 use std::path::{Path, PathBuf};
 
 use crate::post::{Header, Post};
@@ -20,22 +21,22 @@ impl Blogger {
         let mut hbs = Handlebars::new();
         hbs.set_strict_mode(true);
         hbs.register_templates_directory(".hbs", Path::new(template_dir))
-            .unwrap();
-        fs::create_dir_all(&dest_dir).unwrap();
+            .expect("register dir of templates failed");
+        fs::create_dir_all(&dest_dir).expect("create dest dir failed");
 
         Blogger {
             dest_dir: PathBuf::from(dest_dir),
             posts_dir: PathBuf::from(posts_dir),
             hbs,
             comrak_options: ComrakOptions {
-                ext_header_ids: Some(String::new()),
+                ext_header_ids: Some("".to_string()),
                 ..ComrakOptions::default()
             },
         }
     }
 
     pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
-        let mut all_posts = self.load_posts(exclude);
+        let mut all_posts = self.load_posts(exclude)?;
         all_posts.sort_by_key(|post| post.created_date_time.clone());
         all_posts.reverse();
 
@@ -70,7 +71,8 @@ impl Blogger {
     pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
         let new_path = Path::new(file_path);
         let dest_file_name = new_path.file_stem().unwrap().to_str().unwrap();
-        let f_path = self.posts_dir.join(file_path);
+        let mut f_path = self.posts_dir.join(file_path);
+        f_path.set_extension("markdown");
         let (_, contents) = self.parse_content(&f_path);
         self.render_other(
             dest_file_name,
@@ -97,26 +99,25 @@ impl Blogger {
         }
     }
 
-    fn load_posts(&self, exclude: &[String]) -> Vec<Post> {
+    fn load_posts(&self, exclude: &[String]) -> io::Result<Vec<Post>> {
         let mut all_posts: Vec<Post> = vec![];
-        for entry in fs::read_dir(&self.posts_dir).unwrap() {
-            let entry_path = entry.unwrap().path();
-            if entry_path.is_file() {
-                let file_name = entry_path.file_name().unwrap();
-                if !exclude.contains(&file_name.to_str().unwrap().to_string()) {
+        for entry in fs::read_dir(&self.posts_dir)? {
+            let entry_path = entry?.path();
+            let entry_ext = match entry_path.extension() {
+                Some(v) => v.to_str().unwrap().to_lowercase(),
+                _ => String::from(""),
+            };
+
+            if entry_path.is_file() && entry_ext == "markdown" {
+                let file_name = entry_path.file_stem().unwrap().to_str().unwrap();
+                if !exclude.contains(&file_name.to_string()) {
                     let (header, contents) = self.parse_content(&entry_path);
-                    let file_stem = entry_path.file_stem().unwrap();
-                    all_posts.push(Post::new(
-                        self.dest_dir.to_str().unwrap(),
-                        header,
-                        file_stem.to_str().unwrap(),
-                        contents,
-                    ));
+                    all_posts.push(Post::new(&self.dest_dir, header, file_name, contents));
                 }
             }
         }
 
-        all_posts
+        Ok(all_posts)
     }
 
     fn parse_content(&self, entry_path: &PathBuf) -> (Header, String) {

@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
@@ -9,7 +9,7 @@ use serde_json::json;
 pub struct Post {
     title: String,
     pub created_date_time: String,
-    parent_dir: String,
+    parent_dir: PathBuf,
     pub dir: String,
     file_name: String,
     contents: String,
@@ -30,7 +30,7 @@ pub struct Header {
 }
 
 impl Post {
-    pub fn new(parent_dir: &str, header: Header, file_name: &str, contents: String) -> Post {
+    pub fn new(parent_dir: &Path, header: Header, file_name: &str, contents: String) -> Post {
         let mut split = header.date_time.split_whitespace();
         let date = split.next().unwrap();
         let v: Vec<&str> = date.split('-').collect();
@@ -38,7 +38,7 @@ impl Post {
         Post {
             title: header.title,
             created_date_time: header.date_time.to_string(),
-            parent_dir: parent_dir.to_string(),
+            parent_dir: parent_dir.to_path_buf(),
             dir: format!("/{}/{}/{}", v[0], v[1], v[2]),
             file_name: file_name.to_string(),
             contents,
@@ -51,10 +51,10 @@ impl Post {
     }
 
     pub fn render(&self, hbs: &Handlebars) -> Result<(), RenderError> {
-        let full_path = format!("{}{}", self.parent_dir, self.dir);
-        fs::create_dir_all(&full_path).unwrap();
+        let file_dir = self.parent_dir.join(&self.dir);
+        fs::create_dir_all(&file_dir).unwrap();
 
-        let mut new_f = PathBuf::from(full_path).join(&self.file_name);
+        let mut new_f = file_dir.join(&self.file_name);
         new_f.set_extension("html");
         let file = File::create(new_f).unwrap();
         hbs.render_to_write(

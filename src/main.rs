@@ -1,36 +1,36 @@
 use crate::blogger::Blogger;
-use serde_derive::Deserialize;
-use std::fs;
 use std::path::PathBuf;
-use toml;
+use structopt::StructOpt;
 
 mod blogger;
 mod post;
 
-#[derive(Deserialize, Debug)]
-struct Config {
+#[derive(Debug, StructOpt)]
+struct Cli {
+    #[structopt(default_value = "./posts")]
     posts_dir: String,
+    #[structopt(default_value = "./static")]
     static_files_dir: String,
+    #[structopt(default_value = "./templates")]
     templates_dir: String,
+    #[structopt(default_value = "./build")]
     build_dir: String,
+    #[structopt(default_value = "about")]
     excludes: Vec<String>,
 }
 
 fn main() {
-    let config_content = fs::read_to_string("config.toml").unwrap();
-    let config: Config = toml::from_str(config_content.as_str()).unwrap();
-    dbg!(&config);
+    let args = Cli::from_args();
+    let blog = Blogger::new(&args.build_dir, &args.posts_dir, &args.templates_dir);
 
-    let blog = Blogger::new(&config.build_dir, &config.posts_dir, &config.templates_dir);
-
-    blog.render_posts(&config.excludes)
+    blog.render_posts(&args.excludes)
         .expect("render all posts failed!");
-    for it in config.excludes {
+    for it in args.excludes {
         blog.render(it.as_str()).expect("render about file failed!");
     }
 
     Blogger::copy_static_files(
-        PathBuf::from(&config.static_files_dir),
-        PathBuf::from(&config.build_dir),
+        PathBuf::from(&args.static_files_dir),
+        PathBuf::from(&args.build_dir),
     );
 }

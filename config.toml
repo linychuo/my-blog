@@ -1,5 +1,0 @@
-posts_dir = "./posts"
-static_files_dir = "./static"
-templates_dir = "./templates"
-build_dir = "./build"
-excludes = ["about.markdown"]
