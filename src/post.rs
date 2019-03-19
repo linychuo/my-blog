@@ -82,7 +82,12 @@ fn test_new_post() {
         date_time: String::from("2019-2-25"),
         tags: String::from("hello world"),
     };
-    let post = Post::new(Path::new("a"), header, "ssssss", String::from("sss"));
+    let post = Post::new(
+        Path::new("a"),
+        header,
+        String::from("ssssss"),
+        String::from("sss"),
+    );
     assert_eq!("test", post.title);
     assert_eq!("world", post.tags[1]);
 }
