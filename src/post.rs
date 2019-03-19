@@ -16,12 +16,6 @@ pub struct Post {
     pub tags: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Tag {
-    name: String,
-    url: String,
-}
-
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Header {
     title: String,

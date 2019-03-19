@@ -12,7 +12,7 @@ This project was built rust language, rust has lots of features. no gc, no runti
 ## Code structure
 - src
     - [main.rs](./src/main.rs)
-    <br/>programming entrance, it parses **[config.toml](./config.toml)** and generate html files, copy static files, this configuration file has five constants
+    <br/>programming entrance, it parses params from command line and generate html files, copy static files, this comnand line must be contained five constants
         - posts_dir: path name for original content of each post
         - static_files_dir: path name for static files
         - templates_dir: path name for template files
