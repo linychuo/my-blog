@@ -105,19 +105,17 @@ impl Blogger {
             let entry_path = entry?.path();
             let entry_ext = match entry_path.extension() {
                 Some(v) => v.to_str().unwrap().to_lowercase(),
-                _ => String::from(""),
+                _ => String::new(),
             };
 
             let entry_name = match entry_path.file_stem() {
-                Some(v) => v.to_str().unwrap(),
-                _ => "",
+                Some(v) => v.to_str().unwrap().to_string(),
+                _ => String::new(),
             };
 
-            if entry_path.is_file() && entry_ext == "markdown" {
-                if !exclude.contains(&entry_name.to_string()) {
-                    let (header, contents) = self.parse_content(&entry_path);
-                    all_posts.push(Post::new(&self.dest_dir, header, entry_name, contents));
-                }
+            if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
+                let (header, contents) = self.parse_content(&entry_path);
+                all_posts.push(Post::new(&self.dest_dir, header, entry_name, contents));
             }
         }
 

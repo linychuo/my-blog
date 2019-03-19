@@ -24,7 +24,7 @@ pub struct Header {
 }
 
 impl Post {
-    pub fn new(parent_dir: &Path, header: Header, file_name: &str, contents: String) -> Post {
+    pub fn new(parent_dir: &Path, header: Header, file_name: String, contents: String) -> Post {
         let mut split = header.date_time.split_whitespace();
         let date = split.next().unwrap();
         let v: Vec<&str> = date.split('-').collect();
@@ -34,7 +34,7 @@ impl Post {
             created_date_time: header.date_time.to_string(),
             parent_dir: parent_dir.to_path_buf(),
             dir: format!("{}/{}/{}", v[0], v[1], v[2]),
-            file_name: file_name.to_string(),
+            file_name: file_name,
             contents,
             tags: header
                 .tags
