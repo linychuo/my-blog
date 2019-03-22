@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 use crate::post::{Header, Post};
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
+use serde_derive::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 
@@ -15,6 +16,15 @@ pub struct Blogger {
     hbs: Handlebars,
     comrak_options: ComrakOptions,
 }
+
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct TagPost {
+    pub title: String,
+    pub url: String,
+    pub created_date_time: String,
+}
+
+type Tags = HashMap<String, Vec<TagPost>>;
 
 impl Blogger {
     pub fn new(dest_dir: &str, posts_dir: &str, template_dir: &str) -> Blogger {
@@ -36,27 +46,20 @@ impl Blogger {
     }
 
     pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
-        let mut all_posts = self.load_posts(exclude)?;
+        let (mut all_posts, tags) = self.load_posts(exclude)?;
         all_posts.sort_by_key(|post| post.created_date_time.clone());
         all_posts.reverse();
         self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
 
-        let mut post_by_tag: HashMap<String, Vec<Post>> = HashMap::new();
         for item in all_posts {
-            for tag in &item.tags {
-                if !post_by_tag.contains_key(tag) {
-                    post_by_tag.insert(tag.to_string(), vec![]);
-                }
-                post_by_tag.get_mut(tag).unwrap().push(item.clone());
-            }
             item.render(&self.hbs)?;
         }
+
         let tags_dir = self.dest_dir.join("tags");
         if !tags_dir.exists() {
             fs::create_dir(tags_dir)?;
         }
-
-        for (k, v) in &post_by_tag {
+        for (k, v) in tags {
             self.render_tags(
                 format!("tags/{}", k),
                 "tags",
@@ -98,8 +101,9 @@ impl Blogger {
         }
     }
 
-    fn load_posts(&self, exclude: &[String]) -> io::Result<Vec<Post>> {
+    fn load_posts(&self, exclude: &[String]) -> io::Result<(Vec<Post>, Tags)> {
         let mut all_posts: Vec<Post> = vec![];
+        let mut tags: Tags = HashMap::new();
         for entry in fs::read_dir(&self.posts_dir)? {
             let entry_path = entry?.path();
             let entry_ext = match entry_path.extension() {
@@ -114,11 +118,21 @@ impl Blogger {
 
             if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
                 let (header, contents) = self.parse_content(&entry_path);
-                all_posts.push(Post::new(&self.dest_dir, header, entry_name, contents));
+                let post = Post::new(&self.dest_dir, &header, entry_name, contents);
+                for tag in &header.build_tags() {
+                    tags.entry(tag.to_string())
+                        .or_insert_with(|| vec![])
+                        .push(TagPost {
+                            title: header.title.clone(),
+                            created_date_time: header.date_time.clone(),
+                            url: format!("/{}/{}.html", post.dir.clone(), post.file_name.clone()),
+                        });
+                }
+                all_posts.push(post);
             }
         }
 
-        Ok(all_posts)
+        Ok((all_posts, tags))
     }
 
     fn parse_content(&self, entry_path: &PathBuf) -> (Header, String) {

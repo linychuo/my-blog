@@ -11,15 +11,15 @@ pub struct Post {
     pub created_date_time: String,
     parent_dir: PathBuf,
     pub dir: String,
-    file_name: String,
+    pub file_name: String,
     contents: String,
     pub tags: Vec<String>,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
 pub struct Header {
-    title: String,
-    date_time: String,
+    pub title: String,
+    pub date_time: String,
     tags: String,
 }
 
@@ -39,7 +39,7 @@ impl Header {
 }
 
 impl Post {
-    pub fn new(parent_dir: &Path, header: Header, file_name: String, contents: String) -> Post {
+    pub fn new(parent_dir: &Path, header: &Header, file_name: String, contents: String) -> Post {
         Post {
             title: header.title.clone(),
             created_date_time: header.date_time.clone(),
@@ -91,7 +91,7 @@ fn test_new_post() {
     };
     let post = Post::new(
         Path::new("a"),
-        header,
+        &header,
         String::from("ssssss"),
         String::from("sss"),
     );
