@@ -5,7 +5,7 @@ use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Post {
     title: String,
     pub created_date_time: String,
@@ -16,7 +16,7 @@ pub struct Post {
     pub tags: Vec<String>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Header {
     pub title: String,
     pub date_time: String,
