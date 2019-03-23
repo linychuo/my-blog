@@ -72,7 +72,10 @@ impl Blogger {
 
     pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
         let new_path = Path::new(file_path);
-        let dest_file_name = new_path.file_stem().unwrap().to_str().unwrap();
+        let dest_file_name = match new_path.file_stem() {
+            Some(v) => v.to_str().unwrap(),
+            _ => "",
+        };
         let mut f_path = self.posts_dir.join(file_path);
         f_path.set_extension("markdown");
         let (_, contents) = self.parse_content(&f_path);
@@ -108,12 +111,12 @@ impl Blogger {
             let entry_path = entry?.path();
             let entry_ext = match entry_path.extension() {
                 Some(v) => v.to_str().unwrap().to_lowercase(),
-                _ => String::new(),
+                _ => "".to_string(),
             };
 
             let entry_name = match entry_path.file_stem() {
                 Some(v) => v.to_str().unwrap().to_string(),
-                _ => String::new(),
+                _ => "".to_string(),
             };
 
             if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
@@ -155,7 +158,7 @@ impl Blogger {
         let mut n_f = self.dest_dir.join(template_name);
         n_f.set_extension("html");
 
-        let file = File::create(n_f).unwrap();
+        let file = File::create(n_f)?;
         self.hbs.render_to_write(template_name, data, file)?;
 
         Ok(())
@@ -170,7 +173,7 @@ impl Blogger {
         let mut n_f = self.dest_dir.join(parent_path);
         n_f.set_extension("html");
 
-        let file = File::create(n_f).unwrap();
+        let file = File::create(n_f)?;
         self.hbs.render_to_write(template_name, data, file)?;
 
         Ok(())
