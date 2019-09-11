@@ -43,8 +43,6 @@ I did not see a simple solution to these issues. Sure some things can be done, b
 Note that these bugs normally don't exist when you really want to track someone because then you don't intend to show users that they are being tracked.
 
 ### Source code
-What's a project without source code? Oh right, Microsoft Windows.
-
 [https://github.com/lucb1e/cookielesscookies](https://github.com/lucb1e/cookielesscookies)
 
 ## What can we do to stop it?
@@ -60,6 +58,6 @@ The Firefox add-on Self-Destructing Cookies has the ability to empty your cache 
 
 I'm not aware of any add-on that periodically removes your cache (e.g. once per 72 hours), but there might be. This would be another good alternative for 99% of the users because it has a relatively low performance impact while still limiting the tracking capabilities.
 
-**Update**: I've heard the Firefox add-on SecretAgent also does ETag overwriting to prevent this kind of tracking method. You can whitelist websites to re-enable caching there while blocking tracking by other domains. It has been confirmed that this add-on stops the tracking. SecretAgent's website.
+**Update**: I've heard the Firefox add-on SecretAgent also does ETag overwriting to prevent this kind of tracking method. You can whitelist websites to re-enable caching there while blocking tracking by other domains. It has been [confirmed](https://nodpi.org/forum/index.php/topic,4418.msg51737.html#msg51737) that this add-on stops the tracking. [SecretAgent's website](https://www.dephormation.org.uk/index.php?page=81).
 
 [Origin Links of this article](http://lucb1e.com/rp/cookielesscookies/)
