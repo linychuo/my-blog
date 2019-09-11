@@ -1,7 +1,7 @@
 ---
 title: "Cookieless cookies"
 date_time: 2019-09-11 20:43:30
-tags: Cookieless cookies
+tags: cookies
 ---
 
 # Cookieless cookies
