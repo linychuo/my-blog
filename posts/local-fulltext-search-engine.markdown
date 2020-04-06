@@ -1,5 +1,5 @@
 ---
-title: " Local Fulltext Search Engine"
+title: "Local Fulltext Search Engine"
 date_time: 2018-01-06 22:07:32
 tags: lucene kotlin
 ---
