@@ -6,7 +6,7 @@ tags: microservice
 
 单体应用可能是很多人刚接触软件开发时所最常用到的开发模式了，现在大部分的企业或应用都还是采用此种开发模式，单体应用有着庞大的体量，用来支撑不同的客户端，例如桌面浏览器，移动应用或移动端浏览器，同时还有可能要暴露一些API给第三方的应用来使用，也有可能通过消息中间件来和其它应用集成，整个应用还要处理复杂的业务逻辑，访问数据库等等，总的来说，就是功能复杂，难以扩展和维护。
 
-![DecomposingApplications.011.jpg](./imgs/DecomposingApplications.011.jpg)
+![DecomposingApplications.011.jpg](/imgs/DecomposingApplications.011.jpg)
 
 但是单体应用也带来很多的好处
 - 容易开发

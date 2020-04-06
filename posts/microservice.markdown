@@ -26,7 +26,7 @@ tags: microservice
 
 微服务架构可以让团队快速，频繁可信的交付大型且复杂的应用程序，各服务可独立使用不同的技术栈来开发部署应用程序
 
-![Microservice_Architecture.png](./imgs/Microservice_Architecture.png)
+![Microservice_Architecture.png](/imgs/Microservice_Architecture.png)
 
 
 # 数据管理
