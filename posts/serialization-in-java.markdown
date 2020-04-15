@@ -21,6 +21,7 @@ private void readObject(java.io.ObjectInputStream in) throws IOException, ClassN
 
 ## 实际应用场景
 ![serialization-5.jpg](/imgs/serialization-5.jpg)
+通过对象需要网络传输时，这里网络传输，泛指RPC调用或消息处理，一般需要把对象序列化，然后接收端再反序列化
 
 ### 要记住的知识点
 1. 如果父类已经实现了Serializable接口，那么子类就不需要实现了
@@ -30,4 +31,7 @@ private void readObject(java.io.ObjectInputStream in) throws IOException, ClassN
 
 ## SerialVersionUID
 - 序列化运行时会为每一个实现了序列化接口的类附加一个版本号 ，叫做**SerialVersionUID**，它是用来在反序列化时，校验发送者和序列化对象的接收者加载的class是否和序列化时是一致的，如果接收者通过序列化的对象来重建一个对象时，发现这个版本和发送者的不一致，那么反序列化将会抛出**InvalidClassException**，通常每个序列化类要显示的定义这个字段， 它必须是static, final且类型一定是long
-- 尽管jvm会在运行时动态为每个实现了**Serializable**接口的类生成一个**SerialVersionUID**，但是还是推荐大家显示定义一个这样的字段，为什么这么说呢，因为默认的verionId太过于依赖于编译器的实现，因此可能会在反序列化产生一些未预期的问题，为了保证跨不同编译器实现的版本号值的一致性，强烈推荐大家显示的定义这个字段并赋值，同时将这个字段设置为**private**
+- 尽管jvm会在运行时动态为每个实现了**Serializable**接口的类生成一个**SerialVersionUID**，但是还是推荐大家显示定义一个这样的字段，为什么这么说呢，因为默认的versionId太过于依赖于编译器的实现，因此可能会在反序列化产生一些未预期的问题，为了保证跨不同编译器实现的版本号值的一致性，强烈推荐大家显式的定义这个字段并赋值，同时将这个字段设置为**private**
+
+## 通用的序列化库
+[FlatBuffer](https://google.github.io/flatbuffers/)
