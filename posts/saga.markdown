@@ -9,8 +9,8 @@ tags: microservice saga
 ### 那么问题来了，该怎么来维护跨服务的数据一致性呢？？
 
 首先提到一个概念2PC（Two-Phase Commit: 两阶段提交），关于这个概念在这这里不做深究，给大家分享几篇关于这个概念的文章：
-- https://docs.microsoft.com/en-us/host-integration-server/core/two-phase-commit2
-- https://docs.oracle.com/cd/B28359_01/server.111/b28310/ds_txns003.htm#ADMIN12222
+- <a href="https://docs.microsoft.com/en-us/host-integration-server/core/two-phase-commit2" target="_blank">https://docs.microsoft.com/en-us/host-integration-server/core/two-phase-commit2</a>
+- <a href="https://docs.oracle.com/cd/B28359_01/server.111/b28310/ds_txns003.htm#ADMIN12222" targe="_blank">https://docs.oracle.com/cd/B28359_01/server.111/b28310/ds_txns003.htm#ADMIN12222</a>
 
 ### 解决方案
 为每个业务服务实现一个本地事务管理器，它会横跨多个业务服务，这就是一个Saga。一个Saga就是一组本地事务的序列。每个本地事务会在更新数据库时发布消息或触发事件去告知这个Saga里其它的本地事务，如果其中一个业务服务的本地事务失败，那么Saga会通过执行一系列的补偿措施例如回滚之前的本地事务的操作来达到数据的一致性
