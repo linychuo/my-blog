@@ -23,10 +23,8 @@ tags: microservice
 - 一个团队一个服务
 
 # 数据管理
-
-# Saga
-
-# Database per Service
+- Database per Service
+- [Saga](/2020/04/20/saga.html)
 
 # Materialized View pattern
 
