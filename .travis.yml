@@ -5,7 +5,7 @@ script:
   - cargo run
 
 before_deploy:
-  - echo "blog-github.linychuo.workers.dev" > ./build/CNAME
+  - echo "yongchao.li" > ./build/CNAME
 
 deploy:
   provider: pages
