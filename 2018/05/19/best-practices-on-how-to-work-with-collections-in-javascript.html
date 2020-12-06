@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Yongchao's Blog</title>
+	<link href="/styles/main.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet"
+		  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/atom-one-dark.min.css">
+	<link rel="shortcut icon" href="/imgs/favicon.ico">
+</head>
+<body>
+<div>
+	<header class="header">
+	<div class="wrapper">
+		<a class="title" href="/">Yongchao Li</a>
+		<nav class="nav">
+			<a href="#" class="menu_icon">
+				<svg viewBox="0 0 18 15">
+					<path fill="#424242"
+						  d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+					<path fill="#424242"
+						  d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+					<path fill="#424242"
+						  d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+				</svg>
+			</a>
+			<div class="trigger">
+				<a href="/about.html" class="page_link">About</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<div class="page-content">
+	<div class="wrapper">
+		<div class="post">
+			<header class="post-header">
+				<h1 class="post-title">Best Practices on how to work with collections in javascript</h1>
+				<p class="post-meta">2018-05-19 15:14:32</p>
+				<span class="post-tag"><a
+						href="/tags/javascript.html">javascript</a></span><span class="post-tag"><a
+						href="/tags/collection.html">collection</a></span>
+		</div>
+		</header>
+		<article class="post-content">
+			<div class="markup"><h1><a href="#motivation" aria-hidden="true" class="anchor" id="motivation"></a>Motivation</h1>
+<p>Why some projects are clean, easy-to-read, and performant, while others a convoluted mess? Why, when making a modification, in some codebases everything falls into place immediately, while in others it’s more like walking on a minefield?</p>
+<p>Writing clean code is mostly about restricting yourself from cutting corners and thus enforcing guarantees. The freedom to approach the problems from many different directions brings the responsibility not only to make the code run and do so in a performant manner but also to make it maintainable in the long run.</p>
+<p>This list is a compilation of best practices to follow and antipatterns to avoid in order to lower the long-time cost of code involving collections. They are mostly based on principles originating from functional programming, so if you have the same background, you might find them familiar or even trivial.</p>
+<p>A deeper understanding of how collections work helped me transition from producing code that takes more time to understand than to write, to one that is easy-to-read. I hope this compilation helps you do the same.</p>
+<h2><a href="#do-break-functions-into-smaller-parts" aria-hidden="true" class="anchor" id="do-break-functions-into-smaller-parts"></a>Do: break functions into smaller parts</h2>
+<p>A common mistake is to write functions that do many things:</p>
+<pre><code class="language-javascript">// a user is {name: string, active: boolean, score: number}
+
+users.filter(({active, score}) =&gt;
+	active &amp;&amp; score &gt; 0.5
+)
+</code></pre>
+<p>Instead, break them into smaller parts, each responsible for one part of the logic:</p>
+<pre><code class="language-javascript">users
+	.filter(({active}) =&gt;
+		active
+	)
+	.filter(({score}) =&gt;
+		score &gt; 0.5
+	)
+</code></pre>
+<p>(To learn how to use these functions, <a href="https://advancedweb.hu/2018/02/08/array_extras_course/">click here</a>)</p>
+<h2><a href="#dont:-modify-the-arguments" aria-hidden="true" class="anchor" id="dont:-modify-the-arguments"></a>Don’t: modify the arguments</h2>
+<p>Modifying the elements of the collection seems like an optimization, as you need one less iteration. But doing so offsets the <strong>WTFs/minute</strong> code quality indicator in the wrong direction.</p>
+<p>Don’t modify the elements in the iteratee:</p>
+<pre><code class="language-javascript">users.filter((user) =&gt; {
+	if (user.score &lt; 0.7) {
+		user.lowrated = true;
+	}
+	return user.score &gt; 0.5;
+})
+
+// users array is modified
+</code></pre>
+<p>Instead, do a map and copy the object:</p>
+<pre><code class="language-javascript">users
+	.filter(({score}) =&gt;
+		score &gt; 0.5
+	)
+	.map((user) =&gt;
+		Object.assign({}, user, user.score &lt; 0.7 ? {lowrated: true} : {})
+	)
+</code></pre>
+<p>Treat the input data as immutable. Processing should not change it in any way.</p>
+<p>As a speedup, you can use a collection implementation that embraces immutability. With structural sharing, they can offer better performance than simple copying.</p>
+<h2><a href="#do-use-object/array-destructuring" aria-hidden="true" class="anchor" id="do-use-object/array-destructuring"></a>Do: use object/array destructuring</h2>
+<p>When you need only a subset of the parameter objects, use destructuring.</p>
+<p>Instead of:</p>
+<pre><code class="language-javascript">.filter((user) =&gt;
+	user.active
+)
+</code></pre>
+<p>use:</p>
+<pre><code class="language-javascript">.filter(({active}) =&gt;
+	active
+)
+</code></pre>
+<p>Object destructuring only works with objects. There is a <a href="https://github.com/vacuumlabs/es-proposals/blob/master/extensible-destructuring.md">proposal</a> to add support to arbitrary structures, but unfortunately, it had not gained traction.</p>
+<p>Iterables, on the other hand, are fully supported. As a result, you can destructure not only Arrays, but for example, ImmutableJs Lists, generator functions, and custom types.</p>
+<h2><a href="#dont:-rely-on-state" aria-hidden="true" class="anchor" id="dont:-rely-on-state"></a>Don’t: rely on state</h2>
+<p>The iteratee should not modify anything and should use as little data bar its parameters as possible.</p>
+<p>Instead of writing a state like this:</p>
+<pre><code class="language-javascript">let maxscore = 0;
+users.filter(({score}) =&gt; {
+	maxscore = Math.max(maxscore, score);
+	return score &gt; 0.5;
+})
+</code></pre>
+<p>Use a different structure that doesn’t rely on it:</p>
+<pre><code class="language-javascript">const maxscore = users.reduce(
+	(maxscore, {score}) =&gt;
+		Math.max(maxscore, score),
+	0
+);
+</code></pre>
+<p>(To learn how to use constants and make your code more readable, <a href="https://advancedweb.hu/2016/05/17/more-readable-js-without-vars/">click here</a>)</p>
+<h2><a href="#dont:-rely-on-the-ordering-of-filter-and-map" aria-hidden="true" class="anchor" id="dont:-rely-on-the-ordering-of-filter-and-map"></a>Don’t: rely on the ordering of filter and map</h2>
+<p>While Javascript’s basic functions process the elements in the order they are present in the array, your code should not depend on this behavior. The iteration order is not necessarily stable in every library and definitely not in every language. Treat every iteratee function as if they are run in multiple processes concurrently, and that will set your thinking that works no matter what technology you’ll use in the future.</p>
+<p>Instead of:</p>
+<pre><code class="language-javascript">let index = 0;
+users.map(({name}) =&gt;
+	name + (index++ === 0 ? &quot; First user!&quot;: &quot;&quot;)
+)
+</code></pre>
+<p>Use the index argument most of the functions get:</p>
+<pre><code class="language-javascript">users.map(({name}, index) =&gt;
+	name + (index === 0 ? &quot; First user!&quot;: &quot;&quot;)
+)
+</code></pre>
+<h2><a href="#do-use-the-array-parameter-instead-of-the-closed-array" aria-hidden="true" class="anchor" id="do-use-the-array-parameter-instead-of-the-closed-array"></a>Do: use the array parameter instead of the closed array</h2>
+<p>The closed array is usually accessible in the iteratee function but use the parameter instead.</p>
+<p>Don’t do this to make a collection of points into a circle:</p>
+<pre><code class="language-javascript">// points are {x: number, y: number}
+
+points
+	.map((point, index) =&gt;
+		[point, points[(index + 1) % points.length]]
+    )
+</code></pre>
+<p>Do this instead:</p>
+<pre><code class="language-javascript">points
+	.map((point, index, array) =&gt;
+		[point, array[(index + 1) % array.length]]
+    )
+</code></pre>
+<p>This practice makes the code more portable. The less of the environment the functions are using, the better.</p>
+<h2><a href="#dont:-optimize-prematurely" aria-hidden="true" class="anchor" id="dont:-optimize-prematurely"></a>Don’t: optimize prematurely</h2>
+<p>Optimization is usually a tradeoff between speed and readability. It’s tempting to focus on the former at the expense of the latter, but it’s usually a bad practice.</p>
+<p>Collections are usually smaller than you think they are, and the speed of the processing is usually faster. Unless you know something is slow, don’t make it faster. Clean but slow code is easier to speed up than a fast convoluted mess to maintain.</p>
+<p>Prefer readability, then measure. If the profiler shows a bottleneck, optimize only that bit.</p>
+<h2><a href="#dont:-use-streaming-processing-(only-when-you-know-you-need-it)" aria-hidden="true" class="anchor" id="dont:-use-streaming-processing-(only-when-you-know-you-need-it)"></a>Don’t: use streaming processing (only when you know you need it)</h2>
+<p>Streaming–or lazy–processing is when only the minimum amount of processing is done to produce each result element, instead of running the steps to completion before starting the next one.</p>
+<p>When you <strong>map</strong> an Array twice, all the elements are processed each time:</p>
+<pre><code class="language-javascript">[1, 2, 3]
+	.map((e) =&gt; {
+		console.log(`map1 ${e}`);
+		return e;
+	})
+	.map((e) =&gt; {
+		console.log(`map2 ${e}`);
+		return e;
+	})
+
+// map1 1
+// map1 2
+// map1 3
+// map2 1
+// map2 2
+// map2 3
+</code></pre>
+<p>Before the second <strong>map</strong> runs, all the elements had been processed by the preceding step.</p>
+<p>Contrast that with a streaming implementation, using ImmutableJs:</p>
+<pre><code class="language-javascript">Immutable.Seq([1, 2, 3])
+	.map((e) =&gt; {
+		console.log(`map1 ${e}`);
+		return e;
+	})
+	.map((e) =&gt; {
+		console.log(`map2 ${e}`);
+		return e;
+	})
+	.toArray()
+
+// map1 1
+// map2 1
+// map1 2
+// map2 2
+// map1 3
+// map2 3
+</code></pre>
+<p>Every element is processed completely before work on the next one starts.</p>
+<p>(To learn how to use ES6 generator functions, <a href="https://advancedweb.hu/2016/05/31/infinite-collections-with-es6-generators/">click here</a>)</p>
+<p>What seems like a performance boost and some savings in terms of memory, in practice, most of the time, the difference is negligible. On the other hand, you can easily end up with an infinite loop, more complex code, or even degrading performance.</p>
+<p>Unless you know the performance benefits, or you work with structures you otherwise can’t (for example, infinite ones), avoid streaming processing.</p>
+<p>(Want to know how to use generator functions with ImmutableJs? <a href="https://advancedweb.hu/2017/10/03/immutablejs_generators/">click here</a>)</p>
+<h2><a href="#do-use-the-array-functions-if-they-are-all-you-need" aria-hidden="true" class="anchor" id="do-use-the-array-functions-if-they-are-all-you-need"></a>Do: use the Array functions if they are all you need</h2>
+<p>Arrays have most of the basic processing functions. If all you need is a <strong>map</strong>, <strong>filter</strong>, <strong>reduce</strong>, or <strong>some</strong>, use them directly on the Array without any library or wrapper. If, in the future, you’ll need a function that is missing, you can refactor them easily.</p>
+<h2><a href="#do-use-an-extensible-pipeline-implementation" aria-hidden="true" class="anchor" id="do-use-an-extensible-pipeline-implementation"></a>Do: use an extensible pipeline implementation</h2>
+<p>In cases when you need to use a library of functions, opt for one that is extensible. It might not seem important the first time you want to use <strong>last</strong> or a similarly absent function, but later when you have complex steps, you’ll find it increasingly difficult to migrate to one.</p>
+<p>ImmutableJs’s <a href="https://facebook.github.io/immutable-js/docs/#/Collection/update">update</a> and <a href="https://github.com/lodash/lodash/wiki/FP-Guide">Lodash/FP</a> are my go-to choices.</p>
+<p>(To learn how Lodash/FP works, <a href="https://advancedweb.hu/2017/12/19/functional_composition/">click here</a>)</p>
+<h2><a href="#dont:-build-an-array-in-reduce" aria-hidden="true" class="anchor" id="dont:-build-an-array-in-reduce"></a>Don’t: build an Array in reduce</h2>
+<p><strong>reduce</strong> is the most versatile function used to process collections. It can emulate the others, as the return value can be anything.</p>
+<p>But that doesn’t mean you should use it when a more specialized function is available.</p>
+<p>While this code, using <strong>reduce</strong>:</p>
+<pre><code class="language-javascript">users
+	.reduce(
+		(acc, user) =&gt;
+			user.score &gt; 0.5 ?
+				[...acc, Object.assign({}, user, user.score &lt; 0.7 ?
+					{lowrated: true} :
+					{})
+				] :
+				acc,
+		[]
+    )
+</code></pre>
+<p>Is the same as this one, using a filter and a map:</p>
+<pre><code class="language-javascript">users
+	.filter(({score}) =&gt;
+		score &gt; 0.5
+	)
+	.map((user) =&gt;
+		Object.assign({}, user, user.score &lt; 0.7 ? {lowrated: true} : {})
+    )
+</code></pre>
+<p>The latter communicates the intention far better.</p>
+<p>As a rule of thumb, whenever you write a <strong>reduce</strong> that returns a collection instead of a value, consider whether a different function would be a better alternative. As usual, there are some exceptions, but using them usually results in more readable code.</p>
+<h2><a href="#do-use-a-flat-structure" aria-hidden="true" class="anchor" id="do-use-a-flat-structure"></a>Do: use a flat structure</h2>
+<p>A flat structure is when most of the code is on the same indentation level. Using collection pipelines, it is usually a feature you get for free:</p>
+<pre><code class="language-javascript">users
+	.map(...)
+	.filter(...)
+    .reduce(...)
+</code></pre>
+<p>In some cases, this flat structure is compromised:</p>
+<pre><code class="language-javascript">const processUsers = (users) =&gt; {...}
+const filterUsers = (users) =&gt; {...}
+
+filterUsers( // 3
+	processUsers(users) // 1
+		.map(...) // 2
+);
+</code></pre>
+<p>The flat structure is gone, and as a result, the order of operations is messed up. This should be a red flag that something is wrong.</p>
+<p>This is the scenario when using an extensible collection pipeline implementation pays off. Those support adding functions while retaining the structure. For example:</p>
+<pre><code class="language-javascript">Immutable.List(users)
+	.update(processUsers) // 1
+	.map(...) // 2
+    .update(filterUsers) // 3
+</code></pre>
+<p>As usual, there are exceptions. For example, when you need processing inside a processing step:</p>
+<pre><code class="language-javascript">users
+	.map((user) =&gt;
+		posts
+			.filter(...)
+			.map(...)
+			.reduce(...)
+	)
+    .filter(...)
+</code></pre>
+<p>In complex use cases, structures like this emerge. If you want, you can move the iteratees to separate functions:</p>
+<pre><code class="language-javascript">const postsForUsers = (user) =&gt;
+	posts
+		.filter(...)
+		.map(...)
+		.reduce(...)
+
+users
+	.map(postsForUsers)
+    .filter(...)
+</code></pre>
+<p>Whether you want to move complex steps to separate functions or not is a matter of preference and style. Some people prefer a lot of small functions with descriptive names, some argue that having everything in one place is better.</p>
+<p>As for myself, I prefer monoliths as long as I can understand the functionality without much difficulty. When all the functions follow a purely functional style, refactoring them is trivial.</p>
+<p>There is an exception though. If you need the same step in multiple places, move that to a separate function instead of copy-pasting.</p>
+<p>(To learn more about collection pipelines, <a href="https://advancedweb.hu/guides.html#collection_pipelines-ref">click here</a>)</p>
+<h2><a href="#do-provide-an-initial-value-for-reduce" aria-hidden="true" class="anchor" id="do-provide-an-initial-value-for-reduce"></a>Do: provide an initial value for reduce</h2>
+<p><strong>reduce</strong> has an optional second argument: the initial value. It seems like it is only useful when <strong>undefined</strong> is not suitable, but there is a critical difference. When an Array has no elements, <strong>reduce</strong> without an initial value does not return <strong>undefined</strong>, but throws an Error instead:</p>
+<pre><code class="language-javascript">[].reduce(() =&gt; {}) // TypeError: Reduce of empty array with no initial value
+</code></pre>
+<p>But with an initial value set, the result is that value:</p>
+<pre><code class="language-javascript">[].reduce(() =&gt; {}, 0) // 0
+</code></pre>
+<p>You should always supply an initial value for <strong>reduce</strong> if there is a sensible one.</p>
+<h2><a href="#do-use-the-shorter-form-of-arrow-functions" aria-hidden="true" class="anchor" id="do-use-the-shorter-form-of-arrow-functions"></a>Do: use the shorter form of arrow functions</h2>
+<p>Arrow functions have shorter forms, making them more suitable for one-liners. Instead of writing out the full structure:</p>
+<pre><code class="language-javascript">() =&gt; {
+	return ...
+}
+</code></pre>
+<p>If there is only a return statement, the block is optional:</p>
+<pre><code class="language-javascript">() =&gt; ...
+</code></pre>
+<p>For simple steps, prefer the latter. This usually makes them one-liners, and those are easier to scan.</p>
+<p>Instead of:</p>
+<pre><code class="language-javascript">array
+	.map((e) =&gt; {
+		return ...;
+	})
+	.filter((e) =&gt; {
+		return ...;
+    })
+</code></pre>
+<p>Use:</p>
+<pre><code class="language-javascript">array
+	.map((e) =&gt; ...)
+    .filter((e) =&gt; ...)
+</code></pre>
+<p>The parentheses around the parameters are also optional, making the construct even shorter.</p>
+<h2><a href="#do-reuse-parts-of-the-pipeline" aria-hidden="true" class="anchor" id="do-reuse-parts-of-the-pipeline"></a>Do: reuse parts of the pipeline</h2>
+<p>If you need a piece of functionality in several places, move that to a separate function and use that, don’t copy-paste.</p>
+<p>Instead of:</p>
+<pre><code class="language-javascript">const arr1 = users
+	.filter(({score}) =&gt; score &gt; 0.5)
+	.map(...)
+
+const arr2 = users
+	.filter(({score}) =&gt; score &gt; 0.5)
+    .map(...)
+</code></pre>
+<p>Do:</p>
+<pre><code class="language-javascript">const bySufficientScore = ({score}) =&gt; score &gt; 0.5;
+
+const arr1 = users
+	.filter(bySufficientScore)
+	.map(...)
+
+const arr2 = users
+	.filter(bySufficientScore)
+    .map(...)
+</code></pre>
+<p>For reusing complex steps (for example, <strong>filter</strong> + <strong>map</strong>), use a pipeline implementation that supports that.</p>
+<h2><a href="#do-know-the-complexity-of-the-operations" aria-hidden="true" class="anchor" id="do-know-the-complexity-of-the-operations"></a>Do: know the complexity of the operations</h2>
+<p>Knowing the algorithmic cost of each function helps estimate the overall complexity of the pipeline.</p>
+<p>A few commonly used functions:</p>
+<ul>
+<li><strong>map</strong>, <strong>filter</strong>: <strong>O(n)</strong></li>
+<li><strong>reduce</strong>: <strong>O(n)</strong>, but look out what you do in the iteratee function. If you build an array, it can easily be <strong>O(n^2)</strong></li>
+<li><strong>sort</strong>: <strong>O(n * log(n))</strong></li>
+<li><strong>some</strong> / <strong>every</strong>: <strong>O(n)</strong>, and they can short-circuit on the first <strong>true</strong> / <strong>false</strong>, respectively
+Generally, the complexities are added for subsequent steps and multiplied for nested ones.</li>
+</ul>
+<p>For a flat structure like this:</p>
+<pre><code class="language-javascript">array
+	.filter(...)
+	.map(...)
+    .filter(...)
+</code></pre>
+<p>The complexity is <strong>O(n + n + n)</strong>, which is still <strong>O(n)</strong>.</p>
+<p>For a nested structure:</p>
+<pre><code class="language-javascript">array
+	.map((e) =&gt; {
+		...
+		users.filter(...)
+		...
+		return ...
+    })
+</code></pre>
+<p>The complexity is <strong>O(n * n)</strong>.</p>
+<p>As a rule of thumb, having O(n) and O(n * log(n)) should be scalable, O(n^2) will only work for small arrays, anything bigger can easily be a bottleneck.</p>
+<h2><a href="#closing-remarks" aria-hidden="true" class="anchor" id="closing-remarks"></a>Closing remarks</h2>
+<p>Apart from a few general guidelines, best practices are the result of the environment too. If, for example, you work with memory-constrained embedded systems, your rules might be entirely different.</p>
+<p>Also, software craftsmanship is more of an art than exact science, and as such, everything you write has your distinctive style. But I believe if you have no well-defined reason not to, following the principles above will help you write better code.</p>
+<p>Is there anything you’d add? Let me know, and I’ll update this post.</p>
+<p><a href="https://advancedweb.hu/2018/03/13/dos_donts_collection_processing/">Origin Links</a></p>
+</div>
+		</article>
+	</div>
+</div>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<footer class="footer">
+	<div class="wrapper">
+		<div class="footer_col_wrapper">
+			<div class="footer_col footer_col_1">
+				<ul class="contact_list">
+					<li>Yongchao Li</li>
+					<li><a href="mailto:linychuo@gmail.com">linychuo@gmail.com</a></li>
+					<li><a href="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class="page_link">IPFS File</a>
+					</li>
+				</ul>
+			</div>
+			<div class="footer_col footer_col_2">
+				<ul class="social_media_list">
+					<li>
+						<a href="https://github.com/linychuo" alt="github">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/linychuo" alt="twitter">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809 c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+</div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
+</html>

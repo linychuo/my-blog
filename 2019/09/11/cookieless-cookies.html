@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Yongchao's Blog</title>
+	<link href="/styles/main.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet"
+		  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/atom-one-dark.min.css">
+	<link rel="shortcut icon" href="/imgs/favicon.ico">
+</head>
+<body>
+<div>
+	<header class="header">
+	<div class="wrapper">
+		<a class="title" href="/">Yongchao Li</a>
+		<nav class="nav">
+			<a href="#" class="menu_icon">
+				<svg viewBox="0 0 18 15">
+					<path fill="#424242"
+						  d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+					<path fill="#424242"
+						  d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+					<path fill="#424242"
+						  d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+				</svg>
+			</a>
+			<div class="trigger">
+				<a href="/about.html" class="page_link">About</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<div class="page-content">
+	<div class="wrapper">
+		<div class="post">
+			<header class="post-header">
+				<h1 class="post-title">Cookieless cookies</h1>
+				<p class="post-meta">2019-09-11 20:43:30</p>
+				<span class="post-tag"><a
+						href="/tags/cookies.html">cookies</a></span>
+		</div>
+		</header>
+		<article class="post-content">
+			<div class="markup"><h1><a href="#cookieless-cookies" aria-hidden="true" class="anchor" id="cookieless-cookies"></a>Cookieless cookies</h1>
+<p>There is another obscure way of tracking users without using cookies or even Javascript. It has <a href="http://en.wikipedia.org/wiki/HTTP_ETag#Tracking_using_ETags">already been used</a> by numerous websites but few people know of it. This page explains how it works and how to protect yourself.</p>
+<p>This tracking method works without needing to use:</p>
+<ul>
+<li>Cookies</li>
+<li>Javascript</li>
+<li>LocalStorage/SessionStorage/GlobalStorage</li>
+<li>Flash, Java or other plugins</li>
+<li>Your IP address or user agent string</li>
+<li>Any methods employed by <a href="https://panopticlick.eff.org/">Panopticlick</a>
+Instead it uses another type of storage that is persistent between browser restarts: <strong>caching</strong>.</li>
+</ul>
+<p>Even when you disabled cookies entirely, have Javascript turned off and use a VPN service, this technique will still be able to track you.</p>
+<!-- raw HTML omitted -->
+<h2><a href="#demonstration" aria-hidden="true" class="anchor" id="demonstration"></a><a href="http://lucb1e.com/rp/cookielesscookies/">Demonstration</a></h2>
+<h2><a href="#so-how-does-this-work" aria-hidden="true" class="anchor" id="so-how-does-this-work"></a>So how does this work?</h2>
+<p>This is a general overview:</p>
+<p><img src="/imgs/etags.jpg" alt="etags" /></p>
+<p>The ETag shown in the image is a sort of checksum. When the image changes, the checksum changes. So when the browser has the image and knows the checksum, it can send it to the webserver for verification. The webserver then checks whether the image has changed. If it hasn't, the image does not need to be retransmitted and lots of data is saved.</p>
+<p>Attentive readers might have noticed already how you can use this to track people: the browser sends the information back to the server that it previously received (the ETag). That sounds an awful lot like cookies, doesn't it? The server can simply give each browser an unique ETag, and when they connect again it can look it up in its database.</p>
+<p>Technical stuff (and bugs) specifically about this demo
+To demonstrate how this works without having to use Javascript, I had to find a piece of information that's relatively unique to you besides this ETag. The image is loaded after the page is loaded, but only the image contains the ETag. How can I display up to date info on the page? Turns out I can't really do that without dynamically updating the page, which requires javascript, which I wanted to avoid to show that it can be done without.</p>
+<p>This chicken and egg problem introduces a few bugs:</p>
+<ul>
+<li>All information you see was from your previous pageload. Press F5 to see updated data.</li>
+<li>When you visit a page where you don't have an ETag (like incognito mode), your session will be emptied. Again, this is only visible when you reload the page.</li>
+</ul>
+<p>I did not see a simple solution to these issues. Sure some things can be done, but nothing that other websites would use, and I wanted to keep the code as simple and as close to reality as possible.</p>
+<p>Note that these bugs normally don't exist when you really want to track someone because then you don't intend to show users that they are being tracked.</p>
+<h3><a href="#source-code" aria-hidden="true" class="anchor" id="source-code"></a>Source code</h3>
+<p><a href="https://github.com/lucb1e/cookielesscookies">https://github.com/lucb1e/cookielesscookies</a></p>
+<h2><a href="#what-can-we-do-to-stop-it" aria-hidden="true" class="anchor" id="what-can-we-do-to-stop-it"></a>What can we do to stop it?</h2>
+<p>One thing I would strongly recommend you to do anytime you visit a page where you want a little more security, is opening a private navigation window and using https exclusively. Doing this single-handedly eliminates attacks like BREACH (the latest https hack), disables any and all tracking cookies that you might have, and also eliminates cache tracking issues like I'm demonstrating on this page. I use this private navigation mode when I do online banking. In Firefox (and I think MSIE too) it's Ctrl+Shift+P, in Chrome it's Ctrl+Shift+N.</p>
+<p>Besides that, it depends on your level of paranoia.</p>
+<p>I currently have no straightforward answer since cache tracking is virtually undetectable, but also because caching itself is useful and saves people (including you) time and money. Website admins will consume less bandwidth (and if you think about it, in the end users are the ones that will have to pay the bill), your pages will load faster, and especially on mobile devices it makes a big difference if you don't have an unlimited 4G plan. It's even worse when you have a high-latency or low-bandwidth connection because you live in a rural area.</p>
+<p>If you're very paranoid, it's best to just disable caching altogether. This will stop any such tracking from happening, but I personally don't believe it's worth the downsides.</p>
+<p>The Firefox add-on Self-Destructing Cookies has the ability to empty your cache when you're not using your browser for a while. This might be an okay alternative to disabling caching; you can only be tracked during your visit, and they can already do that anyway by following which pages were visited by which IP address, so that's no big deal. Any later visits will appear as from a different user, assuming all other tracking methods have already been prevented.</p>
+<p>I'm not aware of any add-on that periodically removes your cache (e.g. once per 72 hours), but there might be. This would be another good alternative for 99% of the users because it has a relatively low performance impact while still limiting the tracking capabilities.</p>
+<p><strong>Update</strong>: I've heard the Firefox add-on SecretAgent also does ETag overwriting to prevent this kind of tracking method. You can whitelist websites to re-enable caching there while blocking tracking by other domains. It has been <a href="https://nodpi.org/forum/index.php/topic,4418.msg51737.html#msg51737">confirmed</a> that this add-on stops the tracking. <a href="https://www.dephormation.org.uk/index.php?page=81">SecretAgent's website</a>.</p>
+<p><a href="http://lucb1e.com/rp/cookielesscookies/">Origin Links of this article</a></p>
+</div>
+		</article>
+	</div>
+</div>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<footer class="footer">
+	<div class="wrapper">
+		<div class="footer_col_wrapper">
+			<div class="footer_col footer_col_1">
+				<ul class="contact_list">
+					<li>Yongchao Li</li>
+					<li><a href="mailto:linychuo@gmail.com">linychuo@gmail.com</a></li>
+					<li><a href="/ipfs/QmNobVgv1oC2peahE7uX1mUxositgzoJvwCtGed1gmjDSN" class="page_link">IPFS File</a>
+					</li>
+				</ul>
+			</div>
+			<div class="footer_col footer_col_2">
+				<ul class="social_media_list">
+					<li>
+						<a href="https://github.com/linychuo" alt="github">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/linychuo" alt="twitter">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809 c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+</div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
+</html>
