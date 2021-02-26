@@ -68,10 +68,10 @@ Java > Javascript  > Python  > Kotlin
 2003.9    –  2006.6    Computer Science, Broadcasting and TV University of Shannxi
 
 ### Personal blog
-https://yongchao.li
+[https://yongchao.li](https://yongchao.li)
 
 ### Github
-https://github.com/linychuo
+[https://github.com/linychuo](https://github.com/linychuo)
 
 ### LinkedIn
-http://cn.linkedin.com/pub/ivan-li/36/307/53/
+[https://linkedin.com/pub/ivan-li/36/307/53/](https://linkedin.com/pub/ivan-li/36/307/53/)
