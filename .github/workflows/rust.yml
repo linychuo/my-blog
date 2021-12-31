@@ -19,8 +19,8 @@ jobs:
     - name: Build
       run: cargo build --verbose
 
-    - name: deploy
+    - name: Deploy
       uses: JamesIves/github-pages-deploy-action@4.1.8
       with: 
         branch: gh-pages
-        folder: build
+        folder: ./build
