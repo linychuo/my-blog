@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Yongchao's Blog</title>
+	<link href="/styles/main.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet"
+		  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/atom-one-dark.min.css">
+	<link rel="shortcut icon" href="/imgs/favicon.ico">
+</head>
+<body>
+<div>
+	<header class="header">
+	<div class="wrapper">
+		<a class="title" href="/">Yongchao Li</a>
+		<nav class="nav">
+			<a href="#" class="menu_icon">
+				<svg viewBox="0 0 18 15">
+					<path fill="#424242"
+						  d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+					<path fill="#424242"
+						  d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+					<path fill="#424242"
+						  d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+				</svg>
+			</a>
+			<div class="trigger">
+				<a href="/about.html" class="page_link">About</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<div class="page-content">
+	<div class="wrapper">
+		<div class="post">
+			<header class="post-header">
+				<h1 class="post-title">Access-Control-Expose-Headers</h1>
+				<p class="post-meta">2022-1-14 08:20:32</p>
+				<span class="post-tag"><a
+						href="/tags/http.html">http</a></span>
+		</div>
+		</header>
+		<article class="post-content">
+			<div class="markup"><p>2021的年底，所在城市因为新一波的新冠疫情，大家被迫居家办公，虽然去不公司办公，但是依然不会影响日常工作，在过去的2021年，经历了很多，也成长了很多，不管是工作上还是人生，都在一步步的成长。</p>
+<p>好了，言归正传。说到HTTP协议，说实话工作这么多年，要说熟悉，那肯定熟悉，但是要说不熟悉，其实遇到这个问题后，才觉得自己其实一点都不熟悉。先说说遇到的问题吧：</p>
+<p>最近接到一个需求，需要自定义http header来暴露给前端，前端再将这个暴露的header在请求后台时带回给后端程序。很快前后端代码都完成了，可以开始测试时发现，前端的代码始终读不到这个自定义的header，打开浏览器的调试工具，发现Response headers里有我们自定义的这个header，但是代码就是读不到，本来以为是axios的Bug，去到此开源项目的issues也找到了有人提出了同样的问题，才发现http协议默认是不会把自定义的header暴露给前端的脚本或程序去使用，必须使用<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers"><strong>Access-Control-Expose-Headers</strong></a>将需要暴露的headers名字指定出现才可以使用，大概是这样</p>
+<pre><code>Access-Control-Expose-Headers: [&lt;header-name&gt;[, &lt;header-name&gt;]*]
+Access-Control-Expose-Headers: *
+</code></pre>
+<p>在这过程中查阅了相关文档，有提到3个概念<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header">CORS-safelisted response headers</a>，<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header">CORS-safelisted request header</a>和<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS">CORS</a></p>
+<h2><a href="#cors-safelisted-response-header" aria-hidden="true" class="anchor" id="cors-safelisted-response-header"></a>CORS-safelisted response header</h2>
+<p>A <a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header"><strong>CORS-safelisted response header</strong></a> is an HTTP header in a CORS response that it is considered safe to expose to client scripts. Only safelisted response headers are made available to web pages.</p>
+<p>By default, the safelist includes the following response headers:</p>
+<ul>
+<li>Cache-Control</li>
+<li>Content-Language</li>
+<li>Content-Length</li>
+<li>Content-Type</li>
+<li>Expires</li>
+<li>Last-Modified</li>
+<li>Pragma</li>
+</ul>
+<p>Additional headers can be added to the safelist using Access-Control-Expose-Headers.</p>
+<blockquote>
+<p>Note: <strong>Content-Length</strong> was not part of the original set of safelisted response headers</p>
+</blockquote>
+<h2><a href="#cors-safelisted-request-header" aria-hidden="true" class="anchor" id="cors-safelisted-request-header"></a>CORS-safelisted request header</h2>
+<p>A <a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header"><strong>CORS-safelisted request header</strong></a> is one of the following HTTP headers:</p>
+<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type</li>
+</ul>
+<p>When containing only these headers (and values that meet the additional requirements laid out below), a requests doesn't need to send a <a href="https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request">preflight</a> request in the context of CORS. 这里有有提到如果发送的request仅仅只包含以上的headers的话，浏览器是不会发送一个preflight的请求</p>
+<p>You can safelist more headers using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers"><strong>Access-Control-Allow-Headers</strong></a> header and also list the above headers there to circumvent the following additional restrictions:</p>
+<p>Additional restrictions
+CORS-safelisted headers must also fulfill the following requirements in order to be a CORS-safelisted request header:</p>
+<ul>
+<li>For Accept-Language and Content-Language: can only have values consisting of 0-9, A-Z, a-z, space or *,-.;=.</li>
+<li>For Accept and Content-Type: can't contain a CORS-unsafe request header byte: 0x00-0x1F (except for 0x09 (HT), which is allowed), &quot;():&lt;&gt;?@[]{}, and 0x7F (DEL).</li>
+<li>For Content-Type: needs to have a MIME type of its parsed value (ignoring parameters) of either application/x-www-form-urlencoded, multipart/form-data, or text/plain.</li>
+<li>For any header: the value’s length can't be greater than 128.</li>
+</ul>
+<h2><a href="#cors" aria-hidden="true" class="anchor" id="cors"></a>CORS</h2>
+<p>最后有说到一个CORS，翻译成中文叫跨源资源共享，既然有跨源，那么相对应就有同源，这里有个很重要的概念叫<a href="https://developer.mozilla.org/en-US/docs/Glossary/Origin">Origin</a>，这里可以详细的看一下什么是源</p>
+<p>Web content's origin is defined by the <strong>scheme</strong> (protocol), <strong>hostname</strong> (domain), and <strong>port</strong> of the URL used to access it. Two objects have the same origin only when the scheme, hostname, and port all match.</p>
+<p>Some operations are restricted to same-origin content, and this restriction can be lifted using CORS.</p>
+<h3><a href="#examples" aria-hidden="true" class="anchor" id="examples"></a>Examples</h3>
+<p>These are same origin because they have the same scheme (http) and hostname (example.com), and the different file path does not matter:</p>
+<pre><code>http://example.com/app1/index.html
+http://example.com/app2/index.html
+</code></pre>
+<p>These are same origin because a server delivers HTTP content through port 80 by default:</p>
+<pre><code>http://Example.com:80
+http://example.com
+</code></pre>
+<p>These are not same origin because they use different schemes:</p>
+<pre><code>http://example.com/app1
+https://example.com/app2
+</code></pre>
+<p>These are not same origin because they use different hostnames:</p>
+<pre><code>http://example.com
+http://www.example.com
+http://myapp.example.com
+</code></pre>
+<p>These are not same origin because they use different ports:</p>
+<pre><code>http://example.com
+http://example.com:8080
+</code></pre>
+<p>上面给了些例子用来阐述同源和跨源，可以看出源是有协议，域名，端口这3个部分组成，这几项一样，就是同源，否则就是跨源。那么浏览器在处理跨源请求时，会自动触发一个<a href="https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request">preflight</a>的请求，那么服务器会告诉浏览器这个preflight的请求是否被授权访问，如果被允许，那么才会正常的触发实际的请求到后台。</p>
+<p>好了就到这里吧，关于HTTP协议的东西，还有很多很多，有兴趣可以多看看<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">https://developer.mozilla.org/en-US/docs/Web/HTTP</a></p>
+</div>
+		</article>
+	</div>
+</div>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<footer class="footer">
+	<div class="wrapper">
+		<div class="footer_col_wrapper">
+			<div class="footer_col footer_col_1">
+				<ul class="contact_list">
+					<li>Yongchao Li</li>
+					<li><a href="mailto:linychuo@gmail.com">linychuo@gmail.com</a></li>
+					
+					</li>
+				</ul>
+			</div>
+			<div class="footer_col footer_col_2">
+				<ul class="social_media_list">
+					<li>
+						<a href="https://github.com/linychuo" alt="github">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/linychuo" alt="twitter">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809 c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"></path></svg>
+						</span>
+						<span>linychuo</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+</div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
+</html>
