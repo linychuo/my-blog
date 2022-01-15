@@ -8,7 +8,7 @@ tags: http
 
 好了，言归正传。说到HTTP协议，说实话工作这么多年，要说熟悉，那肯定熟悉，但是要说不熟悉，其实遇到这个问题后，才觉得自己其实一点都不熟悉。先说说遇到的问题吧：
 
-最近接到一个需求，需要自定义http header来暴露给前端，前端再将这个暴露的header在请求后台时带回给后端程序。很快前后端代码都完成了，可以开始测试时发现，前端的代码始终读不到这个自定义的header，打开浏览器的调试工具，发现Response headers里有我们自定义的这个header，但是代码就是读不到，本来以为是axios的Bug，去到此开源项目的issues也找到了有人提出了同样的问题，才发现http协议默认是不会把自定义的header暴露给前端的脚本或程序去使用，必须使用[**Access-Control-Expose-Headers**](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers)将需要暴露的headers名字指定出现才可以使用，大概是这样
+最近接到一个需求，需要自定义http header来暴露给前端，前端再将这个暴露的header在请求后台时带回给后端程序。很快前后端代码都完成了，可以开始测试时发现，前端的代码始终读不到这个自定义的header，打开浏览器的调试工具，发现Response headers里有我们自定义的这个header，但是代码就是读不到，本来以为是axios的Bug，去到此开源项目的[issues](https://github.com/axios/axios/issues/1388)也找到了有人提出了同样的问题，才发现http协议默认是不会把自定义的header暴露给前端的脚本或程序去使用，必须使用[**Access-Control-Expose-Headers**](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers)将需要暴露的headers名字指定出现才可以使用，大概是这样
 
 ```
 Access-Control-Expose-Headers: [<header-name>[, <header-name>]*]
