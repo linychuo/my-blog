@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Yongchao's Blog</title>
+	<link href="/styles/main.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet"
+		  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/atom-one-dark.min.css">
+	<link rel="shortcut icon" href="/imgs/favicon.ico">
+</head>
+<body>
+<div>
+	<header class="header">
+	<div class="wrapper">
+		<a class="title" href="/">Yongchao Li</a>
+		<nav class="nav">
+			<a href="#" class="menu_icon">
+				<svg viewBox="0 0 18 15">
+					<path fill="#424242"
+						  d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+					<path fill="#424242"
+						  d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+					<path fill="#424242"
+						  d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+				</svg>
+			</a>
+			<div class="trigger">
+				<a href="/about.html" class="page_link">About</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<div class="page-content">
+	<div class="wrapper">
+		<div class="post">
+			<header class="post-header">
+				<h1 class="post-title">java byte code study</h1>
+				<p class="post-meta">2022-11-25 10:01:32</p>
+				<span class="post-tag"><a
+						href="/tags/java.html">java</a></span>
+		</div>
+		</header>
+		<article class="post-content">
+			<div class="markup"><p>关于java byte code的问题，源于昨天和同事看了一段奇怪的代码，代码逻辑其实很简单，如下：</p>
+<pre><code class="language-java">package li.yongchao;
+
+import org.apache.commons.lang3.RandomUtils;
+
+public class TestA {
+    public static void main(String[] args) {
+        int totalPages;
+
+        do {
+            totalPages = RandomUtils.nextInt(1, 15);
+        } while (totalPages &gt; 7);
+    }
+}
+</code></pre>
+<p>通过IDE工具debug时，会发现其中的totalPages变量不会出现在断点跟踪列表里，分析了半天，觉得要通过看字节码应该才能明白其中的原因。通过<strong>javap -c -l -s TestA.class</strong>得到下面的内容。
+我本地的java版本是</p>
+<pre><code>java version &quot;1.8.0_202&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+</code></pre>
+<p>反编译出的字节码：</p>
+<pre><code>Compiled from &quot;TestA.java&quot;
+public class li.yongchao.TestA {
+  public li.yongchao.TestA();
+    descriptor: ()V
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+    LineNumberTable:
+      line 5: 0
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0       5     0  this   Lli/yongchao/TestA;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    Code:
+       0: iconst_1
+       1: bipush        15
+       3: invokestatic  #2                  // Method org/apache/commons/lang3/RandomUtils.nextInt:(II)I
+       6: istore_1
+       7: iload_1
+       8: bipush        7
+      10: if_icmpgt     0
+      13: return
+    LineNumberTable:
+      line 9: 0
+      line 10: 7
+      line 11: 13
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      14     0  args   [Ljava/lang/String;
+          7       7     1 totalPages   I
+}
+</code></pre>
+<p>这里直接调到最核心的地方，Code部分。这其中有几个指令：iconst_&lt;i&gt;，bipush &lt;i&gt;，istore_&lt;i&gt;，iload_&lt;i&gt;，if_icmpgt。我们一个一个来看。附上<a href="https://docs.oracle.com/javase/specs/jvms/se8/html/">java虚拟机规范(java se8)链接</a></p>
+<h2><a href="#iconst_i>" aria-hidden="true" class="anchor" id="iconst_i>"></a>iconst_&lt;i&gt;</h2>
+<p>这个指令将int类型的常量(-1, 0, 1, 2, 3, 4 or 5)压到操作数栈，手册中有说明这个指令其实和bipush &lt;i&gt;是一样的，但是有个细节，这里的iconst只适用于-1到5区间的常量。上面的字节码中有 incost_1, iconst_2它们分别的意思是将1(源码中nextInt方法的第一个参数)和2(源码中while条件 totalPages做比较的数)这两个常量压到操作数栈中。</p>
+<h2><a href="#bipush-i>" aria-hidden="true" class="anchor" id="bipush-i>"></a>bipush &lt;i&gt;</h2>
+<p>这个指令把-128到127的int常量压到操作数栈，上面有提到它和iconst是一样的，但是当被压入的常量超出-1到5这个区间时，java编译字节码时就会使用bipush，这是因为bipush指令有两上字节，第一个字节是操作码，第二个字节是有符号的8位的整数。而为什么-1到5这个区间的数不用bipush呢，这是因为iconst指令只有一个字节，比较节省空间。上面字节码中bipush 15就是将15(源码中netxtInt方法的第二个参数)压入到操作数栈中，这里我做过几次尝试，将15改为128，编译出的字节码中就变成了sipush指令，这里sipush能够存储16位的整数。</p>
+<h2><a href="#istore_i>" aria-hidden="true" class="anchor" id="istore_i>"></a>istore_&lt;i&gt;</h2>
+<p>这个指令将int变量值存储到局部变量中，这里的i表示在栈上的局部变量数组中的索引，通过出栈后将值赋给变量。</p>
+<h2><a href="#iload_i>" aria-hidden="true" class="anchor" id="iload_i>"></a>iload_&lt;i&gt;</h2>
+<p>这个指令和上面的istroe刚好相反，从变量数组中把索引i对应的值压到操作数栈中。这里的i和上面的含义是一样的。</p>
+<h2><a href="#if_icmpgt" aria-hidden="true" class="anchor" id="if_icmpgt"></a>if_icmpgt</h2>
+<p>这里if_icmpgt其实是if_icmp&lt;cond&gt;，cond有eq, ne, lt, ge, gt, le这些选项，而gt表示value1 &gt; value2，在字节码中并没有value1和value2，仔细看一下，在这条指令前有iload_1和bipush 7这两条指令，而if_icmpgt会从操作数栈中弹出后进行比较。</p>
+<p>学了这么多指令，最后发现其实和这些指令没有关系，方法中的局部变量如果没初始化，那么在后续给这个变量持续赋值的过程中，在debugger view里就看不到这个变量值的变化。</p>
+<p>写这篇文章中参考的一些链接</p>
+<ol>
+<li><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/">The Java® Virtual Machine Specification - Java SE 8 Edition</a></li>
+<li><a href="https://stackoverflow.com/questions/50167675/how-does-bipush-work-in-jvm">How does bipush work in JVM?</a></li>
+<li><a href="http://asmsupport.github.io/">ASMSupport</a></li>
+</ol>
+</div>
+		</article>
+	</div>
+</div>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<footer class="footer">
+	<div class="wrapper">
+		<div class="footer_col_wrapper">
+			<div class="footer_col footer_col_1">
+				<ul class="contact_list">
+					<li>Yongchao Li</li>
+					<li><a href="mailto:linychuo@gmail.com">linychuo@gmail.com</a></li>
+					
+					</li>
+				</ul>
+			</div>
+			<div class="footer_col footer_col_2">
+				<ul class="social_media_list">
+					<li>
+						<a href="https://github.com/linychuo" alt="github">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/linychuo" alt="twitter">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809 c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"></path></svg>
+						</span>
+						<span>linychuo</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+</div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
+</html>
