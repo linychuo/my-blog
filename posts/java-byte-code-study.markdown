@@ -86,6 +86,8 @@ public class li.yongchao.TestA {
 这里if_icmpgt其实是if_icmp\<cond>，cond有eq, ne, lt, ge, gt, le这些选项，而gt表示value1 > value2，在字节码中并没有value1和value2，仔细看一下，在这条指令前有iload_1和bipush 7这两条指令，而if_icmpgt会从操作数栈中弹出后进行比较。
 
 
+学了这么多指令，最后发现其实和这些指令没有关系，方法中的局部变量如果没初始化，那么在后续给这个变量持续赋值的过程中，在debugger view里就看不到这个变量值的变化。
+
 写这篇文章中参考的一些链接
 1. [The Java® Virtual Machine Specification - Java SE 8 Edition](https://docs.oracle.com/javase/specs/jvms/se8/html/)
 2. [How does bipush work in JVM?](https://stackoverflow.com/questions/50167675/how-does-bipush-work-in-jvm)
