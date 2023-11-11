@@ -39,7 +39,6 @@ impl Blogger {
             posts_dir: PathBuf::from(posts_dir),
             hbs,
             comrak_options: ComrakOptions {
-                ext_header_ids: Some("".to_string()),
                 ..ComrakOptions::default()
             },
         }
