@@ -46,12 +46,12 @@
 		</div>
 		</header>
 		<article class="post-content">
-			<div class="markup"><h1><a href="#motivation" aria-hidden="true" class="anchor" id="motivation"></a>Motivation</h1>
+			<div class="markup"><h1>Motivation</h1>
 <p>Why some projects are clean, easy-to-read, and performant, while others a convoluted mess? Why, when making a modification, in some codebases everything falls into place immediately, while in others it’s more like walking on a minefield?</p>
 <p>Writing clean code is mostly about restricting yourself from cutting corners and thus enforcing guarantees. The freedom to approach the problems from many different directions brings the responsibility not only to make the code run and do so in a performant manner but also to make it maintainable in the long run.</p>
 <p>This list is a compilation of best practices to follow and antipatterns to avoid in order to lower the long-time cost of code involving collections. They are mostly based on principles originating from functional programming, so if you have the same background, you might find them familiar or even trivial.</p>
 <p>A deeper understanding of how collections work helped me transition from producing code that takes more time to understand than to write, to one that is easy-to-read. I hope this compilation helps you do the same.</p>
-<h2><a href="#do-break-functions-into-smaller-parts" aria-hidden="true" class="anchor" id="do-break-functions-into-smaller-parts"></a>Do: break functions into smaller parts</h2>
+<h2>Do: break functions into smaller parts</h2>
 <p>A common mistake is to write functions that do many things:</p>
 <pre><code class="language-javascript">// a user is {name: string, active: boolean, score: number}
 
@@ -69,7 +69,7 @@ users.filter(({active, score}) =&gt;
 	)
 </code></pre>
 <p>(To learn how to use these functions, <a href="https://advancedweb.hu/2018/02/08/array_extras_course/">click here</a>)</p>
-<h2><a href="#dont:-modify-the-arguments" aria-hidden="true" class="anchor" id="dont:-modify-the-arguments"></a>Don’t: modify the arguments</h2>
+<h2>Don’t: modify the arguments</h2>
 <p>Modifying the elements of the collection seems like an optimization, as you need one less iteration. But doing so offsets the <strong>WTFs/minute</strong> code quality indicator in the wrong direction.</p>
 <p>Don’t modify the elements in the iteratee:</p>
 <pre><code class="language-javascript">users.filter((user) =&gt; {
@@ -92,7 +92,7 @@ users.filter(({active, score}) =&gt;
 </code></pre>
 <p>Treat the input data as immutable. Processing should not change it in any way.</p>
 <p>As a speedup, you can use a collection implementation that embraces immutability. With structural sharing, they can offer better performance than simple copying.</p>
-<h2><a href="#do-use-object/array-destructuring" aria-hidden="true" class="anchor" id="do-use-object/array-destructuring"></a>Do: use object/array destructuring</h2>
+<h2>Do: use object/array destructuring</h2>
 <p>When you need only a subset of the parameter objects, use destructuring.</p>
 <p>Instead of:</p>
 <pre><code class="language-javascript">.filter((user) =&gt;
@@ -106,7 +106,7 @@ users.filter(({active, score}) =&gt;
 </code></pre>
 <p>Object destructuring only works with objects. There is a <a href="https://github.com/vacuumlabs/es-proposals/blob/master/extensible-destructuring.md">proposal</a> to add support to arbitrary structures, but unfortunately, it had not gained traction.</p>
 <p>Iterables, on the other hand, are fully supported. As a result, you can destructure not only Arrays, but for example, ImmutableJs Lists, generator functions, and custom types.</p>
-<h2><a href="#dont:-rely-on-state" aria-hidden="true" class="anchor" id="dont:-rely-on-state"></a>Don’t: rely on state</h2>
+<h2>Don’t: rely on state</h2>
 <p>The iteratee should not modify anything and should use as little data bar its parameters as possible.</p>
 <p>Instead of writing a state like this:</p>
 <pre><code class="language-javascript">let maxscore = 0;
@@ -123,7 +123,7 @@ users.filter(({score}) =&gt; {
 );
 </code></pre>
 <p>(To learn how to use constants and make your code more readable, <a href="https://advancedweb.hu/2016/05/17/more-readable-js-without-vars/">click here</a>)</p>
-<h2><a href="#dont:-rely-on-the-ordering-of-filter-and-map" aria-hidden="true" class="anchor" id="dont:-rely-on-the-ordering-of-filter-and-map"></a>Don’t: rely on the ordering of filter and map</h2>
+<h2>Don’t: rely on the ordering of filter and map</h2>
 <p>While Javascript’s basic functions process the elements in the order they are present in the array, your code should not depend on this behavior. The iteration order is not necessarily stable in every library and definitely not in every language. Treat every iteratee function as if they are run in multiple processes concurrently, and that will set your thinking that works no matter what technology you’ll use in the future.</p>
 <p>Instead of:</p>
 <pre><code class="language-javascript">let index = 0;
@@ -136,7 +136,7 @@ users.map(({name}) =&gt;
 	name + (index === 0 ? &quot; First user!&quot;: &quot;&quot;)
 )
 </code></pre>
-<h2><a href="#do-use-the-array-parameter-instead-of-the-closed-array" aria-hidden="true" class="anchor" id="do-use-the-array-parameter-instead-of-the-closed-array"></a>Do: use the array parameter instead of the closed array</h2>
+<h2>Do: use the array parameter instead of the closed array</h2>
 <p>The closed array is usually accessible in the iteratee function but use the parameter instead.</p>
 <p>Don’t do this to make a collection of points into a circle:</p>
 <pre><code class="language-javascript">// points are {x: number, y: number}
@@ -153,11 +153,11 @@ points
     )
 </code></pre>
 <p>This practice makes the code more portable. The less of the environment the functions are using, the better.</p>
-<h2><a href="#dont:-optimize-prematurely" aria-hidden="true" class="anchor" id="dont:-optimize-prematurely"></a>Don’t: optimize prematurely</h2>
+<h2>Don’t: optimize prematurely</h2>
 <p>Optimization is usually a tradeoff between speed and readability. It’s tempting to focus on the former at the expense of the latter, but it’s usually a bad practice.</p>
 <p>Collections are usually smaller than you think they are, and the speed of the processing is usually faster. Unless you know something is slow, don’t make it faster. Clean but slow code is easier to speed up than a fast convoluted mess to maintain.</p>
 <p>Prefer readability, then measure. If the profiler shows a bottleneck, optimize only that bit.</p>
-<h2><a href="#dont:-use-streaming-processing-(only-when-you-know-you-need-it)" aria-hidden="true" class="anchor" id="dont:-use-streaming-processing-(only-when-you-know-you-need-it)"></a>Don’t: use streaming processing (only when you know you need it)</h2>
+<h2>Don’t: use streaming processing (only when you know you need it)</h2>
 <p>Streaming–or lazy–processing is when only the minimum amount of processing is done to produce each result element, instead of running the steps to completion before starting the next one.</p>
 <p>When you <strong>map</strong> an Array twice, all the elements are processed each time:</p>
 <pre><code class="language-javascript">[1, 2, 3]
@@ -202,13 +202,13 @@ points
 <p>What seems like a performance boost and some savings in terms of memory, in practice, most of the time, the difference is negligible. On the other hand, you can easily end up with an infinite loop, more complex code, or even degrading performance.</p>
 <p>Unless you know the performance benefits, or you work with structures you otherwise can’t (for example, infinite ones), avoid streaming processing.</p>
 <p>(Want to know how to use generator functions with ImmutableJs? <a href="https://advancedweb.hu/2017/10/03/immutablejs_generators/">click here</a>)</p>
-<h2><a href="#do-use-the-array-functions-if-they-are-all-you-need" aria-hidden="true" class="anchor" id="do-use-the-array-functions-if-they-are-all-you-need"></a>Do: use the Array functions if they are all you need</h2>
+<h2>Do: use the Array functions if they are all you need</h2>
 <p>Arrays have most of the basic processing functions. If all you need is a <strong>map</strong>, <strong>filter</strong>, <strong>reduce</strong>, or <strong>some</strong>, use them directly on the Array without any library or wrapper. If, in the future, you’ll need a function that is missing, you can refactor them easily.</p>
-<h2><a href="#do-use-an-extensible-pipeline-implementation" aria-hidden="true" class="anchor" id="do-use-an-extensible-pipeline-implementation"></a>Do: use an extensible pipeline implementation</h2>
+<h2>Do: use an extensible pipeline implementation</h2>
 <p>In cases when you need to use a library of functions, opt for one that is extensible. It might not seem important the first time you want to use <strong>last</strong> or a similarly absent function, but later when you have complex steps, you’ll find it increasingly difficult to migrate to one.</p>
 <p>ImmutableJs’s <a href="https://facebook.github.io/immutable-js/docs/#/Collection/update">update</a> and <a href="https://github.com/lodash/lodash/wiki/FP-Guide">Lodash/FP</a> are my go-to choices.</p>
 <p>(To learn how Lodash/FP works, <a href="https://advancedweb.hu/2017/12/19/functional_composition/">click here</a>)</p>
-<h2><a href="#dont:-build-an-array-in-reduce" aria-hidden="true" class="anchor" id="dont:-build-an-array-in-reduce"></a>Don’t: build an Array in reduce</h2>
+<h2>Don’t: build an Array in reduce</h2>
 <p><strong>reduce</strong> is the most versatile function used to process collections. It can emulate the others, as the return value can be anything.</p>
 <p>But that doesn’t mean you should use it when a more specialized function is available.</p>
 <p>While this code, using <strong>reduce</strong>:</p>
@@ -235,7 +235,7 @@ points
 </code></pre>
 <p>The latter communicates the intention far better.</p>
 <p>As a rule of thumb, whenever you write a <strong>reduce</strong> that returns a collection instead of a value, consider whether a different function would be a better alternative. As usual, there are some exceptions, but using them usually results in more readable code.</p>
-<h2><a href="#do-use-a-flat-structure" aria-hidden="true" class="anchor" id="do-use-a-flat-structure"></a>Do: use a flat structure</h2>
+<h2>Do: use a flat structure</h2>
 <p>A flat structure is when most of the code is on the same indentation level. Using collection pipelines, it is usually a feature you get for free:</p>
 <pre><code class="language-javascript">users
 	.map(...)
@@ -283,7 +283,7 @@ users
 <p>As for myself, I prefer monoliths as long as I can understand the functionality without much difficulty. When all the functions follow a purely functional style, refactoring them is trivial.</p>
 <p>There is an exception though. If you need the same step in multiple places, move that to a separate function instead of copy-pasting.</p>
 <p>(To learn more about collection pipelines, <a href="https://advancedweb.hu/guides.html#collection_pipelines-ref">click here</a>)</p>
-<h2><a href="#do-provide-an-initial-value-for-reduce" aria-hidden="true" class="anchor" id="do-provide-an-initial-value-for-reduce"></a>Do: provide an initial value for reduce</h2>
+<h2>Do: provide an initial value for reduce</h2>
 <p><strong>reduce</strong> has an optional second argument: the initial value. It seems like it is only useful when <strong>undefined</strong> is not suitable, but there is a critical difference. When an Array has no elements, <strong>reduce</strong> without an initial value does not return <strong>undefined</strong>, but throws an Error instead:</p>
 <pre><code class="language-javascript">[].reduce(() =&gt; {}) // TypeError: Reduce of empty array with no initial value
 </code></pre>
@@ -291,7 +291,7 @@ users
 <pre><code class="language-javascript">[].reduce(() =&gt; {}, 0) // 0
 </code></pre>
 <p>You should always supply an initial value for <strong>reduce</strong> if there is a sensible one.</p>
-<h2><a href="#do-use-the-shorter-form-of-arrow-functions" aria-hidden="true" class="anchor" id="do-use-the-shorter-form-of-arrow-functions"></a>Do: use the shorter form of arrow functions</h2>
+<h2>Do: use the shorter form of arrow functions</h2>
 <p>Arrow functions have shorter forms, making them more suitable for one-liners. Instead of writing out the full structure:</p>
 <pre><code class="language-javascript">() =&gt; {
 	return ...
@@ -316,7 +316,7 @@ users
     .filter((e) =&gt; ...)
 </code></pre>
 <p>The parentheses around the parameters are also optional, making the construct even shorter.</p>
-<h2><a href="#do-reuse-parts-of-the-pipeline" aria-hidden="true" class="anchor" id="do-reuse-parts-of-the-pipeline"></a>Do: reuse parts of the pipeline</h2>
+<h2>Do: reuse parts of the pipeline</h2>
 <p>If you need a piece of functionality in several places, move that to a separate function and use that, don’t copy-paste.</p>
 <p>Instead of:</p>
 <pre><code class="language-javascript">const arr1 = users
@@ -339,7 +339,7 @@ const arr2 = users
     .map(...)
 </code></pre>
 <p>For reusing complex steps (for example, <strong>filter</strong> + <strong>map</strong>), use a pipeline implementation that supports that.</p>
-<h2><a href="#do-know-the-complexity-of-the-operations" aria-hidden="true" class="anchor" id="do-know-the-complexity-of-the-operations"></a>Do: know the complexity of the operations</h2>
+<h2>Do: know the complexity of the operations</h2>
 <p>Knowing the algorithmic cost of each function helps estimate the overall complexity of the pipeline.</p>
 <p>A few commonly used functions:</p>
 <ul>
@@ -367,7 +367,7 @@ Generally, the complexities are added for subsequent steps and multiplied for ne
 </code></pre>
 <p>The complexity is <strong>O(n * n)</strong>.</p>
 <p>As a rule of thumb, having O(n) and O(n * log(n)) should be scalable, O(n^2) will only work for small arrays, anything bigger can easily be a bottleneck.</p>
-<h2><a href="#closing-remarks" aria-hidden="true" class="anchor" id="closing-remarks"></a>Closing remarks</h2>
+<h2>Closing remarks</h2>
 <p>Apart from a few general guidelines, best practices are the result of the environment too. If, for example, you work with memory-constrained embedded systems, your rules might be entirely different.</p>
 <p>Also, software craftsmanship is more of an art than exact science, and as such, everything you write has your distinctive style. But I believe if you have no well-defined reason not to, following the principles above will help you write better code.</p>
 <p>Is there anything you’d add? Let me know, and I’ll update this post.</p>

@@ -46,10 +46,10 @@
 		</div>
 		</header>
 		<article class="post-content">
-			<div class="markup"><h2><a href="#1-overview" aria-hidden="true" class="anchor" id="1-overview"></a>1. Overview</h2>
+			<div class="markup"><h2>1. Overview</h2>
 <p>Sometimes we might face difficulty matching a string with a regular expression. For example, we might not know what we want to match exactly, but we can be aware of its surroundings, like what comes directly before it or what is missing from after it. In these cases, we can use the lookaround assertions. These expressions are called assertions because they only indicate if something is a match or not but are not included in the result.</p>
 <p>In this tutorial, we'll take a look at how we can use the four types of regex lookaround assertions.</p>
-<h2><a href="#2-positive-lookahead" aria-hidden="true" class="anchor" id="2-positive-lookahead"></a>2. Positive Lookahead</h2>
+<h2>2. Positive Lookahead</h2>
 <p>Let's say we'd like to analyze the imports of java files. First, let's look for import statements that are static by checking that the static keyword follows the import keyword.</p>
 <p>Let's use a positive lookahead assertion with the (?=criteria) syntax in our expression to match the group of characters static after our main expression import:</p>
 <pre><code class="language-java">Pattern pattern = Pattern.compile(&quot;import (?=static).+&quot;);
@@ -61,7 +61,7 @@ assertEquals(&quot;import static org.junit.jupiter.api.Assertions.assertEquals;&
 
 assertFalse(pattern.matcher(&quot;import java.util.regex.Matcher;&quot;).find());
 </code></pre>
-<h2><a href="#3-negative-lookahead" aria-hidden="true" class="anchor" id="3-negative-lookahead"></a>3. Negative Lookahead</h2>
+<h2>3. Negative Lookahead</h2>
 <p>Next, let's do the direct opposite of the previous example and look for import statements that are not static. Let's do this by checking that the static keyword does not follow the import keyword.</p>
 <p>Let's use a negative lookahead assertion with the (?!criteria) syntax in our expression to ensure that the group of characters static cannot match after our main expression import:</p>
 <pre><code class="language-java">Pattern pattern = Pattern.compile(&quot;import (?!static).+&quot;);
@@ -73,7 +73,7 @@ assertEquals(&quot;import java.util.regex.Matcher;&quot;, matcher.group());
 assertFalse(pattern
   .matcher(&quot;import static org.junit.jupiter.api.Assertions.assertEquals;&quot;).find());
 </code></pre>
-<h2><a href="#4-limitations-of-lookbehind-in-java" aria-hidden="true" class="anchor" id="4-limitations-of-lookbehind-in-java"></a>4. Limitations of Lookbehind in Java</h2>
+<h2>4. Limitations of Lookbehind in Java</h2>
 <p>Up until Java 8, we might run into the limitation that unbound quantifiers, like + and *, are not allowed within a lookbehind assertion. That is to say, for example, the following assertions will throw PatternSyntaxException up until Java 8:</p>
 <ul>
 <li>(?&lt;!fo+)bar, where we don't want to match bar if fo with one or more o characters come before it</li>
@@ -82,7 +82,7 @@ assertFalse(pattern
 </ul>
 <p>As a workaround, we might use a curly braces quantifier with a specified upper limit, for example (?&lt;!fo{2,4})bar, where we maximize the number of o characters following the f character to 4.</p>
 <p>Since Java 9, we can use unbound quantifiers in lookbehinds. However, because of the memory consumption of the regex implementation, it is still recommended to only use quantifiers in lookbehinds with a sensible upper limit, for example (?&lt;!fo{2,20})bar instead of (?&lt;!fo{2,2000})bar.</p>
-<h2><a href="#5-positive-lookbehind" aria-hidden="true" class="anchor" id="5-positive-lookbehind"></a>5. Positive Lookbehind</h2>
+<h2>5. Positive Lookbehind</h2>
 <p>Let's say we'd like to differentiate between JUnit 4 and JUnit 5 imports in our analysis. First, let's check if an import statement for the assertEquals method is from the jupiter package.</p>
 <p>Let's use a positive lookbehind assertion with the (?&lt;=criteria) syntax in our expression to match the character group jupiter before our main expression .*assertEquals:</p>
 <pre><code class="language-java">Pattern pattern = Pattern.compile(&quot;.*(?&lt;=jupiter).*assertEquals;&quot;);
@@ -94,7 +94,7 @@ assertEquals(&quot;import static org.junit.jupiter.api.Assertions.assertEquals;&
 
 assertFalse(pattern.matcher(&quot;import static org.junit.Assert.assertEquals;&quot;).find());
 </code></pre>
-<h2><a href="#6-negative-lookbehind" aria-hidden="true" class="anchor" id="6-negative-lookbehind"></a>6. Negative Lookbehind</h2>
+<h2>6. Negative Lookbehind</h2>
 <p>Next, let's do the direct opposite of the previous example and look for import statements that are not from the jupiter package.</p>
 <p>To do this, let's use a negative lookbehind assertion with the (?&lt;!criteria) syntax in our expression to ensure that the group of characters jupiter.{0,30} cannot match before our main expression assertEquals:</p>
 <pre><code class="language-java">Pattern pattern = Pattern.compile(&quot;.*(?&lt;!jupiter.{0,30})assertEquals;&quot;);

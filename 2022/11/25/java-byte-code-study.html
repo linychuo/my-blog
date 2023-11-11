@@ -103,15 +103,15 @@ public class li.yongchao.TestA {
 }
 </code></pre>
 <p>这里直接调到最核心的地方，Code部分。这其中有几个指令：iconst_&lt;i&gt;，bipush &lt;i&gt;，istore_&lt;i&gt;，iload_&lt;i&gt;，if_icmpgt。我们一个一个来看。附上<a href="https://docs.oracle.com/javase/specs/jvms/se8/html/">java虚拟机规范(java se8)链接</a></p>
-<h2><a href="#iconst_i>" aria-hidden="true" class="anchor" id="iconst_i>"></a>iconst_&lt;i&gt;</h2>
+<h2>iconst_&lt;i&gt;</h2>
 <p>这个指令将int类型的常量(-1, 0, 1, 2, 3, 4 or 5)压到操作数栈，手册中有说明这个指令其实和bipush &lt;i&gt;是一样的，但是有个细节，这里的iconst只适用于-1到5区间的常量。上面的字节码中有 incost_1, iconst_2它们分别的意思是将1(源码中nextInt方法的第一个参数)和2(源码中while条件 totalPages做比较的数)这两个常量压到操作数栈中。</p>
-<h2><a href="#bipush-i>" aria-hidden="true" class="anchor" id="bipush-i>"></a>bipush &lt;i&gt;</h2>
+<h2>bipush &lt;i&gt;</h2>
 <p>这个指令把-128到127的int常量压到操作数栈，上面有提到它和iconst是一样的，但是当被压入的常量超出-1到5这个区间时，java编译字节码时就会使用bipush，这是因为bipush指令有两上字节，第一个字节是操作码，第二个字节是有符号的8位的整数。而为什么-1到5这个区间的数不用bipush呢，这是因为iconst指令只有一个字节，比较节省空间。上面字节码中bipush 15就是将15(源码中netxtInt方法的第二个参数)压入到操作数栈中，这里我做过几次尝试，将15改为128，编译出的字节码中就变成了sipush指令，这里sipush能够存储16位的整数。</p>
-<h2><a href="#istore_i>" aria-hidden="true" class="anchor" id="istore_i>"></a>istore_&lt;i&gt;</h2>
+<h2>istore_&lt;i&gt;</h2>
 <p>这个指令将int变量值存储到局部变量中，这里的i表示在栈上的局部变量数组中的索引，通过出栈后将值赋给变量。</p>
-<h2><a href="#iload_i>" aria-hidden="true" class="anchor" id="iload_i>"></a>iload_&lt;i&gt;</h2>
+<h2>iload_&lt;i&gt;</h2>
 <p>这个指令和上面的istroe刚好相反，从变量数组中把索引i对应的值压到操作数栈中。这里的i和上面的含义是一样的。</p>
-<h2><a href="#if_icmpgt" aria-hidden="true" class="anchor" id="if_icmpgt"></a>if_icmpgt</h2>
+<h2>if_icmpgt</h2>
 <p>这里if_icmpgt其实是if_icmp&lt;cond&gt;，cond有eq, ne, lt, ge, gt, le这些选项，而gt表示value1 &gt; value2，在字节码中并没有value1和value2，仔细看一下，在这条指令前有iload_1和bipush 7这两条指令，而if_icmpgt会从操作数栈中弹出后进行比较。</p>
 <p>学了这么多指令，最后发现其实和这些指令没有关系，方法中的局部变量如果没初始化，那么在后续给这个变量持续赋值的过程中，在debugger view里就看不到这个变量值的变化。</p>
 <p>写这篇文章中参考的一些链接</p>

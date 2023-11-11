@@ -45,7 +45,7 @@
 		</div>
 		</header>
 		<article class="post-content">
-			<div class="markup"><h1><a href="#cookieless-cookies" aria-hidden="true" class="anchor" id="cookieless-cookies"></a>Cookieless cookies</h1>
+			<div class="markup"><h1>Cookieless cookies</h1>
 <p>There is another obscure way of tracking users without using cookies or even Javascript. It has <a href="http://en.wikipedia.org/wiki/HTTP_ETag#Tracking_using_ETags">already been used</a> by numerous websites but few people know of it. This page explains how it works and how to protect yourself.</p>
 <p>This tracking method works without needing to use:</p>
 <ul>
@@ -59,8 +59,8 @@ Instead it uses another type of storage that is persistent between browser resta
 </ul>
 <p>Even when you disabled cookies entirely, have Javascript turned off and use a VPN service, this technique will still be able to track you.</p>
 <!-- raw HTML omitted -->
-<h2><a href="#demonstration" aria-hidden="true" class="anchor" id="demonstration"></a><a href="http://lucb1e.com/rp/cookielesscookies/">Demonstration</a></h2>
-<h2><a href="#so-how-does-this-work" aria-hidden="true" class="anchor" id="so-how-does-this-work"></a>So how does this work?</h2>
+<h2><a href="http://lucb1e.com/rp/cookielesscookies/">Demonstration</a></h2>
+<h2>So how does this work?</h2>
 <p>This is a general overview:</p>
 <p><img src="/imgs/etags.jpg" alt="etags" /></p>
 <p>The ETag shown in the image is a sort of checksum. When the image changes, the checksum changes. So when the browser has the image and knows the checksum, it can send it to the webserver for verification. The webserver then checks whether the image has changed. If it hasn't, the image does not need to be retransmitted and lots of data is saved.</p>
@@ -74,9 +74,9 @@ To demonstrate how this works without having to use Javascript, I had to find a 
 </ul>
 <p>I did not see a simple solution to these issues. Sure some things can be done, but nothing that other websites would use, and I wanted to keep the code as simple and as close to reality as possible.</p>
 <p>Note that these bugs normally don't exist when you really want to track someone because then you don't intend to show users that they are being tracked.</p>
-<h3><a href="#source-code" aria-hidden="true" class="anchor" id="source-code"></a>Source code</h3>
+<h3>Source code</h3>
 <p><a href="https://github.com/lucb1e/cookielesscookies">https://github.com/lucb1e/cookielesscookies</a></p>
-<h2><a href="#what-can-we-do-to-stop-it" aria-hidden="true" class="anchor" id="what-can-we-do-to-stop-it"></a>What can we do to stop it?</h2>
+<h2>What can we do to stop it?</h2>
 <p>One thing I would strongly recommend you to do anytime you visit a page where you want a little more security, is opening a private navigation window and using https exclusively. Doing this single-handedly eliminates attacks like BREACH (the latest https hack), disables any and all tracking cookies that you might have, and also eliminates cache tracking issues like I'm demonstrating on this page. I use this private navigation mode when I do online banking. In Firefox (and I think MSIE too) it's Ctrl+Shift+P, in Chrome it's Ctrl+Shift+N.</p>
 <p>Besides that, it depends on your level of paranoia.</p>
 <p>I currently have no straightforward answer since cache tracking is virtually undetectable, but also because caching itself is useful and saves people (including you) time and money. Website admins will consume less bandwidth (and if you think about it, in the end users are the ones that will have to pay the bill), your pages will load faster, and especially on mobile devices it makes a big difference if you don't have an unlimited 4G plan. It's even worse when you have a high-latency or low-bandwidth connection because you live in a rural area.</p>

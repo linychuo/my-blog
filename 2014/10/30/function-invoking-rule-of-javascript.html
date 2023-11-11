@@ -46,7 +46,7 @@
 		</div>
 		</header>
 		<article class="post-content">
-			<div class="markup"><h2><a href="#1-javascript函数调用规则一" aria-hidden="true" class="anchor" id="1-javascript函数调用规则一"></a>1. JavaScript函数调用规则一</h2>
+			<div class="markup"><h2>1. JavaScript函数调用规则一</h2>
 <p>全局函数调用</p>
 <pre><code class="language-javascript">function makeArray( arg1, arg2 ){
 	return [this , arg1 , arg2 ];
@@ -66,7 +66,7 @@ alert( typeof window.makeArray);
 <pre><code class="language-javascript">window.makeArray('one', 'two');
 // =&gt; [ window, 'one', 'two' ]
 </code></pre>
-<h2><a href="#2-javascript函数调用规则二" aria-hidden="true" class="anchor" id="2-javascript函数调用规则二"></a>2. JavaScript函数调用规则二</h2>
+<h2>2. JavaScript函数调用规则二</h2>
 <p>对象方法调用</p>
 <pre><code class="language-javascript">//creating the object
 var arrayMaker = {
@@ -112,7 +112,7 @@ button2.onclick = function(){
 };
 </code></pre>
 <p><strong>this指向是有区别的。</strong></p>
-<h2><a href="#3-javascript函数调用规则三" aria-hidden="true" class="anchor" id="3-javascript函数调用规则三"></a>3. JavaScript函数调用规则三</h2>
+<h2>3. JavaScript函数调用规则三</h2>
 <p>当然，如果使用的是jQuery库，那么你不必考虑这么多，它会帮助重写this的值以保证它包含了当前事件源元素的引用。</p>
 <pre><code class="language-javascript">//使用jQuery
 $('#btn1').click( function() {
@@ -138,7 +138,7 @@ button2.onclick = function(){
 };
 &lt;/script&gt;
 </code></pre>
-<h2><a href="#4-javascript函数调用规则四" aria-hidden="true" class="anchor" id="4-javascript函数调用规则四"></a>4. JavaScript函数调用规则四</h2>
+<h2>4. JavaScript函数调用规则四</h2>
 <p>构造器</p>
 <p>我不想深入研究在Javascript中类型的定义,但是在此刻我们需要知道在Javascript中没有类, 而且任何一个自定义的类型需要一个初始化函数,使用原型对象(作为初始化函数的一个属性)定义你的类型也是一个不错的想法, 让我们来创建一个简单的类型</p>
 <pre><code class="language-javascript">//声明一个构造器

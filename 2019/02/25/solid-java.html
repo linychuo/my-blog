@@ -53,12 +53,12 @@
 <p><strong>D</strong> – Dependency Inversion Principle</p>
 <p>In this post I’m not going to explain what’s hidden behind it though, it’s been already done in dozens of articles all over the web!</p>
 <p>This is intended to <strong>Java developers</strong> who already know SOLID and just would like to have a quick-and-dirty way to remember about them and have a quick insight into these rules in case they forgot what any of them was exactly about.</p>
-<h1><a href="#single-responsibility-principle" aria-hidden="true" class="anchor" id="single-responsibility-principle"></a>Single Responsibility Principle</h1>
+<h1>Single Responsibility Principle</h1>
 <blockquote>
 <p>A class should have one, and only one, reason to change.</p>
 </blockquote>
 <p>A class should have only <strong>one responsibility</strong> which means class should be highly cohesive and implement strongly related logic. Class implementing feature 1 AND feature 2 AND feature 3 (and so on) violates SRP.</p>
-<h2><a href="#srp-example" aria-hidden="true" class="anchor" id="srp-example"></a>SRP Example</h2>
+<h2>SRP Example</h2>
 <pre><code class="language-java">// BAD
 public class UserSettingService {
   public void changeEmail(User user) {
@@ -85,22 +85,22 @@ public class SecurityService {
   }
 }
 </code></pre>
-<h2><a href="#srp-code-smells" aria-hidden="true" class="anchor" id="srp-code-smells"></a>SRP Code smells</h2>
+<h2>SRP Code smells</h2>
 <ul>
 <li>more than one contextually separated piece of code within single class</li>
 <li>large setup in tests (TDD is very useful when it comes to detecting SRP violation)</li>
 </ul>
-<h2><a href="#srp-goodies" aria-hidden="true" class="anchor" id="srp-goodies"></a>SRP Goodies</h2>
+<h2>SRP Goodies</h2>
 <ul>
 <li>separated classes responsible for given use case can be now reused in other parts of an application</li>
 <li>separated classes responsible for a given use case can be now tested separately</li>
 </ul>
-<h1><a href="#openclosed-principle" aria-hidden="true" class="anchor" id="openclosed-principle"></a>Open/closed Principle</h1>
+<h1>Open/closed Principle</h1>
 <blockquote>
 <p>You should be able to extend a classes behavior, without modifying it.</p>
 </blockquote>
 <p>Class should be open for extension and closed for modification. You should be able to extend class behavior without the need to modify its implementation (how? Don’t modify existing code of class X but write a new piece of code that will be used by class X).</p>
-<h2><a href="#ocp-example" aria-hidden="true" class="anchor" id="ocp-example"></a>OCP Example</h2>
+<h2>OCP Example</h2>
 <pre><code class="language-java">// BAD
 public class Logger {
   String logging;
@@ -140,23 +140,23 @@ public class Logger {
   }
 }
 </code></pre>
-<h2><a href="#ocp-code-smells" aria-hidden="true" class="anchor" id="ocp-code-smells"></a>OCP Code smells</h2>
+<h2>OCP Code smells</h2>
 <ul>
 <li>if you notice class X directly references other class Y from within its code base, it’s a sign that class Y should be passed to class X (either through constructor/single method) e.g. through dependency injection</li>
 <li>complex if-else or switch statements</li>
 </ul>
-<h2><a href="#ocp-goodies" aria-hidden="true" class="anchor" id="ocp-goodies"></a>OCP Goodies</h2>
+<h2>OCP Goodies</h2>
 <ul>
 <li>class X functionality can be easily extended with new functionality encapsulated in a separate class without the need to change class X implementation (it’s not aware of introduced changes)</li>
 <li>code is loosely coupled</li>
 <li>injected class Y can be easily mocked in tests</li>
 </ul>
-<h1><a href="#liskov-substitution-principle" aria-hidden="true" class="anchor" id="liskov-substitution-principle"></a>Liskov Substitution Principle</h1>
+<h1>Liskov Substitution Principle</h1>
 <blockquote>
 <p>Derived classes must be substitutable for their base classes.</p>
 </blockquote>
 <p>This is an extension of open/close principle. Derived classes <strong>should not change the behavior of the base class</strong> (behavior of inherited methods). Provided a class Y is a subclass of class X any instance referencing class X should be able to reference class Y as well (derived types must be complete substitutes for their base types).</p>
-<h2><a href="#lsp-example" aria-hidden="true" class="anchor" id="lsp-example"></a>LSP Example</h2>
+<h2>LSP Example</h2>
 <pre><code class="language-java">// BAD
 public class DataHashSet extends HashSet {
   int addCount = 0;
@@ -188,23 +188,23 @@ public class DataHashSet implements Set {
   }
 }
 </code></pre>
-<h2><a href="#lsp-code-smells" aria-hidden="true" class="anchor" id="lsp-code-smells"></a>LSP Code smells</h2>
+<h2>LSP Code smells</h2>
 <ul>
 <li>if it looks like a duck, quacks like a duck but needs batteries for that purpose - it’s probably a violation of LSP</li>
 <li>modification of inherited behavior in subclass</li>
 <li>exceptions raised in overridden inherited methods</li>
 </ul>
-<h2><a href="#lsp-goodies" aria-hidden="true" class="anchor" id="lsp-goodies"></a>LSP Goodies</h2>
+<h2>LSP Goodies</h2>
 <ul>
 <li>avoiding unexpected and incorrect results</li>
 <li>clear distinction between shared inherited interface and extended functionality</li>
 </ul>
-<h1><a href="#interface-segregation-principle" aria-hidden="true" class="anchor" id="interface-segregation-principle"></a>Interface Segregation Principle</h1>
+<h1>Interface Segregation Principle</h1>
 <blockquote>
 <p>Make fine grained interfaces that are client specific.</p>
 </blockquote>
 <p>Once an interface is becoming too large / fat, we absolutely need to split it into small interfaces that are more specific. And interface will be defined by the client that will use it, which means that client of the interface will only know about the methods that are related to them.</p>
-<h2><a href="#isp-example" aria-hidden="true" class="anchor" id="isp-example"></a>ISP Example</h2>
+<h2>ISP Example</h2>
 <pre><code class="language-java">// BAD
 public interface Car {
   Status open();
@@ -240,22 +240,22 @@ public class Mechanic {
   // Same with FixableCar
 }
 </code></pre>
-<h2><a href="#isp-code-smells" aria-hidden="true" class="anchor" id="isp-code-smells"></a>ISP Code smells</h2>
+<h2>ISP Code smells</h2>
 <ul>
 <li>one fat interface implemented by many classes where none of these classes implement 100% of interface’s methods. Such fat interface should be split into smaller interfaces suitable for client needs</li>
 </ul>
-<h2><a href="#isp-goodies" aria-hidden="true" class="anchor" id="isp-goodies"></a>ISP Goodies</h2>
+<h2>ISP Goodies</h2>
 <ul>
 <li>highly cohesive code</li>
 <li>avoiding coupling between all classes using a single fat interface (once a method in the single fat interface gets updated, all classes - no matter they use this method or not - are forced to update accordingly)</li>
 <li>clear separation of business logic by grouping responsibilities into separate interfaces</li>
 </ul>
-<h1><a href="#dependency-inversion-principle" aria-hidden="true" class="anchor" id="dependency-inversion-principle"></a>Dependency Inversion Principle</h1>
+<h1>Dependency Inversion Principle</h1>
 <blockquote>
 <p>Depend on abstractions, not on concretions.</p>
 </blockquote>
 <p>If your implementation detail will depend on the higher-level abstractions, it will help you to get a system that is coupled correctly. Also, it will influence the encapsulation and cohesion of that system.</p>
-<h2><a href="#dip-example" aria-hidden="true" class="anchor" id="dip-example"></a>DIP Example</h2>
+<h2>DIP Example</h2>
 <pre><code class="language-java">// BAD
 public class SQLDatabase {
   public void connect() {
@@ -297,18 +297,18 @@ public class Database {
   }
 }
 </code></pre>
-<h2><a href="#dip-code-smells" aria-hidden="true" class="anchor" id="dip-code-smells"></a>DIP Code smells</h2>
+<h2>DIP Code smells</h2>
 <ul>
 <li>instantiation of low-level modules in high-level ones</li>
 <li>calls to class methods of low-level modules/classes</li>
 </ul>
-<h2><a href="#dip-goodies" aria-hidden="true" class="anchor" id="dip-goodies"></a>DIP Goodies</h2>
+<h2>DIP Goodies</h2>
 <ul>
 <li>increase reusability of higher-level modules by making them independent of lower-level modules</li>
 <li>dependency injection[^1] can be employed to facilitate the run-time provisioning of the chosen low-level component implementation to the high-level component</li>
 <li>injected class can be easily mocked in tests</li>
 </ul>
-<h1><a href="#update" aria-hidden="true" class="anchor" id="update"></a>Update</h1>
+<h1>Update</h1>
 <p>Removed CDI code from Dependency Inversion example because it isn't necessary.</p>
 <p>[^1]: <a href="http://weld.cdi-spec.org/">@Inject for the Java Platform.</a></p>
 <p><a href="https://filippobuletto.github.io/solid-java/">Origin Links of this article</a></p>

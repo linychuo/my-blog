@@ -52,7 +52,7 @@
 Access-Control-Expose-Headers: *
 </code></pre>
 <p>在这过程中查阅了相关文档，有提到3个概念<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header">CORS-safelisted response headers</a>，<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header">CORS-safelisted request header</a>和<a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS">CORS</a></p>
-<h2><a href="#cors-safelisted-response-header" aria-hidden="true" class="anchor" id="cors-safelisted-response-header"></a>CORS-safelisted response header</h2>
+<h2>CORS-safelisted response header</h2>
 <p>A <a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header"><strong>CORS-safelisted response header</strong></a> is an HTTP header in a CORS response that it is considered safe to expose to client scripts. Only safelisted response headers are made available to web pages.</p>
 <p>By default, the safelist includes the following response headers:</p>
 <ul>
@@ -68,7 +68,7 @@ Access-Control-Expose-Headers: *
 <blockquote>
 <p>Note: <strong>Content-Length</strong> was not part of the original set of safelisted response headers</p>
 </blockquote>
-<h2><a href="#cors-safelisted-request-header" aria-hidden="true" class="anchor" id="cors-safelisted-request-header"></a>CORS-safelisted request header</h2>
+<h2>CORS-safelisted request header</h2>
 <p>A <a href="https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header"><strong>CORS-safelisted request header</strong></a> is one of the following HTTP headers:</p>
 <ul>
 <li>Accept</li>
@@ -86,11 +86,11 @@ CORS-safelisted headers must also fulfill the following requirements in order to
 <li>For Content-Type: needs to have a MIME type of its parsed value (ignoring parameters) of either application/x-www-form-urlencoded, multipart/form-data, or text/plain.</li>
 <li>For any header: the value’s length can't be greater than 128.</li>
 </ul>
-<h2><a href="#cors" aria-hidden="true" class="anchor" id="cors"></a>CORS</h2>
+<h2>CORS</h2>
 <p>最后有说到一个CORS，翻译成中文叫跨源资源共享，既然有跨源，那么相对应就有同源，这里有个很重要的概念叫<a href="https://developer.mozilla.org/en-US/docs/Glossary/Origin">Origin</a>，这里可以详细的看一下什么是源</p>
 <p>Web content's origin is defined by the <strong>scheme</strong> (protocol), <strong>hostname</strong> (domain), and <strong>port</strong> of the URL used to access it. Two objects have the same origin only when the scheme, hostname, and port all match.</p>
 <p>Some operations are restricted to same-origin content, and this restriction can be lifted using CORS.</p>
-<h3><a href="#examples" aria-hidden="true" class="anchor" id="examples"></a>Examples</h3>
+<h3>Examples</h3>
 <p>These are same origin because they have the same scheme (http) and hostname (example.com), and the different file path does not matter:</p>
 <pre><code>http://example.com/app1/index.html
 http://example.com/app2/index.html

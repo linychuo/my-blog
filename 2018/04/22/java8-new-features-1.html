@@ -50,7 +50,7 @@
 <li><a href="#first">forEach() method in Iterable interface</a></li>
 <li><a href="#second">default and static methods in Interfaces</a></li>
 </ol>
-<h2><a href="#foreach)-method-in-iterable-interface" aria-hidden="true" class="anchor" id="foreach)-method-in-iterable-interface"></a><!-- raw HTML omitted --><!-- raw HTML omitted -->forEach() method in Iterable interface</h2>
+<h2><!-- raw HTML omitted --><!-- raw HTML omitted -->forEach() method in Iterable interface</h2>
 <p>Whenever we need to traverse through a Collection, we need to create an Iterator whose whole purpose is to iterate over and then we have business logic in a loop for each of the elements in the Collection. We might get ConcurrentModificationException if iterator is not used properly.</p>
 <p>Java 8 has introduced forEach method in java.lang.Iterable interface so that while writing code we focus on business logic only. forEach method takes java.util.function.Consumer object as argument, so it helps in having our business logic at a separate location that we can reuse. Let’s see forEach usage with simple example.</p>
 <pre><code class="language-java">package com.journaldev.java8.foreach;
@@ -104,7 +104,7 @@ class MyConsumer implements Consumer&lt;Integer&gt;{
 }
 </code></pre>
 <p>The number of lines might increase but forEach method helps in having the logic for iteration and business logic at separate place resulting in higher separation of concern and cleaner code.</p>
-<h2><a href="#default-and-static-methods-in-interfaces" aria-hidden="true" class="anchor" id="default-and-static-methods-in-interfaces"></a><!-- raw HTML omitted --><!-- raw HTML omitted -->default and static methods in Interfaces</h2>
+<h2><!-- raw HTML omitted --><!-- raw HTML omitted -->default and static methods in Interfaces</h2>
 <p>If you read forEach method details carefully, you will notice that it’s defined in Iterable interface but we know that interfaces can’t have method body. From Java 8, interfaces are enhanced to have method with implementation. We can use default and static keyword to create interfaces with method implementation. forEach method implementation in Iterable interface is:</p>
 <pre><code class="language-java">default void forEach(Consumer&lt;? super T&gt; action) {
     Objects.requireNonNull(action);

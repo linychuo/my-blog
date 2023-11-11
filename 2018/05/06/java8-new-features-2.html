@@ -50,7 +50,7 @@
 <li><a href="#first">Functional Interfaces and Lambda Expressions</a></li>
 <li><a href="#second">Java Stream API for Bulk Data Operations on Collections</a></li>
 </ol>
-<h2><a href="#functional-interfaces-and-lambda-expressions" aria-hidden="true" class="anchor" id="functional-interfaces-and-lambda-expressions"></a><!-- raw HTML omitted --><!-- raw HTML omitted -->Functional Interfaces and Lambda Expressions</h2>
+<h2><!-- raw HTML omitted --><!-- raw HTML omitted -->Functional Interfaces and Lambda Expressions</h2>
 <p>If you notice above interfaces code, you will notice @FunctionalInterface annotation. Functional interfaces are new concept introduced in Java 8. An interface with exactly one abstract method becomes Functional Interface. We don’t need to use @FunctionalInterface annotation to mark an interface as Functional Interface. @FunctionalInterface annotation is a facility to avoid accidental addition of abstract methods in the functional interfaces. You can think of it like @Override annotation and it’s best practice to use it. java.lang.Runnable with single abstract method run() is a great example of functional interface.</p>
 <p>One of the major benefits of functional interface is the possibility to use lambda expressions to instantiate them. We can instantiate an interface with anonymous class but the code looks bulky.</p>
 <pre><code class="language-java">Runnable r = new Runnable(){
@@ -71,7 +71,7 @@ i1.method1(&quot;abc&quot;);
 </code></pre>
 <p>A new package java.util.function has been added with bunch of functional interfaces to provide target types for lambda expressions and method references. Lambda expressions are a huge topic, I will write a separate article on that in future.</p>
 <p>You can read complete tutorial at <a href="https://www.journaldev.com/2763/java-8-functional-interfaces">Java 8 Lambda Expressions Tutorial</a>.</p>
-<h2><a href="#java-stream-api-for-bulk-data-operations-on-collections" aria-hidden="true" class="anchor" id="java-stream-api-for-bulk-data-operations-on-collections"></a><!-- raw HTML omitted --><!-- raw HTML omitted -->Java Stream API for Bulk Data Operations on Collections</h2>
+<h2><!-- raw HTML omitted --><!-- raw HTML omitted -->Java Stream API for Bulk Data Operations on Collections</h2>
 <p>A new java.util.stream has been added in Java 8 to perform filter/map/reduce like operations with the collection. Stream API will allow sequential as well as parallel execution. This is one of the best feature for me because I work a lot with Collections and usually with Big Data, we need to filter out them based on some conditions.</p>
 <p>Collection interface has been extended with stream() and parallelStream() default methods to get the Stream for sequential and parallel execution. Let’s see their usage with simple example.</p>
 <pre><code class="language-java">package com.journaldev.java8.stream;
