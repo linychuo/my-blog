@@ -8,13 +8,13 @@ mod post;
 #[derive(Debug, StructOpt)]
 struct Cli {
     #[structopt(default_value = "./posts")]
-    posts_dir: String,
+    posts_dir: PathBuf,
     #[structopt(default_value = "./static")]
-    static_files_dir: String,
+    static_files_dir: PathBuf,
     #[structopt(default_value = "./templates")]
-    templates_dir: String,
+    templates_dir: PathBuf,
     #[structopt(default_value = "./build")]
-    build_dir: String,
+    build_dir: PathBuf,
     #[structopt(default_value = "about")]
     excludes: Vec<String>,
 }
@@ -23,14 +23,17 @@ fn main() {
     let args = Cli::from_args();
     let blog = Blogger::new(&args.build_dir, &args.posts_dir, &args.templates_dir);
 
-    blog.render_posts(&args.excludes)
-        .expect("render all posts failed!");
-    for it in args.excludes {
-        blog.render(it.as_str()).unwrap();
+    if let Err(e) = blog.render_posts(&args.excludes) {
+        eprintln!("Failed to render all posts: {}", e);
+        std::process::exit(1);
     }
 
-    Blogger::copy_static_files(
-        PathBuf::from(&args.static_files_dir),
-        PathBuf::from(&args.build_dir),
-    );
+    for it in &args.excludes {
+        if let Err(e) = blog.render(it) {
+            eprintln!("Failed to render post '{}': {}", it, e);
+            std::process::exit(1);
+        }
+    }
+
+    Blogger::copy_static_files(args.static_files_dir, args.build_dir);
 }

@@ -27,7 +27,7 @@ pub struct TagPost {
 type Tags = HashMap<String, Vec<TagPost>>;
 
 impl Blogger {
-    pub fn new(dest_dir: &str, posts_dir: &str, template_dir: &str) -> Blogger {
+    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger {
         let mut hbs = Handlebars::new();
         hbs.set_strict_mode(true);
         hbs.register_templates_directory(".hbs", Path::new(template_dir))
@@ -35,8 +35,8 @@ impl Blogger {
         fs::create_dir_all(&dest_dir).expect("create dest dir failed");
 
         Blogger {
-            dest_dir: PathBuf::from(dest_dir),
-            posts_dir: PathBuf::from(posts_dir),
+            dest_dir: dest_dir.to_path_buf(),
+            posts_dir: posts_dir.to_path_buf(),
             hbs,
             comrak_options: ComrakOptions {
                 ..ComrakOptions::default()
