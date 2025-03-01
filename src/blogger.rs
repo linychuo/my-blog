@@ -46,7 +46,7 @@ impl Blogger {
 
     pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
-        all_posts.sort_by_key(|post| post.created_date_time.clone());
+        all_posts.sort_by_key(|post| post.created_date_time.to_string());
         all_posts.reverse();
         self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
 
@@ -125,9 +125,13 @@ impl Blogger {
                     tags.entry(tag.to_string())
                         .or_insert_with(|| vec![])
                         .push(TagPost {
-                            title: header.title.clone(),
-                            created_date_time: header.date_time.clone(),
-                            url: format!("/{}/{}.html", post.dir.clone(), post.file_name.clone()),
+                            title: header.title.to_string(),
+                            created_date_time: header.date_time.to_string(),
+                            url: format!(
+                                "/{}/{}.html",
+                                post.dir.to_string(),
+                                post.file_name.to_string()
+                            ),
                         });
                 }
                 all_posts.push(post);
@@ -137,7 +141,7 @@ impl Blogger {
         Ok((all_posts, tags))
     }
 
-    fn parse_content(&self, entry_path: &PathBuf) -> (Header, String) {
+    fn parse_content(&self, entry_path: &Path) -> (Header, String) {
         let contents = fs::read_to_string(entry_path).unwrap();
         if contents.starts_with("---") {
             let end_of_yaml = contents[4..].find("---").unwrap() + 4;

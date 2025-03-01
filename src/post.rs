@@ -41,8 +41,8 @@ impl Header {
 impl Post {
     pub fn new(parent_dir: &Path, header: &Header, file_name: String, contents: String) -> Post {
         Post {
-            title: header.title.clone(),
-            created_date_time: header.date_time.clone(),
+            title: header.title.to_string(),
+            created_date_time: header.date_time.to_string(),
             parent_dir: parent_dir.to_path_buf(),
             dir: header.generate_url(),
             file_name,
