@@ -15,7 +15,7 @@ struct Cli {
     templates_dir: PathBuf,
     #[structopt(default_value = "./build")]
     build_dir: PathBuf,
-    #[structopt(default_value = "about")]
+    #[structopt(default_value = "about", use_delimiter = true)]
     excludes: Vec<String>,
 }
 
