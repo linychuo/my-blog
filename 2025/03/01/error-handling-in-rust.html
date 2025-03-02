@@ -47,8 +47,8 @@
 		<article class="post-content">
 			<div class="markup"><p>最近迷上和copilot结对编程了，就找了自己之前的博客生成工具，让copilot挨个对之前的rs文件优化，从中又学到了不少的rust知识，把自己好多年前学的rust又捡了起来，然后专门记录一下几个小小的优化点。</p>
 <h3>1. PathBuf vs Path</h3>
+<p>两个都是用来处理文件路径的，它们比直接使用字符串更安全和方便，它们针对不同的平台有对应平台的处理，例如路径分隔符(windows的\ 和 linux的 /)，同时还大小写敏感(windows除外)。</p>
 <ul>
-<li>两个都是用来处理文件路径的，它们比直接使用字符串更安全和方便，它们针对不同的平台有对应平台的处理，例如路径分隔符(windows的\ 和 linux的 /)，同时还大小写敏感(windows除外)。</li>
 <li>
 <h4>PathBuf</h4>
 <ol>
