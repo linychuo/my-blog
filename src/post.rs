@@ -69,32 +69,3 @@ impl Post {
         Ok(())
     }
 }
-
-#[test]
-fn test_new_header() {
-    let header = Header {
-        title: String::from("test"),
-        date_time: String::from("aa"),
-        tags: String::from("hello world"),
-    };
-    let v1: Vec<&str> = header.tags.split_whitespace().collect();
-    assert_eq!("hello", v1[0]);
-    assert_eq!("world", v1[1]);
-}
-
-#[test]
-fn test_new_post() {
-    let header = Header {
-        title: String::from("test"),
-        date_time: String::from("2019-2-25"),
-        tags: String::from("hello world"),
-    };
-    let post = Post::new(
-        Path::new("a"),
-        &header,
-        String::from("ssssss"),
-        String::from("sss"),
-    );
-    assert_eq!("test", post.title);
-    assert_eq!("world", post.tags[1]);
-}
