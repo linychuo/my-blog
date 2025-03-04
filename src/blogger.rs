@@ -138,7 +138,7 @@ impl Blogger {
 
     fn parse_content(&self, entry_path: &Path) -> String {
         let contents = fs::read_to_string(entry_path).unwrap();
-        comrak::markdown_to_html(&contents, &self.comrak_options),
+        return comrak::markdown_to_html(&contents, &self.comrak_options),
     }
 
     fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
