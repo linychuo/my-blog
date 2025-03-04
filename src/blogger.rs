@@ -46,12 +46,12 @@ impl Blogger {
 
     pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
-        all_posts.sort_by_key(|post| post.created_date_time.to_string());
+        all_posts.sort_by_key(|post| post.header.date_time.to_string());
         all_posts.reverse();
         self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
 
         for item in all_posts {
-            item.render(&self.hbs)?;
+            item.render(&self.dest_dir, &self.hbs)?;
         }
 
         let tags_dir = self.dest_dir.join("tags");
@@ -75,9 +75,9 @@ impl Blogger {
             Some(v) => v.to_str().unwrap(),
             _ => "",
         };
-        let mut f_path = self.posts_dir.join(file_path);
-        f_path.set_extension("markdown");
-        let (_, contents) = self.parse_content(&f_path);
+        let mut path = self.posts_dir.join(file_path);
+        path.set_extension("markdown");
+        let contents = self.parse_content(&path);
         self.render_other(
             dest_file_name,
             &json!({"parent": "layout", "contents": contents}),
@@ -119,19 +119,14 @@ impl Blogger {
             };
 
             if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
-                let (header, contents) = self.parse_content(&entry_path);
-                let post = Post::new(&self.dest_dir, &header, entry_name, contents);
-                for tag in &header.build_tags() {
+                let post = Post::new(entry_path.as_path(), entry_name, &self.comrak_options);
+                for tag in &post.tags() {
                     tags.entry(tag.to_string())
                         .or_insert_with(|| vec![])
                         .push(TagPost {
-                            title: header.title.to_string(),
-                            created_date_time: header.date_time.to_string(),
-                            url: format!(
-                                "/{}/{}.html",
-                                post.dir.to_string(),
-                                post.file_name.to_string()
-                            ),
+                            title: post.header.title.to_string(),
+                            created_date_time: post.header.date_time.to_string(),
+                            url: format!("/{}/{}.html", post.dir, post.file_name),
                         });
                 }
                 all_posts.push(post);
@@ -141,20 +136,9 @@ impl Blogger {
         Ok((all_posts, tags))
     }
 
-    fn parse_content(&self, entry_path: &Path) -> (Header, String) {
+    fn parse_content(&self, entry_path: &Path) -> String {
         let contents = fs::read_to_string(entry_path).unwrap();
-        if contents.starts_with("---") {
-            let end_of_yaml = contents[4..].find("---").unwrap() + 4;
-            let header = serde_yaml::from_str(&contents[..end_of_yaml]).unwrap();
-            let contents =
-                comrak::markdown_to_html(&contents[end_of_yaml + 5..], &self.comrak_options);
-            (header, contents)
-        } else {
-            (
-                Header::default(),
-                comrak::markdown_to_html(&contents, &self.comrak_options),
-            )
-        }
+        comrak::markdown_to_html(&contents, &self.comrak_options),
     }
 
     fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
