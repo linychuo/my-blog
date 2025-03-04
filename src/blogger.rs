@@ -2,7 +2,7 @@ use std::fs::{self, File};
 use std::io;
 use std::path::{Path, PathBuf};
 
-use crate::post::{Header, Post};
+use crate::post::Post;
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
