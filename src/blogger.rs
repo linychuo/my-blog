@@ -120,7 +120,7 @@ impl Blogger {
 
             if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
                 let post = Post::new(entry_path.as_path(), entry_name, &self.comrak_options);
-                for tag in &post.tags() {
+                for tag in &post.tags {
                     tags.entry(tag.to_string())
                         .or_insert_with(|| vec![])
                         .push(TagPost {
