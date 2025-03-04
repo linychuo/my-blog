@@ -37,12 +37,12 @@ fn parse_content(entry_path: &Path, comrak_options: &ComrakOptions) -> (Header, 
     if contents.starts_with("---") {
         let end_of_yaml = contents[4..].find("---").unwrap() + 4;
         let header = serde_yaml::from_str(&contents[..end_of_yaml]).unwrap();
-        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], &self.comrak_options);
+        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], &comrak_options);
         (header, contents)
     } else {
         (
             Header::default(),
-            comrak::markdown_to_html(&contents, &self.comrak_options),
+            comrak::markdown_to_html(&contents, &comrak_options),
         )
     }
 }
@@ -56,7 +56,7 @@ impl Post {
             file_name,
             header,
             contents,
-        }
+        };
     }
 
     pub fn render(&self, parent_dir: &Path, hbs: &Handlebars) -> Result<(), RenderError> {
