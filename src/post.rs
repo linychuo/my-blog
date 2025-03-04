@@ -32,6 +32,21 @@ fn build_tags(tags: &String) -> Vec<String> {
     return tags.split_whitespace().map(|x| x.to_string()).collect()
 }
 
+fn parse_content(entry_path: &Path, comrak_options: &ComrakOptions) -> (Header, String) {
+    let contents = fs::read_to_string(entry_path).unwrap();
+    if contents.starts_with("---") {
+        let end_of_yaml = contents[4..].find("---").unwrap() + 4;
+        let header = serde_yaml::from_str(&contents[..end_of_yaml]).unwrap();
+        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], &self.comrak_options);
+        (header, contents)
+    } else {
+        (
+            Header::default(),
+            comrak::markdown_to_html(&contents, &self.comrak_options),
+        )
+    }
+}
+
 impl Post {
     pub fn new(file_path: &Path, file_name: String, comrak_options: &ComrakOptions) -> Post {
         let (header, contents) = parse_content(file_path, comrak_options);
