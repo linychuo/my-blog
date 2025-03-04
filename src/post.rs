@@ -1,17 +1,16 @@
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
+use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Post {
-    title: String,
-    pub created_date_time: String,
-    parent_dir: PathBuf,
     pub dir: String,
     pub file_name: String,
+    pub header: Header,
     contents: String,
     pub tags: Vec<String>,
 }
@@ -23,36 +22,30 @@ pub struct Header {
     tags: String,
 }
 
-impl Header {
-    pub fn generate_url(&self) -> String {
-        let date = self.date_time.split_whitespace().next().unwrap();
-        let v: Vec<&str> = date.split('-').collect();
-        format!("{}/{}/{}", v[0], v[1], v[2])
-    }
+fn generate_url(&self) -> String {
+    let date = self.date_time.split_whitespace().next().unwrap();
+    let v: Vec<&str> = date.split('-').collect();
+    format!("{}/{}/{}", v[0], v[1], v[2])
+}
 
-    pub fn build_tags(&self) -> Vec<String> {
-        self.tags
-            .split_whitespace()
-            .map(|x| x.to_string())
-            .collect()
-    }
+fn build_tags(tags: &String) -> Vec<String> {
+    return tags.split_whitespace().map(|x| x.to_string()).collect()
 }
 
 impl Post {
-    pub fn new(parent_dir: &Path, header: &Header, file_name: String, contents: String) -> Post {
-        Post {
-            title: header.title.to_string(),
-            created_date_time: header.date_time.to_string(),
-            parent_dir: parent_dir.to_path_buf(),
-            dir: header.generate_url(),
+    pub fn new(file_path: &Path, file_name: String, comrak_options: &ComrakOptions) -> Post {
+        let (header, contents) = parse_content(file_path, comrak_options);
+        return Post {
+            dir: generate_url(&header.date_time),
+            tags: build_tags(&header.tags),
             file_name,
+            header,
             contents,
-            tags: header.build_tags(),
         }
     }
 
-    pub fn render(&self, hbs: &Handlebars) -> Result<(), RenderError> {
-        let file_dir = self.parent_dir.join(&self.dir);
+    pub fn render(&self, parent_dir: &Path, hbs: &Handlebars) -> Result<(), RenderError> {
+        let file_dir = parent_dir.join(&self.dir);
         fs::create_dir_all(&file_dir).unwrap();
 
         let mut f = file_dir.join(&self.file_name);
