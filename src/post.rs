@@ -29,7 +29,7 @@ fn generate_url(date_time: &String) -> String {
 }
 
 fn build_tags(tags: &String) -> Vec<String> {
-    return tags.split_whitespace().map(|x| x.to_string()).collect()
+    return tags.split_whitespace().map(|x| x.to_string()).collect();
 }
 
 fn parse_content(entry_path: &Path, comrak_options: &ComrakOptions) -> (Header, String) {
