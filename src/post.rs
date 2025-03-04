@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
@@ -22,8 +22,8 @@ pub struct Header {
     tags: String,
 }
 
-fn generate_url(&self) -> String {
-    let date = self.date_time.split_whitespace().next().unwrap();
+fn generate_url(date_time: &String) -> String {
+    let date = date_time.split_whitespace().next().unwrap();
     let v: Vec<&str> = date.split('-').collect();
     format!("{}/{}/{}", v[0], v[1], v[2])
 }
