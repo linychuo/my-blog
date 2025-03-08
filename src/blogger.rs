@@ -7,7 +7,7 @@ use crate::post::Post;
 use crate::{DEFAULT_HTML_EXT, DEFAULT_POST_EXT};
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
-use serde_derive::{Deserialize, Serialize};
+use serde_derive::Serialize;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 
@@ -19,7 +19,7 @@ pub struct Blogger {
     comrak_options: ComrakOptions,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct TagPost {
     pub title: String,
     pub url: String,

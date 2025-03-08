@@ -8,7 +8,7 @@ use serde_json::json;
 
 use crate::DEFAULT_HTML_EXT;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct Post {
     pub dir: String,
     pub file_name: String,
@@ -17,7 +17,7 @@ pub struct Post {
     pub tags: Vec<String>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Header {
     pub title: String,
     pub date_time: String,
@@ -26,7 +26,7 @@ pub struct Header {
 
 type ParseResult<'a, T> = std::result::Result<T, ParseContentError<'a>>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct ParseContentError<'a> {
     file_path: &'a Path,
 }
