@@ -5,6 +5,9 @@ use structopt::StructOpt;
 mod blogger;
 mod post;
 
+pub const DEFAULT_POST_EXT: &str = "markdown";
+pub const DEFAULT_HTML_EXT: &str = "html";
+
 #[derive(Debug, StructOpt)]
 struct Cli {
     #[structopt(default_value = "./posts")]

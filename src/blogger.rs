@@ -1,8 +1,10 @@
+use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io;
 use std::path::{Path, PathBuf};
 
 use crate::post::Post;
+use crate::{DEFAULT_HTML_EXT, DEFAULT_POST_EXT};
 use comrak::ComrakOptions;
 use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
@@ -25,6 +27,16 @@ pub struct TagPost {
 }
 
 type Tags = HashMap<String, Vec<TagPost>>;
+
+fn has_extension(path: &Path, ext: &str) -> bool {
+    path.extension()
+        .and_then(OsStr::to_str)
+        .map_or(false, |e| e == ext)
+}
+
+fn contains_string(vec: &[String], s: &str) -> bool {
+    vec.iter().any(|item| item == s)
+}
 
 impl Blogger {
     pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger {
@@ -76,7 +88,7 @@ impl Blogger {
             _ => "",
         };
         let mut path = self.posts_dir.join(file_path);
-        path.set_extension("markdown");
+        path.set_extension(DEFAULT_POST_EXT);
         let contents = self.parse_content(&path);
         self.render_other(
             dest_file_name,
@@ -103,30 +115,36 @@ impl Blogger {
         }
     }
 
-    fn load_posts(&self, exclude: &[String]) -> io::Result<(Vec<Post>, Tags)> {
+    fn load_posts(&self, excludes: &[String]) -> io::Result<(Vec<Post>, Tags)> {
         let mut all_posts: Vec<Post> = vec![];
         let mut tags: Tags = HashMap::new();
         for entry in fs::read_dir(&self.posts_dir)? {
             let entry_path = entry?.path();
-            let entry_ext = match entry_path.extension() {
-                Some(v) => v.to_str().unwrap().to_lowercase(),
-                _ => "".to_string(),
+            if !&entry_path.is_file() {
+                continue;
+            }
+
+            if !has_extension(&entry_path, DEFAULT_POST_EXT) {
+                continue;
+            }
+
+            let entry_name = match entry_path.file_stem().and_then(OsStr::to_str) {
+                Some(name) => name,
+                None => continue,
             };
 
-            let entry_name = match entry_path.file_stem() {
-                Some(v) => v.to_str().unwrap().to_string(),
-                _ => "".to_string(),
-            };
+            if contains_string(excludes, entry_name) {
+                continue;
+            }
 
-            if entry_path.is_file() && !exclude.contains(&entry_name) && entry_ext == "markdown" {
-                let post = Post::new(entry_path.as_path(), entry_name, &self.comrak_options);
+            if let Some(post) = Post::of(&entry_path.as_path(), entry_name, &self.comrak_options) {
                 for tag in &post.tags {
                     tags.entry(tag.to_string())
                         .or_insert_with(|| vec![])
                         .push(TagPost {
                             title: post.header.title.to_string(),
                             created_date_time: post.header.date_time.to_string(),
-                            url: format!("/{}/{}.html", post.dir, post.file_name),
+                            url: format!("/{}/{}.{}", post.dir, post.file_name, DEFAULT_HTML_EXT),
                         });
                 }
                 all_posts.push(post);
@@ -143,7 +161,7 @@ impl Blogger {
 
     fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
         let mut n_f = self.dest_dir.join(template_name);
-        n_f.set_extension("html");
+        n_f.set_extension(DEFAULT_HTML_EXT);
 
         let file = File::create(n_f)?;
         self.hbs.render_to_write(template_name, data, file)?;
@@ -158,7 +176,7 @@ impl Blogger {
         data: &Value,
     ) -> Result<(), RenderError> {
         let mut n_f = self.dest_dir.join(parent_path);
-        n_f.set_extension("html");
+        n_f.set_extension(DEFAULT_HTML_EXT);
 
         let file = File::create(n_f)?;
         self.hbs.render_to_write(template_name, data, file)?;
