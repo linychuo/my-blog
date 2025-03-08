@@ -78,11 +78,11 @@ impl Post {
 
     pub fn render(&self, parent_dir: &Path, hbs: &Handlebars) -> Result<(), RenderError> {
         let file_dir = parent_dir.join(&self.dir);
-        fs::create_dir_all(&file_dir).unwrap();
+        fs::create_dir_all(&file_dir)?;
 
         let mut f = file_dir.join(&self.file_name);
         f.set_extension(DEFAULT_HTML_EXT);
-        let file = File::create(f).unwrap();
+        let file = File::create(f)?;
         hbs.render_to_write(
             "post",
             &json!({
