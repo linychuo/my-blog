@@ -60,7 +60,7 @@ impl Blogger {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
         all_posts.sort_by_key(|post| post.header.date_time.to_string());
         all_posts.reverse();
-        self.render_other("index", &json!({"parent": "layout", "posts": all_posts}))?;
+        self.render_template("index", &json!({"parent": "layout", "posts": all_posts}))?;
 
         for item in all_posts {
             item.render(&self.dest_dir, &self.hbs)?;
@@ -70,12 +70,9 @@ impl Blogger {
         if !tags_dir.exists() {
             fs::create_dir(tags_dir)?;
         }
+
         for (k, v) in tags {
-            self.render_tags(
-                format!("tags/{}", k),
-                "tags",
-                &json!({"parent": "layout", "tag":k, "posts": v}),
-            )?;
+            self.render_template("tags", &json!({"parent": "layout", "tag":k, "posts": v}))?;
         }
 
         Ok(())
@@ -83,14 +80,11 @@ impl Blogger {
 
     pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
         let new_path = Path::new(file_path);
-        let dest_file_name = match new_path.file_stem() {
-            Some(v) => v.to_str().unwrap(),
-            _ => "",
-        };
+        let dest_file_name = new_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
         let mut path = self.posts_dir.join(file_path);
         path.set_extension(DEFAULT_POST_EXT);
         let contents = self.parse_content(&path);
-        self.render_other(
+        self.render_template(
             dest_file_name,
             &json!({"parent": "layout", "contents": contents}),
         )?;
@@ -159,26 +153,18 @@ impl Blogger {
         return comrak::markdown_to_html(&contents, &self.comrak_options);
     }
 
-    fn render_other(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
-        let mut n_f = self.dest_dir.join(template_name);
-        n_f.set_extension(DEFAULT_HTML_EXT);
+    fn render_template(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
+        let mut dest_file;
+        if template_name == "tags" {
+            dest_file = self
+                .dest_dir
+                .join(format!("tags/{}", data["tag"].as_str().unwrap()));
+        } else {
+            dest_file = self.dest_dir.join(template_name);
+        }
+        dest_file.set_extension(DEFAULT_HTML_EXT);
 
-        let file = File::create(n_f)?;
-        self.hbs.render_to_write(template_name, data, file)?;
-
-        Ok(())
-    }
-
-    fn render_tags(
-        &self,
-        parent_path: String,
-        template_name: &str,
-        data: &Value,
-    ) -> Result<(), RenderError> {
-        let mut n_f = self.dest_dir.join(parent_path);
-        n_f.set_extension(DEFAULT_HTML_EXT);
-
-        let file = File::create(n_f)?;
+        let file = File::create(dest_file)?;
         self.hbs.render_to_write(template_name, data, file)?;
 
         Ok(())
