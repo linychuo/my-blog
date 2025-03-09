@@ -34,7 +34,7 @@ fn has_extension(path: &Path, ext: &str) -> bool {
         .map_or(false, |e| e == ext)
 }
 
-fn contains_string(vec: &[String], s: &str) -> bool {
+fn contains(vec: &[String], s: &str) -> bool {
     vec.iter().any(|item| item == s)
 }
 
@@ -127,7 +127,7 @@ impl Blogger {
                 None => continue,
             };
 
-            if contains_string(excludes, entry_name) {
+            if contains(excludes, entry_name) {
                 continue;
             }
 
