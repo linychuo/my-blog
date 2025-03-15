@@ -44,6 +44,7 @@ _               <- [ \t\n\r]*
 ```
 
 ### 语法解释
+
 |||
 |:---|:---|
 |SelectStatement|<li>以`SELECT`开头(区分大小写)</li> <li>解析`ColumnList`(支持*或多个列名)</li><li>`FROM`关键字</li><li>`TableName`单个标识符</li><li>以`;`结束</li>|
