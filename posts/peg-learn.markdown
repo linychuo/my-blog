@@ -1,3 +1,9 @@
+---
+title: "Parsing Expression Garmmer"
+date_time: 2025-03-15 14:41:32
+tags: peg zig
+---
+
 ## PEG
 PEG(Parsing Expression Garmmer，解析文法表达式)是一种用于定义语法规则的形式化的方法，主要用于解析(Parsing)。它特别适合解析器的实现。
 
