@@ -1,9 +1,3 @@
----
-title: "Parsing Expression Garmmer"
-date_time: 2025-03-15 14:41:32
-tags: peg zig
----
-
 ## PEG
 PEG(Parsing Expression Garmmer，解析文法表达式)是一种用于定义语法规则的形式化的方法，主要用于解析(Parsing)。它特别适合解析器的实现。
 
@@ -44,15 +38,21 @@ _               <- [ \t\n\r]*
 ```
 
 ### 语法解释
-
-|||
-|:---|:---|
-|SelectStatement|<li>以`SELECT`开头(区分大小写)</li> <li>解析`ColumnList`(支持*或多个列名)</li><li>`FROM`关键字</li><li>`TableName`单个标识符</li><li>以`;`结束</li>|
-|ColumnList|<li>`*`代表所有列</li><li>或者是一组`Identifier`(列名)，用`,`分隔</li>|
-|TableName|解析一个`标识符`，代表表名|
-|Identifier|匹配`SQL允许的标识符`(字母，数字，下划线)|
-|_|允许空格，换行等，确保解析不会被空格干扰|
-|||
+- `SelectStatement`
+    - 以`SELECT`开头(区分大小写)
+    - 解析`ColumnList`(支持*或多个列名)
+    - `FROM`关键字
+    - `TableName`单个标识符
+    - 以`;`结束
+- `ColumnList`
+    - `*`代表所有列
+    - 或者是一组`Identifier`(列名)，用`,`分隔
+- `TableName`
+    - 解析一个`标识符`，代表表名
+- `Identifier`
+    - 匹配`SQL允许的标识符`(字母，数字，下划线)
+- `_`
+    - 允许空格，换行等，确保解析不会被空格干扰|
 
 ### 解析实例
 ```sql
