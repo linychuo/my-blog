@@ -56,7 +56,7 @@ impl Post {
                 header,
                 contents,
             }),
-            None => {
+            _ => {
                 eprintln!("Error parsing content for: {:#?}", file_path);
                 None
             }

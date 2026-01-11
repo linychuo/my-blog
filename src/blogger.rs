@@ -124,14 +124,14 @@ impl Blogger {
 
             let entry_name = match entry_path.file_stem().and_then(OsStr::to_str) {
                 Some(name) => name,
-                None => continue,
+                _ => continue,
             };
 
             if contains(excludes, entry_name) {
                 continue;
             }
 
-            if let Some(post) = Post::of(&entry_path.as_path(), entry_name, &self.comrak_options) {
+            if let Some(post) = Post::of(entry_path.as_path(), entry_name, &self.comrak_options) {
                 for tag in &post.tags {
                     tags.entry(tag.to_string())
                         .or_insert_with(|| vec![])
