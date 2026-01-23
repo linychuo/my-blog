@@ -1,5 +1,5 @@
 ---
-title: "CFA-LEVEL1-WEEK1"
+title: "CFA-Level1-Week1"
 date_time: 2026-01-23 20:01:32
 tags: CFA
 ---
