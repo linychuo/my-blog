@@ -46,13 +46,14 @@ impl Blogger {
             .expect("register dir of templates failed");
         fs::create_dir_all(&dest_dir).expect("create dest dir failed");
 
+        let mut comrak_options = ComrakOptions::default();
+        comrak_options.extension.table = true;
+
         Blogger {
             dest_dir: dest_dir.to_path_buf(),
             posts_dir: posts_dir.to_path_buf(),
             hbs,
-            comrak_options: ComrakOptions {
-                ..ComrakOptions::default()
-            },
+            comrak_options,
         }
     }
 
