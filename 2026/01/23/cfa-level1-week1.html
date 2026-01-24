@@ -79,7 +79,7 @@
 <li>会算 NPV / IRR，知道它们各自的“坑”</li>
 <li>知道 CFA 偏爱 NPV，不迷信 IRR</li>
 </ol>
-<h4>二、核心思想（先背这段）</h4>
+<h4><strong>二、核心思想（先背这段）</strong></h4>
 <blockquote>
 <p>一块钱今天比明天值钱<br />
 因为：</p>
@@ -90,8 +90,8 @@
 <li>有通胀</li>
 </ul>
 <p>👉 CFA 后面所有估值、债券、股票，<strong>本质都在干一件事：折现</strong></p>
-<h4>三、最基础：现值（PV）和终值（FV）</h4>
-<h5>1. 终值 FV（今天的钱，未来值多少）</h5>
+<h4><strong>三、最基础：现值（PV）和终值（FV）</strong></h4>
+<h5><strong>1. 终值 FV（今天的钱，未来值多少）</strong></h5>
 <h5>公式</h5>
 <p>$$
 𝐹𝑉 = 𝑃𝑉 × (1+𝑟)^𝑛
@@ -114,7 +114,7 @@ $$</p>
 <li>r 和 n 是“指数关系”，不是线性</li>
 <li>年复利 &gt; 单利</li>
 </ul>
-<h5>2. 现值 PV（未来的钱，现在值多少）</h5>
+<h5><strong>2. 现值 PV（未来的钱，现在值多少）</strong></h5>
 <h5>公式</h5>
 <p>$$
 𝑃𝑉 = \frac{𝐹𝑉}{(1 + 𝑟)^𝑛}
@@ -131,7 +131,7 @@ $$</p>
 <li>FV 是“放大”</li>
 <li>PV 是“打折”</li>
 </ul>
-<h4>四、多期现金流（为 NPV 做准备）</h4>
+<h4><strong>四、多期现金流（为 NPV 做准备）</strong></h4>
 <p>现实投资几乎都是这样：</p>
 <table>
 <thead>
@@ -161,49 +161,49 @@ $$</p>
 </table>
 <p><strong>👉 原则：</strong><br />
 <strong>每一笔钱，都要单独折现到今天</strong></p>
-<h4>五、净现值 NPV（CFA 最爱的指标）</h4>
-<h5>1. 定义</h5>
+<h4><strong>五、净现值 NPV（CFA 最爱的指标）</strong></h4>
+<h5><strong>1. 定义</strong></h5>
 <p>$$
 𝑁𝑃𝑉 = \sum\frac{𝐶𝐹_{𝑡}}{(1 + 𝑟)^𝑡} − 初始投资
 $$	​</p>
-<h5>2. 决策规则（必背）</h5>
+<h5><strong>2. 决策规则（必背）</strong></h5>
 <ul>
 <li>NPV &gt; 0 → 投</li>
 <li>NPV &lt; 0 → 不投</li>
 <li>多个项目 → 选 NPV 最大的</li>
 </ul>
 <p>📌 CFA 一级最常考的就是这句</p>
-<h5>3. 例题（典型）</h5>
+<h5><strong>3. 例题（典型）</strong></h5>
 <blockquote>
-<p>投资 1000<!-- raw HTML omitted -->
-第 1 年 400<!-- raw HTML omitted -->
-第 2 年 400<!-- raw HTML omitted -->
+<p>投资 1000<br />
+第 1 年 400<br />
+第 2 年 400<br />
 折现率 10%</p>
 </blockquote>
 <p>$$
 𝑁𝑃𝑉 = \frac{400}{1.1} + \frac{400}{1.1^2} − 1000
 $$</p>
 <p>如果 NPV &lt; 0 → <strong>直接淘汰</strong></p>
-<h5>4. NPV 的优点（考试爱问）</h5>
+<h5><strong>4. NPV 的优点（考试爱问）</strong></h5>
 <ul>
 <li>考虑时间价值 ✅</li>
 <li>使用真实资本成本 ✅</li>
 <li>可直接反映“增加多少财富” ✅</li>
 </ul>
-<h4>六、内部收益率 IRR（最容易被坑）</h4>
-<h5>1. 定义</h5>
+<h4><strong>六、内部收益率 IRR（最容易被坑）</strong></h4>
+<h5><strong>1. 定义</strong></h5>
 <blockquote>
 <p><strong>使 NPV = 0 的折现率</strong></p>
 </blockquote>
 <p>$$
 0 = \sum\frac{𝐶𝐹_{𝑡}}{(1 + 𝐼𝑅𝑅)^𝑡} − 初始投资
 $$</p>
-<h5>2. 决策规则（但要小心）</h5>
+<h5><strong>2. 决策规则（但要小心）</strong></h5>
 <ul>
 <li><strong>IRR &gt; 折现率 → 看起来可投</strong></li>
 <li><strong>IRR &lt; 折现率 → 不投</strong></li>
 </ul>
-<h4>3. IRR 的 3 个大坑（一级重点）</h4>
+<h4><strong>3. IRR 的 3 个大坑（一级重点）</strong></h4>
 <p>❌ <strong>坑 1：多个 IRR</strong></p>
 <ul>
 <li>现金流正负号反复变化</li>
@@ -222,13 +222,13 @@ $$</p>
 <li>NPV 假设：按资本成本再投资（合理）</li>
 </ul>
 <p>📌 <strong>CFA 官方立场：NPV &gt; IRR</strong></p>
-<h4>七、年金（Annuity）——必考但不难</h4>
-<h5>1. 普通年金</h5>
+<h4><strong>七、年金（Annuity）——必考但不难</strong></h4>
+<h5><strong>1. 普通年金</strong></h5>
 <ul>
 <li>每期末收钱</li>
 <li>房贷、养老金</li>
 </ul>
-<h4>2. 先付年金</h4>
+<h4><strong>2. 先付年金</strong></h4>
 <ul>
 <li>每期初收钱</li>
 <li>房租</li>
@@ -237,13 +237,13 @@ $$</p>
 <blockquote>
 <p><strong>先付年金 = 普通年金 × (1 + r)</strong></p>
 </blockquote>
-<h4>八、有效年利率 EAR（概念题常考）</h4>
+<h4><strong>八、有效年利率 EAR（概念题常考）</strong></h4>
 <p><strong>名义利率 ≠ 实际利率</strong></p>
 <p>$$
 𝐸𝐴𝑅 = (1 + \frac{𝑟_{𝑛𝑜𝑚}}{𝑚})^𝑚 − 1
 $$</p>
 <p>📌 复利次数越多 → EAR 越高</p>
-<h4>九、本周必背清单（不背=白学）</h4>
+<h4><strong>九、本周必背清单（不背=白学）</strong></h4>
 <p>✅ FV / PV 公式<br />
 ✅ NPV 决策规则<br />
 ✅ IRR 三大缺陷<br />
@@ -275,7 +275,6 @@ $$</p>
 			<div class="footer_col footer_col_1">
 				<ul class="contact_list">
 					<li>Yongchao Li</li>
-					<li><a href="mailto:linychuo@gmail.com">linychuo@gmail.com</a></li>
 					
 					</li>
 				</ul>
