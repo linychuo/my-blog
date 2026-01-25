@@ -573,16 +573,13 @@ dependencies = [
 name = "my-blog"
 version = "0.1.0"
 dependencies = [
- "anstream",
  "comrak",
  "handlebars",
- "linked-hash-map",
  "serde",
  "serde_derive",
  "serde_json",
  "serde_yaml",
  "structopt",
- "time",
 ]
 
 [[package]]
