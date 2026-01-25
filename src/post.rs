@@ -31,7 +31,7 @@ fn build_dir(date_time: &str) -> String {
 }
 
 fn build_tags(tags: &str) -> Vec<String> {
-    return tags.split_whitespace().map(|x| x.to_string()).collect();
+    tags.split_whitespace().map(|x| x.to_string()).collect()
 }
 
 fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Option<(Header, String)> {
@@ -39,7 +39,7 @@ fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Option<(He
     if contents.starts_with("---") {
         let end_of_yaml = contents[4..].find("---").unwrap() + 4;
         let header = serde_yaml::from_str(&contents[..end_of_yaml]).unwrap();
-        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], &comrak_options);
+        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], comrak_options);
         return Some((header, contents));
     }
     None

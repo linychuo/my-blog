@@ -29,9 +29,7 @@ pub struct TagPost {
 type Tags = HashMap<String, Vec<TagPost>>;
 
 fn has_extension(path: &Path, ext: &str) -> bool {
-    path.extension()
-        .and_then(OsStr::to_str)
-        .map_or(false, |e| e == ext)
+    path.extension().and_then(OsStr::to_str) == Some(ext)
 }
 
 fn contains(vec: &[String], s: &str) -> bool {
@@ -44,7 +42,7 @@ impl Blogger {
         hbs.set_strict_mode(true);
         hbs.register_templates_directory(".hbs", Path::new(template_dir))
             .expect("register dir of templates failed");
-        fs::create_dir_all(&dest_dir).expect("create dest dir failed");
+        fs::create_dir_all(dest_dir).expect("create dest dir failed");
 
         let mut comrak_options = ComrakOptions::default();
         comrak_options.extension.table = true;
@@ -134,13 +132,11 @@ impl Blogger {
 
             if let Some(post) = Post::of(entry_path.as_path(), entry_name, &self.comrak_options) {
                 for tag in &post.tags {
-                    tags.entry(tag.to_string())
-                        .or_insert_with(|| vec![])
-                        .push(TagPost {
-                            title: post.header.title.to_string(),
-                            created_date_time: post.header.date_time.to_string(),
-                            url: format!("/{}/{}.{}", post.dir, post.file_name, DEFAULT_HTML_EXT),
-                        });
+                    tags.entry(tag.to_string()).or_default().push(TagPost {
+                        title: post.header.title.to_string(),
+                        created_date_time: post.header.date_time.to_string(),
+                        url: format!("/{}/{}.{}", post.dir, post.file_name, DEFAULT_HTML_EXT),
+                    });
                 }
                 all_posts.push(post);
             }
@@ -151,7 +147,7 @@ impl Blogger {
 
     fn parse_content(&self, entry_path: &Path) -> String {
         let contents = fs::read_to_string(entry_path).unwrap();
-        return comrak::markdown_to_html(&contents, &self.comrak_options);
+        comrak::markdown_to_html(&contents, &self.comrak_options)
     }
 
     fn render_template(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
