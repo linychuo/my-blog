@@ -1,7 +1,7 @@
 ---
 title: "AI Agent Skills 术语详解：2025-2026 完整指南（合并版）"
 date_time: 2026-03-08 18:15:00
-tags: AI Agent Skills MCP LLM 人工智能
+tags: ai agent skills mcp llm 人工智能
 ---
 
 # AI Agent Skills 术语详解：2025-2026 完整指南（合并版）
