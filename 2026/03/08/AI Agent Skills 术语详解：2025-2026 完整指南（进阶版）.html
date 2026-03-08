@@ -80,23 +80,18 @@
 </blockquote>
 <hr />
 <h2>一、核心概念全景图</h2>
-<pre><code class="language-mermaid">graph TB
-    User[用户] --&gt; Agent[AI Agent]
-    Agent --&gt; LLM[大语言模型]
-    Agent --&gt; Memory[记忆系统]
-    Agent --&gt; Tools[工具集]
-    
-    Tools --&gt; Skill[Skills]
-    Tools --&gt; MCP[MCP Protocol]
-    Tools --&gt; API[外部 API]
-    
-    LLM --&gt; FunctionCall[Function Calling]
-    FunctionCall --&gt; Tools
-    
-    Memory --&gt; ShortTerm[短期记忆]
-    Memory --&gt; LongTerm[长期记忆]
-    
-    Agent --&gt; Output[输出/行动]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    AI Agent 架构全景                         │
+├─────────────────────────────────────────────────────────────┤
+│  用户 ──→ AI Agent ──→ 大语言模型 ──→ Function Calling      │
+│            │               │                    │           │
+│            ├─→ 记忆系统    │                    ↓           │
+│            │   ├─ 短期记忆 │                  工具集        │
+│            │   └─ 长期记忆 │                    │           │
+│            │               │          ┌────────┼────────┐   │
+│            ↓               │          ↓        ↓        ↓   │
+│         输出/行动          │        Skills   MCP    外部 API│
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h2>二、基础术语</h2>
@@ -165,15 +160,15 @@ Agent 执行流程：
 </tbody>
 </table>
 <p><strong>层级关系</strong>：</p>
-<pre><code class="language-mermaid">graph TD
-    Cap[Capability: 信息获取] --&gt; Skill1[Skill: 网络搜索]
-    Cap --&gt; Skill2[Skill: 文件读取]
-    
-    Skill1 --&gt; Tool1[Tool: web_search]
-    Skill1 --&gt; Tool2[Tool: web_fetch]
-    
-    Skill2 --&gt; Tool3[Tool: read_file]
-    Skill2 --&gt; Tool4[Tool: list_dir]
+<pre><code>Capability: 信息获取
+│
+├── Skill: 网络搜索
+│   ├── Tool: web_search
+│   └── Tool: web_fetch
+│
+└── Skill: 文件读取
+    ├── Tool: read_file
+    └── Tool: list_dir
 </code></pre>
 <p><strong>技能结构示例</strong>：</p>
 <pre><code class="language-yaml">skill: github
@@ -193,19 +188,19 @@ config:
 <h3>3. Function Calling（函数调用）</h3>
 <p><strong>定义</strong>：LLM 识别用户意图后，调用外部函数获取结果。</p>
 <p><strong>工作流程</strong>：</p>
-<pre><code class="language-mermaid">sequenceDiagram
-    participant U as 用户
-    participant L as LLM
-    participant F as 函数执行器
-    participant E as 外部服务
-    
-    U-&gt;&gt;L: 北京今天天气如何？
-    L-&gt;&gt;L: 分析意图，选择函数
-    L-&gt;&gt;F: get_weather(location=&quot;Beijing&quot;)
-    F-&gt;&gt;E: 调用天气 API
-    E-&gt;&gt;F: 返回天气数据
-    F-&gt;&gt;L: 返回结果
-    L-&gt;&gt;U: 北京今天晴，25°C
+<pre><code>┌────────────────────────────────────────────────────────────┐
+│              Function Calling 时序图                        │
+├────────────────────────────────────────────────────────────┤
+│  用户      LLM      函数执行器    外部服务                  │
+│   │         │           │           │                      │
+│   │─北京天气？─→│           │           │                      │
+│   │         │─分析意图 ─→│           │                      │
+│   │         │─get_weather ─→│           │                      │
+│   │         │           │─调用 API ─→│                      │
+│   │         │           │←返回数据 ──│                      │
+│   │         │←返回结果 ───│           │                      │
+│   │←北京晴，25°C ────────────                              │
+└────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>示例</strong>：</p>
 <pre><code class="language-json">// LLM 输出的函数调用
@@ -267,43 +262,61 @@ config:
 </tbody>
 </table>
 <p><strong>示例架构</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    User[用户请求] --&gt; Orch[Orchestrator]
-    Orch --&gt; Parse[任务解析]
-    Parse --&gt; Plan[生成计划]
-    Plan --&gt; Assign[分配任务]
-    
-    Assign --&gt; Agent1[Search Agent]
-    Assign --&gt; Agent2[Code Agent]
-    Assign --&gt; Agent3[Write Agent]
-    
-    Agent1 --&gt; Result1[搜索结果]
-    Agent2 --&gt; Result2[代码实现]
-    Agent3 --&gt; Result3[文档撰写]
-    
-    Result1 --&gt; Merge[结果整合]
-    Result2 --&gt; Merge
-    Result3 --&gt; Merge
-    
-    Merge --&gt; Output[返回用户]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  Orchestrator 架构                           │
+├─────────────────────────────────────────────────────────────┤
+│                    用户请求                                  │
+│                       │                                      │
+│                       ↓                                      │
+│                 ┌───────────┐                               │
+│                 │Orchestrator│                              │
+│                 └─────┬─────┘                               │
+│                       │                                      │
+│         ┌─────────────┼─────────────┐                       │
+│         ↓             ↓             ↓                       │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐                   │
+│   │Search    │ │Code      │ │Write     │                   │
+│   │Agent     │ │Agent     │ │Agent     │                   │
+│   └────┬─────┘ └────┬─────┘ └────┬─────┘                   │
+│        │            │            │                          │
+│        └────────────┴────────────┘                          │
+│                     │                                        │
+│                     ↓                                        │
+│               ┌───────────┐                                 │
+│               │ 结果整合   │                                 │
+│               └─────┬─────┘                                 │
+│                     │                                        │
+│                     ↓                                        │
+│                 返回用户                                     │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h3>5. Memory System（记忆系统）</h3>
 <p><strong>定义</strong>：让 Agent 记住历史对话和上下文信息的机制。</p>
 <p><strong>三层记忆架构</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    subgraph Memory System
-        WM[工作记忆&lt;br/&gt;Working Memory]
-        STM[短期记忆&lt;br/&gt;Short-term Memory]
-        LTM[长期记忆&lt;br/&gt;Long-term Memory]
-    end
-    
-    Input[输入] --&gt; WM
-    WM --&gt; STM
-    STM --&gt;|重要信息 | LTM
-    LTM --&gt;|检索 | WM
-    
-    WM --&gt; Agent[Agent 决策]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  三层记忆架构                                │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   输入 ──→ ┌─────────────┐                                 │
+│            │ 工作记忆     │ ←─ 当前任务                     │
+│            └──────┬──────┘                                 │
+│                   │                                         │
+│                   ↓                                         │
+│            ┌─────────────┐                                 │
+│            │ 短期记忆     │ ←─ 当前会话                     │
+│            └──────┬──────┘                                 │
+│                   │                                         │
+│            (重要信息)                                       │
+│                   ↓                                         │
+│            ┌─────────────┐                                 │
+│            │ 长期记忆     │ ←─ 跨会话持久化                 │
+│            └──────┬──────┘                                 │
+│                   │                                         │
+│            (检索)                                           │
+│                   │                                         │
+│                   └──────────→ Agent 决策                   │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>记忆类型详解</strong>：</p>
 <table>
@@ -409,22 +422,20 @@ config:
 <h3>7. RAG（Retrieval-Augmented Generation）</h3>
 <p><strong>定义</strong>：检索增强生成，先从知识库检索信息，再让 LLM 生成回答。</p>
 <p><strong>完整流程</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    subgraph 索引阶段
-        Doc[文档] --&gt; Chunk[分块]
-        Chunk --&gt; Embed[向量化]
-        Embed --&gt; DB[(向量数据库)]
-    end
-    
-    subgraph 查询阶段
-        Query[用户问题] --&gt; QEmbed[向量化]
-        QEmbed --&gt; Search[相似度搜索]
-        Search --&gt; DB
-        DB --&gt; Results[相关文档]
-        Results --&gt; Prompt[构建 Prompt]
-        Prompt --&gt; LLM[LLM 生成]
-        LLM --&gt; Answer[回答]
-    end
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    RAG 完整流程                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  【索引阶段】                                                │
+│   文档 ──→ 分块 ──→ 向量化 ──→ 向量数据库                   │
+│                                                             │
+│  【查询阶段】                                                │
+│   用户问题 ──→ 向量化 ──→ 相似度搜索 ──→ 向量数据库         │
+│                                          │                  │
+│                                          ↓                  │
+│   回答 ←── LLM 生成 ←── 构建 Prompt ←── 相关文档           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>应用场景</strong>：</p>
 <ul>
@@ -605,12 +616,29 @@ config:
 <li>🔗 <strong>互操作性</strong> - 不同 Agent 可共享工具</li>
 </ul>
 <p><strong>MCP 架构</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    Host[Host 应用&lt;br/&gt;如 Claude Desktop] &lt;--&gt; MCP[MCP Protocol]
-    MCP &lt;--&gt; Server[MCP Server]
-    Server --&gt; Resources[资源&lt;br/&gt;文件/数据库]
-    Server --&gt; Tools[工具&lt;br/&gt;API/命令]
-    Server --&gt; Prompts[Prompt 模板]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                   MCP 架构                                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────┐                                           │
+│   │ Host 应用    │                                           │
+│   │(如 Claude)  │                                           │
+│   └──────┬──────┘                                           │
+│          │                                                  │
+│          ↔ MCP Protocol                                     │
+│          │                                                  │
+│          ↓                                                  │
+│   ┌─────────────┐                                           │
+│   │ MCP Server  │                                           │
+│   └──────┬──────┘                                           │
+│          │                                                  │
+│    ┌─────┼─────┐                                            │
+│    ↓     ↓     ↓                                            │
+│ Resources Tools Prompts                                     │
+│ (资源)  (工具)  (模板)                                       │
+│ 文件    API    代码审查                                      │
+│ 数据库  命令   文档生成                                      │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>MCP 三大核心概念</strong>：</p>
 <table>
@@ -700,17 +728,23 @@ config:
 <li>📋 <strong>结果返回</strong> - 结构化返回执行结果</li>
 </ul>
 <p><strong>通信模式</strong>：</p>
-<pre><code class="language-mermaid">sequenceDiagram
-    participant M as Manager Agent
-    participant W as Worker Agent
-    participant R as Resource Agent
-    
-    M-&gt;&gt;W: 执行代码生成任务
-    W-&gt;&gt;R: 请求代码模板
-    R-&gt;&gt;W: 返回模板
-    W-&gt;&gt;W: 生成代码
-    W-&gt;&gt;M: 返回结果
-    M-&gt;&gt;M: 整合所有结果
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│              A2A 通信模式                                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Manager Agent    Worker Agent    Resource Agent            │
+│       │               │               │                     │
+│       │─执行任务 ──→│               │                     │
+│       │               │─请求模板 ──→│                     │
+│       │               │←返回模板 ───│                     │
+│       │               │               │                     │
+│       │               │ 生成代码      │                     │
+│       │               │               │                     │
+│       │←返回结果 ────│               │                     │
+│       │               │               │                     │
+│       │ 整合所有结果   │               │                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h3>12. Local LLM（本地大模型）</h3>
@@ -781,20 +815,30 @@ python -m vllm.entrypoints.api_server --model meta-llama/Llama-2-7b
 <h3>13. Model Gateway（模型网关）</h3>
 <p><strong>定义</strong>：统一管理多个 LLM API 的中间层。</p>
 <p><strong>核心功能</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    App[应用程序] --&gt; Gateway[Model Gateway]
-    
-    Gateway --&gt; Route[路由模块]
-    Gateway --&gt; Cache[缓存模块]
-    Gateway --&gt; Rate[限流模块]
-    Gateway --&gt; Cost[成本模块]
-    
-    Route --&gt; API1[OpenAI API]
-    Route --&gt; API2[Anthropic API]
-    Route --&gt; API3[本地模型]
-    
-    Cache --&gt; DB[(响应缓存)]
-    Cost --&gt; Log[(使用日志)]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  Model Gateway 架构                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│                  应用程序                                    │
+│                      │                                      │
+│                      ↓                                      │
+│            ┌─────────────────┐                             │
+│            │ Model Gateway   │                             │
+│            └────────┬────────┘                             │
+│                     │                                       │
+│    ┌────────────────┼────────────────┐                     │
+│    ↓                ↓                ↓                     │
+│ ┌──────┐      ┌──────────┐     ┌──────────┐              │
+│ │路由  │      │  缓存    │     │  限流    │              │
+│ │模块  │      │  模块    │     │  模块    │              │
+│ └──┬───┘      └────┬─────┘     └────┬─────┘              │
+│    │               │                │                     │
+│    ↓               ↓                ↓                     │
+│ ┌──────┐      ┌──────────┐     ┌──────────┐              │
+│ │OpenAI│      │响应缓存   │     │成本统计   │              │
+│ │API   │      │数据库     │     │日志      │              │
+│ └──────┘      └──────────┘     └──────────┘              │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>功能详解</strong>：</p>
 <table>
@@ -903,36 +947,45 @@ python -m vllm.entrypoints.api_server --model meta-llama/Llama-2-7b
 └── tests/               # 测试用例
 </code></pre>
 <p><strong>技能发现流程</strong>：</p>
-<pre><code class="language-mermaid">graph LR
-    A[用户搜索] --&gt; B[技能注册中心]
-    B --&gt; C[返回技能列表]
-    C --&gt; D[查看详情]
-    D --&gt; E[安装技能]
-    E --&gt; F[配置凭证]
-    F --&gt; G[技能可用]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                技能发现流程                                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  用户搜索 ──→ 技能注册中心 ──→ 返回技能列表                 │
+│                                          │                  │
+│                                          ↓                  │
+│                                    查看详情                 │
+│                                          │                  │
+│                                          ↓                  │
+│                                    安装技能                 │
+│                                          │                  │
+│                                          ↓                  │
+│                                    配置凭证                 │
+│                                          │                  │
+│                                          ↓                  │
+│                                    技能可用                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h2>六、安全与治理</h2>
 <h3>15. Guardrails（护栏）</h3>
 <p><strong>定义</strong>：限制 Agent 行为的安全机制。</p>
 <p><strong>多层防护体系</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    subgraph 输入层
-        Input[用户输入] --&gt; Filter1[恶意 Prompt 检测]
-        Filter1 --&gt; Filter2[敏感词过滤]
-    end
-    
-    subgraph 执行层
-        Filter2 --&gt; Auth[权限验证]
-        Auth --&gt; Limit[速率限制]
-        Limit --&gt; Sandbox[沙箱执行]
-    end
-    
-    subgraph 输出层
-        Sandbox --&gt; Review1[内容审查]
-        Review1 --&gt; Review2[事实核查]
-        Review2 --&gt; Output[最终输出]
-    end
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                Guardrails 多层防护体系                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  【输入层】                                                  │
+│   用户输入 ──→ 恶意 Prompt 检测 ──→ 敏感词过滤              │
+│                                                             │
+│  【执行层】                                                  │
+│   敏感词过滤 ──→ 权限验证 ──→ 速率限制 ──→ 沙箱执行        │
+│                                                             │
+│  【输出层】                                                  │
+│   沙箱执行 ──→ 内容审查 ──→ 事实核查 ──→ 最终输出          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>护栏类型</strong>：</p>
 <table>
@@ -1029,19 +1082,26 @@ def execute_command(command: str):
 </tbody>
 </table>
 <p><strong>实现模式</strong>：</p>
-<pre><code class="language-mermaid">sequenceDiagram
-    participant U as 用户
-    participant A as Agent
-    participant H as Human
-    
-    A-&gt;&gt;A: 分析任务
-    A-&gt;&gt;A{需要确认？}
-    A-&gt;&gt;H|是 | 请求确认
-    H-&gt;&gt;A: 批准/拒绝
-    A-&gt;&gt;A{批准？}
-    A-&gt;&gt;A|是 | 执行操作
-    A-&gt;&gt;A|否 | 取消任务
-    A-&gt;&gt;U: 返回结果
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│            Human-in-the-Loop 实现模式                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Agent         Human         用户                          │
+│    │             │            │                            │
+│    │─分析任务 ──→│            │                            │
+│    │             │            │                            │
+│    │─需要确认？──→│            │                            │
+│    │             │            │                            │
+│    │←批准/拒绝 ──│            │                            │
+│    │             │            │                            │
+│    │─批准？ ──→  │            │                            │
+│    │             │            │                            │
+│    │ 是→执行操作  │            │                            │
+│    │ 否→取消任务  │            │                            │
+│    │             │            │                            │
+│    │─────────────────────────→│ 返回结果                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h2>七、评估与监控</h2>
@@ -1090,31 +1150,48 @@ def execute_command(command: str):
 </tbody>
 </table>
 <p><strong>评估流程</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    TestSet[测试用例集] --&gt; Run[执行测试]
-    Run --&gt; Collect[收集指标]
-    Collect --&gt; Analyze[分析结果]
-    Analyze --&gt; Report[生成报告]
-    Report --&gt; Improve[改进优化]
-    Improve --&gt; Run
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                 Agent 评估流程                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   测试用例集 ──→ 执行测试 ──→ 收集指标                     │
+│                                       │                     │
+│                                       ↓                     │
+│   改进优化 ←── 生成报告 ←── 分析结果                       │
+│      │                                                      │
+│      └──────────────────────────────┘                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h3>18. Observability（可观测性）</h3>
 <p><strong>定义</strong>：监控和追踪 Agent 行为的能力。</p>
 <p><strong>关键数据</strong>：</p>
-<pre><code class="language-mermaid">graph LR
-    subgraph 可观测性数据
-        Logs[日志&lt;br/&gt;完整对话记录]
-        Traces[追踪&lt;br/&gt;工具调用链]
-        Metrics[指标&lt;br/&gt;性能/成本]
-    end
-    
-    Logs --&gt; Dashboard[监控面板]
-    Traces --&gt; Dashboard
-    Metrics --&gt; Dashboard
-    
-    Dashboard --&gt; Alert[告警]
-    Dashboard --&gt; Report[报告]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                Observability 可观测性                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────────────────┐                          │
+│   │      可观测性数据            │                          │
+│   │  ┌──────┐ ┌──────┐ ┌──────┐ │                          │
+│   │  │日志  │ │追踪  │ │指标  │ │                          │
+│   │  │对话  │ │调用  │ │性能  │ │                          │
+│   │  │记录  │ │链    │ │成本  │ │                          │
+│   │  └──┬───┘ └──┬───┘ └──┬───┘ │                          │
+│   └─────┼────────┼────────┼─────┘                          │
+│         │        │        │                                 │
+│         └────────┴────────┘                                 │
+│                  │                                          │
+│                  ↓                                          │
+│          ┌───────────────┐                                 │
+│          │   监控面板     │                                 │
+│          └───────┬───────┘                                 │
+│                  │                                          │
+│         ┌────────┴────────┐                                │
+│         ↓                 ↓                                │
+│       告警              报告                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>主流工具</strong>：</p>
 <table>
@@ -1153,23 +1230,29 @@ def execute_command(command: str):
 <h3>19. Multi-Agent Systems（多 Agent 系统）</h3>
 <p><strong>定义</strong>：多个 Agent 协作完成复杂任务。</p>
 <p><strong>协作模式</strong>：</p>
-<pre><code class="language-mermaid">graph TB
-    subgraph 主从模式
-        Manager[Manager Agent] --&gt; Worker1[Worker 1]
-        Manager --&gt; Worker2[Worker 2]
-        Manager --&gt; Worker3[Worker 3]
-    end
-    
-    subgraph 对等模式
-        Peer1[Peer 1] &lt;--&gt; Peer2[Peer 2]
-        Peer2 &lt;--&gt; Peer3[Peer 3]
-        Peer1 &lt;--&gt; Peer3
-    end
-    
-    subgraph 流水线模式
-        Stage1[阶段 1] --&gt; Stage2[阶段 2]
-        Stage2 --&gt; Stage3[阶段 3]
-    end
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│              Multi-Agent 协作模式                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  【主从模式】                                                │
+│                                                             │
+│            Manager Agent                                    │
+│            /    │    \                                      │
+│           ↓     ↓     ↓                                     │
+│      Worker1  Worker2  Worker3                              │
+│                                                             │
+│  【对等模式】                                                │
+│                                                             │
+│      Peer1 ←──→ Peer2                                       │
+│        ↖        ↙                                           │
+│         ↘      ↙                                            │
+│          Peer3                                              │
+│                                                             │
+│  【流水线模式】                                              │
+│                                                             │
+│    阶段 1 ──→ 阶段 2 ──→ 阶段 3                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <p><strong>模式对比</strong>：</p>
 <table>
@@ -1311,20 +1394,38 @@ Deploy Agent → 部署上线
 </tbody>
 </table>
 <p><strong>选型指南</strong>：</p>
-<pre><code class="language-mermaid">graph TD
-    Start[选择模型] --&gt; Hardware{硬件条件？}
-    
-    Hardware --&gt;|GPU 8GB+ | Medium[7B 模型]
-    Hardware --&gt;|GPU 4GB | Small[3B 模型]
-    Hardware --&gt;|CPU only | Tiny[1B 模型]
-    
-    Medium --&gt; Task{任务类型？}
-    Small --&gt; Task
-    Tiny --&gt; Task
-    
-    Task --&gt;|通用对话 | Phi3[Phi-3]
-    Task --&gt;|中文场景 | Qwen[Qwen]
-    Task --&gt;|代码生成 | StarCoder[StarCoder]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│              小语言模型选型指南                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│                   选择模型                                  │
+│                      │                                      │
+│                      ↓                                      │
+│               ┌─────────────┐                              │
+│               │  硬件条件？  │                              │
+│               └──────┬──────┘                              │
+│          ┌───────────┼───────────┐                         │
+│          │           │           │                         │
+│          ↓           ↓           ↓                         │
+│    ┌──────────┐ ┌──────────┐ ┌──────────┐                │
+│    │GPU 8GB+  │ │GPU 4GB   │ │CPU only  │                │
+│    └────┬─────┘ └────┬─────┘ └────┬─────┘                │
+│         │            │            │                       │
+│         ↓            ↓            ↓                       │
+│     7B 模型       3B 模型       1B 模型                    │
+│         │            │            │                       │
+│         └────────────┴────────────┘                       │
+│                      │                                      │
+│                      ↓                                      │
+│               ┌─────────────┐                              │
+│               │  任务类型？  │                              │
+│               └──────┬──────┘                              │
+│          ┌───────────┼───────────┐                         │
+│          ↓           ↓           ↓                         │
+│      Phi-3       Qwen      StarCoder                       │
+│    (通用对话)  (中文场景)  (代码生成)                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <h2>九、nanobot 实践案例</h2>
@@ -1386,50 +1487,42 @@ mcpServers:
 <hr />
 <h2>十、术语关系总览</h2>
 <h3>完整架构图</h3>
-<pre><code class="language-mermaid">graph TB
-    subgraph 用户层
-        User[用户]
-        UI[交互界面]
-    end
-    
-    subgraph Agent 层
-        Agent[AI Agent]
-        Orch[Orchestrator]
-    end
-    
-    subgraph 核心层
-        LLM[大语言模型]
-        Memory[记忆系统]
-        FC[Function Calling]
-    end
-    
-    subgraph 工具层
-        Skills[Skills]
-        MCP[MCP Protocol]
-        Tools[Tools]
-    end
-    
-    subgraph 外部层
-        API[外部 API]
-        DB[数据库]
-        FS[文件系统]
-    end
-    
-    User --&gt; UI
-    UI --&gt; Agent
-    Agent --&gt; Orch
-    Orch --&gt; LLM
-    Orch --&gt; Memory
-    LLM --&gt; FC
-    FC --&gt; Skills
-    Skills --&gt; MCP
-    MCP --&gt; Tools
-    Tools --&gt; API
-    Tools --&gt; DB
-    Tools --&gt; FS
-    
-    Memory -.-&gt; LLM
-    API -.-&gt; LLM
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  AI Agent 完整架构图                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ 【用户层】                                           │   │
+│  │   用户 ←→ 交互界面                                   │   │
+│  └─────────────────────┬───────────────────────────────┘   │
+│                        │                                    │
+│                        ↓                                    │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ 【Agent 层】                                          │   │
+│  │   AI Agent ←→ Orchestrator                           │   │
+│  └─────────────────────┬───────────────────────────────┘   │
+│                        │                                    │
+│            ┌───────────┼───────────┐                       │
+│            ↓           ↓           ↓                       │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ 【核心层】                                           │   │
+│  │   大语言模型 ←→ 记忆系统 ←→ Function Calling         │   │
+│  └─────────────────────┬───────────────────────────────┘   │
+│                        │                                    │
+│                        ↓                                    │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ 【工具层】                                           │   │
+│  │   Skills ←→ MCP Protocol ←→ Tools                   │   │
+│  └─────────────────────┬───────────────────────────────┘   │
+│                        │                                    │
+│            ┌───────────┼───────────┐                       │
+│            ↓           ↓           ↓                       │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ 【外部层】                                           │   │
+│  │   外部 API    数据库    文件系统                     │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <h3>术语分类表</h3>
 <table>
@@ -1510,17 +1603,26 @@ mcpServers:
 </table>
 <hr />
 <p><strong>建议学习路径</strong>：</p>
-<pre><code class="language-mermaid">graph LR
-    A[阶段 1: 基础概念] --&gt; B[阶段 2: 动手实践]
-    B --&gt; C[阶段 3: 架构设计]
-    C --&gt; D[阶段 4: 安全治理]
-    D --&gt; E[阶段 5: 持续跟进]
-    
-    A --&gt; A1[Agent, Skill, Tool]
-    B --&gt; B1[选框架做项目]
-    C --&gt; C1[Memory, RAG, MCP]
-    D --&gt; D1[Guardrails, 评估]
-    E --&gt; E1[新模型，新标准]
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  建议学习路径                                │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  阶段 1          阶段 2          阶段 3          阶段 4       │
+│  基础概念  ──→  动手实践  ──→  架构设计  ──→  安全治理      │
+│    │             │             │             │             │
+│    ↓             ↓             ↓             ↓             │
+│  Agent       选框架        Memory      Guardrails           │
+│  Skill       做项目        RAG         评估                │
+│  Tool                      MCP                              │
+│                                                             │
+│                          ↓                                  │
+│                      阶段 5                                  │
+│                      持续跟进                                │
+│                        │                                     │
+│                        ↓                                     │
+│                   新模型，新标准                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 </code></pre>
 <hr />
 <p><strong>推荐资源</strong>：</p>
