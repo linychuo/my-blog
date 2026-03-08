@@ -551,39 +551,7 @@ command example
 
 ---
 
-## 九、术语关系总览
-
-## 九、术语关系总览
-
-### 完整架构图
-
-```mermaid
-graph TD
-    %% 用户层
-    User[用户] -->|请求| UI[交互界面]
-
-    %% Agent层
-    UI --> AI_Agent[AI Agent]
-    AI_Agent --> Orchestrator[Orchestrator]
-
-    %% 核心层
-    Orchestrator --> LLM[大语言模型]
-    LLM --> Memory[记忆系统]
-    LLM --> Function[函数调用]
-
-    %% 工具层
-    Function --> Tools[工具集]
-    Tools --> Resources[资源]
-    Resources --> External[外部 API / 数据库 / 文件系统]
-
-    %% 反馈循环
-    External -->|返回结果| Function
-    Function -->|反馈| LLM
-    LLM -->|输出| AI_Agent
-    AI_Agent -->|返回| UI
-```
-
-### 术语分类表
+## 九、术语关系总览### 术语分类表
 
 | 类别 | 术语 | 重要性 |
 |------|------|--------|
