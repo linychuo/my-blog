@@ -547,7 +547,6 @@ nanobot 🐈
 ```bash
 command example
 ```
-```
 
 ---
 
