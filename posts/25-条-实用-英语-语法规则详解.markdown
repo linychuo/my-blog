@@ -1,191 +1,193 @@
 ---
-title: "25条实用英语语法规则详解"
-date_time: 2026-03-08 22:22:00
+title: "25 条实用英语语法规则详解"
+date_time: 2026-03-14 14:20:00
 tags: english grammar language learning
 ---
 
-## 25条实用英语语法规则
+## 25 条实用英语语法规则详解
 
-### 1. LESS vs FEWER
-- **用法**：less 修饰不可数名词，fewer 修饰可数名词
-- **例句**：
+这些是学校从未教过但非常实用的英语语法规则！
+
+### 1. LESS vs. FEWER
+- **Less** = 不可数名词
+- **Fewer** = 可数名词
+- **例句**:
+  - Less water, fewer bottles.
   - There is **less** water in the bottle.
   - There are **fewer** people in the room.
 
-### 2. AFFECT vs EFFECT
-- **用法**：affect 作动词（影响），effect 作名词（效果）
-- **例句**：
-  - The weather **affects** my mood.
-  - The **effect** of the storm was severe.
-
-### 3. WHO vs WHOM
-- **用法**：who 作主语，whom 作宾语
-- **例句**：
+### 2. WHO vs. WHOM
+- **Who** = 主语 (subject)
+- **Whom** = 宾语 (object)
+- **例句**:
+  - Who is calling?
+  - To whom are you speaking?
   - **Who** called you?
   - To **whom** did you speak?
 
-### 4. LAY vs LIE
-- **用法**：lay 需要宾语（放置），lie 无需宾语（躺下）
-- **例句**：
+### 3. OXFORD COMMA SAVES MEANING
+- 牛津逗号可以拯救句意
+- **例句**:
+  - I love my parents, Lady Gaga, and God.
+  - （没有 Oxford comma 可能被误解为父母是 Lady Gaga 和 God）
+
+### 4. 'THAT' vs. 'WHICH'
+- **That** = 引入必要信息 (essential info)
+- **Which** = 添加额外细节 (extra detail)
+- **例句**:
+  - The book **that** I borrowed was great. (限定性从句)
+  - The book, **which** I borrowed, was great. (非限定性从句)
+
+### 5. MAY vs. MIGHT
+- **May** = 可能 (possible)
+- **Might** = 可能性更低 (less certain)
+- **例句**:
+  - It **may** rain tomorrow. (较有可能)
+  - It **might** rain tomorrow. (可能性较小)
+
+### 6. NEVER SPLIT 'TO' AND A VERB
+- 不要拆分不定式 (to + verb)
+- **错误**: to quickly run
+- **正确**: to run quickly
+- **例句**:
+  - Wrong: I want **to quickly finish** this.
+  - Better: I want **to finish** this quickly.
+
+### 7. SINCE vs. BECAUSE
+- **Since** = 时间 (time)
+- **Because** = 原因 (reason)
+- **例句**:
+  - I've lived here **since** 2020. (时间)
+  - I stayed home **because** it rained. (原因)
+
+### 8. 'THAN' vs. 'THEN'
+- **Than** = 比较 (comparison)
+- **Then** = 序列/时间 (sequence/time)
+- **例句**:
+  - She is taller **than** her brother.
+  - First we eat, **then** we go.
+
+### 9. I.E. vs. E.G.
+- **i.e.** = "that is" = 也就是说
+- **e.g.** = "for example" = 例如
+- **例句**:
+  - I need to buy groceries, **i.e.**, food and drinks.
+  - I like fruits, **e.g.**, apples and bananas.
+
+### 10. DOUBLE NEGATIVES DON'T MAKE A POSITIVE
+- 双重否定 ≠ 肯定 (在标准英语中)
+- **例句**:
+  - ❌ I don't need no help. (双重否定，非标准)
+  - ✅ I don't need any help. (标准英语)
+
+### 11. AFFECT vs. EFFECT
+- **Affect** = 动词 (influence)
+- **Effect** = 名词 (result)
+- **例句**:
+  - The weather **affects** my mood.
+  - The **effect** of the storm was severe.
+
+### 12. ADJECTIVES BEFORE NOUNS, BUT IN ORDER
+- 形容词顺序：Opinion → Size → Age → Color → Origin → Material → Purpose → Noun
+- **例句**:
+  - A lovely small old red Italian wooden coffee table.
+  - （美好的小旧红色意大利木制咖啡桌）
+
+### 13. BETWEEN vs. AMONG
+- **Between** = 2 个事物
+- **Among** = 3 个或以上事物
+- **例句**:
+  - Choose **between** tea and coffee. (2 选 1)
+  - Distribute among the students. (多个学生)
+
+### 14. FARTHER vs. FURTHER
+- **Farther** = 物理距离 (physical distance)
+- **Further** = 比喻/程度 (figurative)
+- **例句**:
+  - The store is **farther** than I thought. (物理距离)
+  - We need to discuss this **further**. (进一步)
+
+### 15. LAY vs. LIE
+- **Lay** = 放置某物 (put something down)
+- **Lie** = 躺下 (recline)
+- **例句**:
   - She **lays** the book on the table.
   - He **lies** down to rest.
 
-### 5. YOUR vs YOU'RE
-- **用法**：your 是形容词性物主代词，you're = you are
-- **例句**：
+### 16. COULD HAVE NOT COULD OF
+- **Could have** = 正确写法
+- **Could of** = 错误写法 (常见口语误写)
+- **例句**:
+  - ✅ I **could have gone**.
+  - ❌ I could of gone.
+
+### 17. COLLECTIVE NOUNS CAN BE SINGULAR OR PLURAL
+- 集合名词可以是单数或复数
+- **美式风格**: 单数
+- **英式风格**: 复数
+- **例句**:
+  - The team **is** winning. (US style)
+  - The team **are** winning. (UK style)
+
+### 18. 'WHO'S' vs. 'WHOSE'
+- **Who's** = who is / who has
+- **Whose** = possession (所有格)
+- **例句**:
+  - **Who's** at the door? (= Who is)
+  - **Whose** book is this? (= 谁的)
+
+### 19. USE "FEWER THAN" NOT "LESS THAN" FOR COUNTABLE THINGS
+- 可数事物用 **fewer than**
+- **例句**:
+  - Fewer than 10 people.
+  - ❌ Less than 10 people. (不准确)
+
+### 20. NO APOSTROPHE FOR POSSESSIVE 'ITS'
+- **It's** = it is (缩写)
+- **Its** = belonging to it (所有格)
+- **例句**:
+  - **It's** a beautiful day. (= It is)
+  - The dog wagged **its** tail. (= 它的尾巴)
+
+### 21. YOUR vs. YOU'RE
+- **Your** = 你的 (possessive)
+- **You're** = you are (缩写)
+- **例句**:
   - Is this **your** pen?
-  - **You're** late for the meeting.
+  - **You're** doing great!
 
-### 6. ITS vs IT'S
-- **用法**：its 是形容词性物主代词，it's = it is
-- **例句**：
-  - The cat licked **its** paw.
-  - **It's** raining outside.
-
-### 7. THEN vs THAN
-- **用法**：then 表示时间顺序，than 用于比较
-- **例句**：
-  - First we eat, **then** we go.
-  - She is taller **than** her brother.
-
-### 8. THERE vs THEIR vs THEY'RE
-- **用法**：
-  - there = 那里
-  - their = 他们的
-  - they're = they are
-- **例句**：
+### 22. THERE vs. THEIR vs. THEY'RE
+- **There** = 那里 (location)
+- **Their** = 他们的 (possessive)
+- **They're** = they are (缩写)
+- **例句**:
   - **There** is a book on the table.
   - **Their** house is big.
   - **They're** coming soon.
 
-### 9. WHO'S vs WHOSE
-- **用法**：who's = who is，whose = 谁的
-- **例句**：
-  - **Who's** at the door?
-  - **Whose** book is this?
-
-### 10. ALOT vs A LOT
-- **用法**：alot 是错误拼写，正确为 a lot
-- **例句**：
-  - She has **a lot** of friends.
-
-### 11. I.E. vs E.G.
-- **用法**：
-  - i.e. = that is（即）
-  - e.g. = for example（例如）
-- **例句**：
-  - I need to buy groceries, **i.e.**, food and drinks.
-  - I like fruits, **e.g.**, apples and bananas.
-
-### 12. PRINCIPAL vs PRINCIPLE
-- **用法**：
-  - principal = 校长/主要的
-  - principle = 原则
-- **例句**：
+### 23. PRINCIPAL vs. PRINCIPLE
+- **Principal** = 主要的/校长 (main/head)
+- **Principle** = 原则/原理 (rule/belief)
+- **例句**:
   - The **principal** gave a speech.
   - Honesty is a core **principle**.
 
-### 13. LOOSE vs LOSE
-- **用法**：
-  - loose = 松的
-  - lose = 丢失
-- **例句**：
+### 24. LOOSE vs. LOST
+- **Loose** = 松的 (not tight)
+- **Lost** = 丢失 (cannot find)
+- **例句**:
   - This shirt is too **loose**.
   - Don't **lose** your keys.
 
-### 14. ADVICE vs ADVISE
-- **用法**：
-  - advice = 名词（建议）
-  - advise = 动词（建议）
-- **例句**：
-  - She gave me good **advice**.
-  - I **advise** you to study more.
-
-### 15. COMPLIMENT vs COMPLEMENT
-- **用法**：
-  - compliment = 赞美
-  - complement = 补充
-- **例句**：
+### 25. COMPLIMENT vs. COMPLEMENT
+- **Compliment** = 赞美 (praise)
+- **Complement** = 补充 (complete/enhance)
+- **例句**:
   - He gave her a **compliment**.
   - The wine **complements** the meal.
 
-### 16. DISCREET vs DISCRETE
-- **用法**：
-  - discreet = 低调的
-  - discrete = 离散的
-- **例句**：
-  - Be **discreet** with the information.
-  - These are **discrete** units.
+---
 
-### 17. EMIGRATE vs IMMIGRATE
-- **用法**：
-  - emigrate = 离开某国
-  - immigrate = 进入某国
-- **例句**：
-  - She **emigrated** from China.
-  - He **immigrated** to Canada.
+**来源**: 图片来自 @knowiiledge (Xia)
 
-### 18. LEND vs BORROW
-- **用法**：
-  - lend = 借出
-  - borrow = 借入
-- **例句**：
-  - Can you **lend** me a pen?
-  - I **borrowed** a book from the library.
-
-### 19. ALREADY vs ALL READY
-- **用法**：
-  - already = 已经
-  - all ready = 全部准备好
-- **例句**：
-  - I've **already** eaten.
-  - We are **all ready** to go.
-
-### 20. BRING vs TAKE
-- **用法**：
-  - bring = 带来（向说话者方向）
-  - take = 带走（离开说话者方向）
-- **例句**：
-  - Please **bring** your notebook.
-  - **Take** this book to the library.
-
-### 21. FURTHER vs FARTHER
-- **用法**：
-  - further = 抽象程度
-  - farther = 物理距离
-- **例句**：
-  - We need to discuss this **further**.
-  - The store is **farther** than I thought.
-
-### 22. WHOSE vs WHO'S
-- **用法**：
-  - whose = 谁的
-  - who's = who is
-- **例句**：
-  - **Whose** phone is this?
-  - **Who's** coming to the party?
-
-### 23. ITS vs IT'S
-- **用法**：
-  - its = 它的
-  - it's = it is
-- **例句**：
-  - The dog wagged **its** tail.
-  - **It's** a beautiful day.
-
-### 24. YOUR vs YOU'RE
-- **用法**：
-  - your = 你的
-  - you're = you are
-- **例句**：
-  - Is this **your** bag?
-  - **You're** doing great!
-
-### 25. THEIR vs THERE vs THEY'RE
-- **用法**：
-  - their = 他们的
-  - there = 那里
-  - they're = they are
-- **例句**：
-  - **Their** car is parked **there**.
-  - **They're** going to the park.
+**总结**: 掌握这 25 条语法规则，能帮助你在写作和口语中更加准确、专业！这些规则在日常使用中经常被混淆，但掌握它们会让你的英语表达更加地道。
