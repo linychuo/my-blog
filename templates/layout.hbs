@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_title}}{{site_title}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/imgs/favicon.ico">
+    <script>!function(){const t=localStorage.getItem('theme');t?document.documentElement.setAttribute('data-theme',t):document.documentElement.setAttribute('data-theme',new Date().getHours()>=6&&new Date().getHours()<18?'light':'dark')}();</script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/index.html" class="navbar-brand">{{site_title}}</a>
+            <div class="navbar-menu">
+                <a href="/about.html">About</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="main-container">
+        <main class="content-area">{{~> page}}</main>
+        <aside class="sidebar">{{~> sidebar}}</aside>
+    </div>
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+    <footer class="footer"><p>Generated with hello-zig · © {{year}} {{site_title}}</p></footer>
+    <script>
+        const backToTopBtn=document.getElementById('backToTop');
+        window.addEventListener('scroll',()=>{backToTopBtn.classList.toggle('visible',window.scrollY>400);});
+        function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+        function toggleTheme(){
+            const html=document.documentElement;
+            const newTheme=html.getAttribute('data-theme')==='light'?'dark':'light';
+            html.setAttribute('data-theme',newTheme);
+            localStorage.setItem('theme',newTheme);
+            document.getElementById('hljs-theme').href=newTheme==='light'?'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css':'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+        }
+        // Render math blocks
+        document.addEventListener('DOMContentLoaded',function(){
+            if(typeof katex!=='undefined'){
+                document.querySelectorAll('pre.math-block').forEach(function(el){
+                    try{
+                        const tex=el.textContent.trim();
+                        const div=document.createElement('div');
+                        div.className='katex-display';
+                        katex.render(tex,div,{displayMode:true,throwOnError:false});
+                        el.parentNode.replaceChild(div,el);
+                    }catch(e){console.error('KaTeX render error:',e);}
+                });
+            }
+        });
+    </script>
+</body>
+</html>

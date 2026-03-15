@@ -1,0 +1,152 @@
+---
+title: "20 条实用英语语法规则详解"
+date_time: 2026-03-14 14:20:00
+tags: english grammar language learning
+---
+
+这些是学校从未教过但非常实用的英语语法规则！
+
+### 1. LESS vs. FEWER
+- **Less** = 不可数名词
+- **Fewer** = 可数名词
+- **例句**:
+  - Less water, fewer bottles.
+  - There is **less** water in the bottle.
+  - There are **fewer** people in the room.
+
+### 2. WHO vs. WHOM
+- **Who** = 主语 (subject)
+- **Whom** = 宾语 (object)
+- **例句**:
+  - Who is calling?
+  - To whom are you speaking?
+  - **Who** called you?
+  - To **whom** did you speak?
+
+### 3. OXFORD COMMA SAVES MEANING
+- 牛津逗号可以拯救句意
+- **例句**:
+  - I love my parents, Lady Gaga, and God.
+  - （没有 Oxford comma 可能被误解为父母是 Lady Gaga 和 God）
+
+### 4. 'THAT' vs. 'WHICH'
+- **That** = 引入必要信息 (essential info)
+- **Which** = 添加额外细节 (extra detail)
+- **例句**:
+  - The book **that** I borrowed was great. (限定性从句)
+  - The book, **which** I borrowed, was great. (非限定性从句)
+
+### 5. MAY vs. MIGHT
+- **May** = 可能 (possible)
+- **Might** = 可能性更低 (less certain)
+- **例句**:
+  - It **may** rain tomorrow. (较有可能)
+  - It **might** rain tomorrow. (可能性较小)
+
+### 6. NEVER SPLIT 'TO' AND A VERB
+- 不要拆分不定式 (to + verb)
+- **错误**: to quickly run
+- **正确**: to run quickly
+- **例句**:
+  - Wrong: I want **to quickly finish** this.
+  - Better: I want **to finish** this quickly.
+
+### 7. SINCE vs. BECAUSE
+- **Since** = 时间 (time)
+- **Because** = 原因 (reason)
+- **例句**:
+  - I've lived here **since** 2020. (时间)
+  - I stayed home **because** it rained. (原因)
+
+### 8. 'THAN' vs. 'THEN'
+- **Than** = 比较 (comparison)
+- **Then** = 序列/时间 (sequence/time)
+- **例句**:
+  - She is taller **than** her brother.
+  - First we eat, **then** we go.
+
+### 9. I.E. vs. E.G.
+- **i.e.** = "that is" = 也就是说
+- **e.g.** = "for example" = 例如
+- **例句**:
+  - I need to buy groceries, **i.e.**, food and drinks.
+  - I like fruits, **e.g.**, apples and bananas.
+
+### 10. DOUBLE NEGATIVES DON'T MAKE A POSITIVE
+- 双重否定 ≠ 肯定 (在标准英语中)
+- **例句**:
+  - ❌ I don't need no help. (双重否定，非标准)
+  - ✅ I don't need any help. (标准英语)
+
+### 11. AFFECT vs. EFFECT
+- **Affect** = 动词 (influence)
+- **Effect** = 名词 (result)
+- **例句**:
+  - The weather **affects** my mood.
+  - The **effect** of the storm was severe.
+
+### 12. ADJECTIVES BEFORE NOUNS, BUT IN ORDER
+- 形容词顺序：Opinion → Size → Age → Color → Origin → Material → Purpose → Noun
+- **例句**:
+  - A lovely small old red Italian wooden coffee table.
+  - （美好的小旧红色意大利木制咖啡桌）
+
+### 13. BETWEEN vs. AMONG
+- **Between** = 2 个事物
+- **Among** = 3 个或以上事物
+- **例句**:
+  - Choose **between** tea and coffee. (2 选 1)
+  - Distribute among the students. (多个学生)
+
+### 14. FARTHER vs. FURTHER
+- **Farther** = 物理距离 (physical distance)
+- **Further** = 比喻/程度 (figurative)
+- **例句**:
+  - The store is **farther** than I thought. (物理距离)
+  - We need to discuss this **further**. (进一步)
+
+### 15. LAY vs. LIE
+- **Lay** = 放置某物 (put something down)
+- **Lie** = 躺下 (recline)
+- **例句**:
+  - She **lays** the book on the table.
+  - He **lies** down to rest.
+
+### 16. COULD HAVE NOT COULD OF
+- **Could have** = 正确写法
+- **Could of** = 错误写法 (常见口语误写)
+- **例句**:
+  - ✅ I **could have gone**.
+  - ❌ I could of gone.
+
+### 17. COLLECTIVE NOUNS CAN BE SINGULAR OR PLURAL
+- 集合名词可以是单数或复数
+- **美式风格**: 单数
+- **英式风格**: 复数
+- **例句**:
+  - The team **is** winning. (US style)
+  - The team **are** winning. (UK style)
+
+### 18. 'WHO'S' vs. 'WHOSE'
+- **Who's** = who is / who has
+- **Whose** = possession (所有格)
+- **例句**:
+  - **Who's** at the door? (= Who is)
+  - **Whose** book is this? (= 谁的)
+
+### 19. USE "FEWER THAN" NOT "LESS THAN" FOR COUNTABLE THINGS
+- 可数事物用 **fewer than**
+- **例句**:
+  - Fewer than 10 people.
+  - ❌ Less than 10 people. (不准确)
+
+### 20. NO APOSTROPHE FOR POSSESSIVE 'ITS'
+- **It's** = it is (缩写)
+- **Its** = belonging to it (所有格)
+- **例句**:
+  - **It's** a beautiful day. (= It is)
+  - The dog wagged **its** tail. (= 它的尾巴)
+
+**来源**: 图片来自 @knowiiledge (Xia)
+
+**总结**: 掌握这 20 条语法规则，能帮助你在写作和口语中更加准确、专业！这些规则在日常使用中经常被混淆，但掌握它们会让你的英语表达更加地道。

@@ -1,0 +1,23 @@
+.{
+    .name = .hello_zig,
+    .version = "0.1.0",
+    .fingerprint = 0x1c1a4686d8743a74,
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        .zig_markdown = .{
+            .path = "libs/zig-markdown",
+        },
+        .zig_handlebars = .{
+            .path = "libs/zig-handlebars",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "templates",
+        "static",
+        "libs/zig-markdown",
+        "libs/zig-handlebars",
+    },
+}
