@@ -1,0 +1,30 @@
+name: zig-build
+
+on:
+  push:
+    branches: [ zig-build ]
+  pull_request:
+    branches: [ zig-build ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Zig
+        uses: mlugg/setup-zig@v1 
+        with:
+          version: 0.15.2
+                       
+      - name: Build&Run
+        run: zig build run
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.8
+        with:
+          branch: gh-pages
+          folder: build
