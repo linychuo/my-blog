@@ -15,8 +15,8 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     }).module("zig-handlebars");
 
-    // Create the hello-zig module
-    const mod = b.addModule("hello_zig", .{
+    // Create the my_blog module
+    const mod = b.addModule("my_blog", .{
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
@@ -28,7 +28,7 @@ pub fn build(b: *std.Build) void {
 
     // Create the executable
     const exe = b.addExecutable(.{
-        .name = "hello_zig",
+        .name = "my-blog",
         .root_module = mod,
     });
 

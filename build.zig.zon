@@ -1,7 +1,7 @@
 .{
-    .name = .hello_zig,
+    .name = .my_blog,
     .version = "0.1.0",
-    .fingerprint = 0x1c1a4686d8743a74,
+    .fingerprint = 0x32781750f0cc4d,
     .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .zig_markdown = .{

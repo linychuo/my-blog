@@ -12,7 +12,7 @@ pub fn main() !void {
     _ = args.skip(); // Skip program name
 
     var posts_dir: []const u8 = "posts";
-    var dest_dir: []const u8 = "zig-out/blog";
+    var dest_dir: []const u8 = "build";
 
     // Parse optional arguments: --posts <dir> --output <dir>
     while (args.next()) |arg| {
