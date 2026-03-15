@@ -117,7 +117,7 @@ pub const Blogger = struct {
 
     fn copyStaticFiles(self: *Blogger) !void {
         const static_dir = "static";
-        
+
         // Check if static directory exists
         var dir = std.fs.cwd().openDir(static_dir, .{ .iterate = true }) catch {
             std.debug.print("  Warning: static directory not found, skipping static files\n", .{});
@@ -201,7 +201,6 @@ pub const Blogger = struct {
         try ctx.set("title", post.title);
         try ctx.set("date_time", post.date_time);
         try ctx.set("content", html_content);
-        try ctx.set("site_title", "Ivan's Blog");
 
         // Build tags HTML
         var tags_html = std.ArrayList(u8){};
@@ -227,11 +226,11 @@ pub const Blogger = struct {
         try full_title.appendSlice(self.allocator, post.title);
         try full_title.appendSlice(self.allocator, " - ");
         try ctx.set("page_title", full_title.items);
-        
+
         // Get current year for footer
         const year = "2026";
         try ctx.set("year", year);
-        
+
         self.template_engine.setPageContent(page_html);
         const html = try self.template_engine.render("layout.hbs", &ctx);
         defer self.allocator.free(html);
@@ -246,7 +245,7 @@ pub const Blogger = struct {
 
         // Extract year (always 4 digits)
         const year = date_time[0..4];
-        
+
         // Extract month (1 or 2 digits until '-')
         var pos: usize = 5;
         var month_end = pos;
@@ -257,7 +256,7 @@ pub const Blogger = struct {
             month_buf[1] = date_time[pos];
             break :blk month_buf[0..2];
         } else date_time[pos..month_end];
-        
+
         // Extract day (1 or 2 digits until ' ' or '-')
         pos = month_end + 1;
         var day_end = pos;
@@ -316,7 +315,7 @@ pub const Blogger = struct {
                 // Extract year (always 4 digits)
                 try filename.appendSlice(self.allocator, post.date_time[0..4]);
                 try filename.appendSlice(self.allocator, "/");
-                
+
                 // Extract month (1 or 2 digits until '-')
                 var pos: usize = 5;
                 var month_end = pos;
@@ -326,7 +325,7 @@ pub const Blogger = struct {
                 if (month.len == 1) try filename.appendSlice(self.allocator, "0");
                 try filename.appendSlice(self.allocator, month);
                 try filename.appendSlice(self.allocator, "/");
-                
+
                 // Extract day (1 or 2 digits until ' ' or '-')
                 pos = month_end + 1;
                 var day_end = pos;
@@ -337,7 +336,7 @@ pub const Blogger = struct {
                 try filename.appendSlice(self.allocator, day);
                 try filename.appendSlice(self.allocator, "/");
             }
-            
+
             // Add base filename and replace .markdown with .html
             const base_len = post.filename.len;
             if (base_len >= 9 and std.mem.endsWith(u8, post.filename, ".markdown")) {
@@ -373,7 +372,6 @@ pub const Blogger = struct {
 
         var ctx = Context.init(self.allocator);
         defer ctx.deinit();
-        try ctx.set("site_title", "Ivan's Blog");
         try ctx.set("subtitle", "Software development, technology, and more");
         try ctx.set("posts", posts_html.items);
 
@@ -384,7 +382,7 @@ pub const Blogger = struct {
         // Set empty page title for index (only show site_title)
         try ctx.set("page_title", "");
         try ctx.set("year", "2026");
-        
+
         // Set page content and render layout
         self.template_engine.setPageContent(page_html);
         const html = try self.template_engine.render("layout.hbs", &ctx);
@@ -424,7 +422,6 @@ pub const Blogger = struct {
 
         try ctx.set("title", "About");
         try ctx.set("content", html_content);
-        try ctx.set("site_title", "Ivan's Blog");
         try ctx.set("page_title", "");
         try ctx.set("year", "2026");
         try ctx.set("tags", "");
@@ -552,7 +549,6 @@ pub const Blogger = struct {
             try ctx.set("tag_name", tag_name);
             try ctx.set("post_count", post_count_str);
             try ctx.set("posts", posts_html.items);
-            try ctx.set("site_title", "Ivan's Blog");
             try ctx.set("page_title", page_title_str);
             try ctx.set("year", "2026");
 
