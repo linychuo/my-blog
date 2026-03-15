@@ -33,7 +33,7 @@ zig build -Doptimize=ReleaseFast run  # Release mode
 
 ### Project Structure
 ```
-hello-zig/
+my-blog/
 ├── src/
 │   ├── main.zig              # Application entry point
 │   └── Blogger.zig           # Blog generation logic

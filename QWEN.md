@@ -1,8 +1,8 @@
-# Project Context: hello-zig
+# Project Context: my-blog
 
 ## Project Overview
 
-**hello-zig** is a static blog generator tool written in the [Zig](https://ziglang.org/) programming language. It converts Markdown blog posts to HTML with modern styling, theme switching, tag navigation, and mathematical formula rendering.
+**my-blog** is a static blog generator tool written in the [Zig](https://ziglang.org/) programming language. It converts Markdown blog posts to HTML with modern styling, theme switching, tag navigation, and mathematical formula rendering.
 
 ### Purpose
 - Parse markdown blog posts from the `posts/` directory
@@ -23,7 +23,7 @@
 ## Project Structure
 
 ```
-hello-zig/
+my-blog/
 ├── build.zig              # Build configuration (Zig build system)
 ├── build.zig.zon          # Package manifest (dependencies, version)
 ├── src/
@@ -191,8 +191,8 @@ zig-out/blog/
 ## Development Notes
 
 - Uses Zig's built-in build system (no external build tools)
-- Package name: `hello_zig`
-- Output binary name: `hello_zig`
+- Package name: `my-blog`
+- Output binary name: `my-blog`
 - Debug mode has GeneralPurposeAllocator that reports memory leaks
 - Release mode recommended for production builds
 

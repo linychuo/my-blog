@@ -542,12 +542,11 @@ nanobot 🐈
 - API_KEY - 说明
 
 ## 使用示例
-```bash
 command example
+
 ```
 
 ---
-
 ## 九、术语关系总览
 
 | 类别 | 术语 | 重要性 |
