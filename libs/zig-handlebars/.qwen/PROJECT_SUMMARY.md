@@ -3,20 +3,20 @@ The user wants me to create a comprehensive project summary in markdown format b
 1. The user has a Zig project called `zig-handlebars` - a Handlebars-style template engine
 2. I was asked to analyze the code structure and suggest optimizations
 3. I identified several issues and implemented fixes across multiple priority levels
-4. Then the user reported that `hello-zig` (the parent project) couldn't build after the changes
+4. Then the user reported that `my-blog` (the parent project) couldn't build after the changes
 5. I fixed the integration issues
 
 Let me create a comprehensive summary following the specified format.# Project Summary
 
 ## Overall Goal
-Optimize the zig-handlebars template engine library and ensure successful integration with the hello-zig blog generator project.
+Optimize the zig-handlebars template engine library and ensure successful integration with the my-blog blog generator project.
 
 ## Key Knowledge
 
 ### Project Structure
 - **zig-handlebars**: Handlebars-style template engine for Zig (v0.15.0+)
-- **Location**: `/home/ivan/hello-zig/libs/zig-handlebars/`
-- **Parent project**: hello-zig (blog generator)
+- **Location**: `/home/ivan/my-blog/libs/zig-handlebars/`
+- **Parent project**: my-blog (blog generator)
 
 ### Module Architecture (After Refactoring)
 ```
@@ -45,13 +45,13 @@ src/
 zig build test     # Run 20 unit tests
 zig build run      # Run example application
 
-# hello-zig (parent project)
+# my-blog (parent project)
 zig build          # Build the blog generator
 zig build run      # Generate blog (requires setCwd in build.zig)
 ```
 
 ### Critical Integration Requirements
-1. `hello-zig/build.zig` must set working directory: `run_cmd.setCwd(.{ .src_path = .{ .owner = b, .sub_path = "." } })`
+1. `my-blog/build.zig` must set working directory: `run_cmd.setCwd(.{ .src_path = .{ .owner = b, .sub_path = "." } })`
 2. `loadTemplate()` must join `templates_dir` with template name (fixed bug)
 3. Template files must exist in `templates/` directory relative to project root
 
@@ -73,13 +73,13 @@ zig build run      # Generate blog (requires setCwd in build.zig)
 
 ### Bug Fixes During Integration
 1. **loadTemplate path bug**: Was copying template name without joining with `templates_dir`
-2. **hello-zig API call**: Updated `Blogger.zig` to use new 2-parameter `init()`
-3. **Working directory**: Added `setCwd()` to hello-zig's `build.zig`
+2. **my-blog API call**: Updated `Blogger.zig` to use new 2-parameter `init()`
+3. **Working directory**: Added `setCwd()` to my-blog's `build.zig`
 4. **post.hbs template**: Simplified from inline-block syntax to basic format
 
 ### Test Results
 - zig-handlebars: **20/20 tests passed**, no memory leaks
-- hello-zig: **Blog generation successful** (50+ posts, tags, static files)
+- my-blog: **Blog generation successful** (50+ posts, tags, static files)
 
 ## Current Plan
 
@@ -90,7 +90,7 @@ zig build run      # Generate blog (requires setCwd in build.zig)
 4. Fix Context memory management (own copies of keys/values)
 5. Create comprehensive test suite (20 tests)
 6. Update README.md and QWEN.md documentation
-7. Fix integration issues in hello-zig project
+7. Fix integration issues in my-blog project
 8. Verify end-to-end blog generation
 
 ### [TODO / Future Enhancements]
@@ -107,12 +107,12 @@ zig build run      # Generate blog (requires setCwd in build.zig)
 - Partials must be pre-loaded (no dynamic loading)
 
 ### Files Modified
-- `/home/ivan/hello-zig/libs/zig-handlebars/src/*.zig` (complete refactor)
-- `/home/ivan/hello-zig/libs/zig-handlebars/README.md`
-- `/home/ivan/hello-zig/libs/zig-handlebars/QWEN.md`
-- `/home/ivan/hello-zig/src/Blogger.zig` (API update)
-- `/home/ivan/hello-zig/build.zig` (setCwd addition)
-- `/home/ivan/hello-zig/templates/post.hbs` (simplified syntax)
+- `/home/ivan/my-blog/libs/zig-handlebars/src/*.zig` (complete refactor)
+- `/home/ivan/my-blog/libs/zig-handlebars/README.md`
+- `/home/ivan/my-blog/libs/zig-handlebars/QWEN.md`
+- `/home/ivan/my-blog/src/Blogger.zig` (API update)
+- `/home/ivan/my-blog/build.zig` (setCwd addition)
+- `/home/ivan/my-blog/templates/post.hbs` (simplified syntax)
 
 ---
 

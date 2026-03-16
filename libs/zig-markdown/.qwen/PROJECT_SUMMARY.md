@@ -19,7 +19,7 @@ The user wants me to create a comprehensive project summary based on the convers
 Let me create a comprehensive summary.# Project Summary
 
 ## Overall Goal
-Optimize and refactor the zig-markdown library for Zig 0.15.2 compatibility, improving code structure, error handling, and test coverage while maintaining full functionality as a dependency of the hello-zig static blog generator.
+Optimize and refactor the zig-markdown library for Zig 0.15.2 compatibility, improving code structure, error handling, and test coverage while maintaining full functionality as a dependency of the my-blog static blog generator.
 
 ## Key Knowledge
 
@@ -38,12 +38,12 @@ Optimize and refactor the zig-markdown library for Zig 0.15.2 compatibility, imp
 
 ### Build & Test Commands
 ```bash
-cd /home/ivan/hello-zig/libs/zig-markdown
+cd /home/ivan/my-blog/libs/zig-markdown
 zig build test          # Run library tests (20+ tests)
 zig build               # Build library
 
-cd /home/ivan/hello-zig
-zig build run           # Build and run hello-zig blog generator
+cd /home/ivan/my-blog
+zig build run           # Build and run my-blog blog generator
 ```
 
 ### Memory Management Rules
@@ -62,7 +62,7 @@ zig build run           # Build and run hello-zig blog generator
 5. **[DONE] Test coverage expanded**: Added comprehensive test suite with 20+ tests covering headers, lists, tables, math blocks, UTF-8, edge cases
 6. **[DONE] Zig 0.15.2 compatibility**: Fixed all ArrayList API calls to use explicit allocator parameter
 7. **[DONE] Memory leak fixes**: Corrected `processLineBreaks()` to return original slice when unchanged, fixed cleanup pattern
-8. **[DONE] Integration verified**: hello-zig parent project builds and runs successfully, generating blog output
+8. **[DONE] Integration verified**: my-blog parent project builds and runs successfully, generating blog output
 
 ### Key Discoveries
 - Zig 0.15.2 ArrayList API is fundamentally different from earlier versions - all methods require allocator
@@ -84,7 +84,7 @@ zig build run           # Build and run hello-zig blog generator
 5. **[DONE]** Fix Zig 0.15.2 ArrayList API compatibility
 6. **[DONE]** Fix `inline for` with `continue` compilation errors
 7. **[DONE]** Fix memory leaks in processLineBreaks
-8. **[DONE]** Verify integration with hello-zig parent project
+8. **[DONE]** Verify integration with my-blog parent project
 9. **[DONE]** Update QWEN.md documentation with Zig 0.15.2 notes
 
 ### Project Status: COMPLETE ✅
@@ -96,7 +96,7 @@ All optimization goals achieved:
 - ✅ Test coverage expanded (20+ tests passing)
 - ✅ Zig 0.15.2 compatibility fully resolved
 - ✅ No memory leaks
-- ✅ Parent project (hello-zig) builds and runs successfully
+- ✅ Parent project (my-blog) builds and runs successfully
 
 ### Future Enhancement Opportunities (Not Implemented)
 - Configuration options for HTML output customization

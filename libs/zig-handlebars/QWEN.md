@@ -246,9 +246,9 @@ pub fn main() !void {
 - [ ] Advanced helpers (loops, conditionals) - not yet implemented
 - [ ] Block helpers - not yet implemented
 
-## Integration with hello-zig
+## Integration with my-blog
 
-This library is used by the parent `hello-zig` project for rendering blog post templates. The blog generator uses zig-handlebars to:
+This library is used by the parent `my-blog` project for rendering blog post templates. The blog generator uses zig-handlebars to:
 1. Load post templates from the `templates/` directory
 2. Inject post metadata (title, date, tags) into templates
 3. Render markdown content as HTML within template layouts
