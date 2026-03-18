@@ -23,7 +23,7 @@ jobs:
       - name: Install Zig @${{ matrix.os }}
         uses: mlugg/setup-zig@v2
         with:
-          version: $ZIG_VERSION
+          version: ${{ env.ZIG_VERSION }}
 
       - name: Build & Run @${{ matrix.os }}
         run: zig build run
