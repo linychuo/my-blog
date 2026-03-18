@@ -7,7 +7,7 @@ on:
     branches: [ zig-build ]
 
 jobs:
-  build:
+  build-on-win_and_linux:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -23,11 +23,26 @@ jobs:
         with:
           version: 0.15.2
       
-      - name: Build&Run $${ matrix.os }}
+      - name: Build&Run ${{ matrix.os }}
         run: zig build run
+
+  deploy:
+      runs-on: [ubuntu-latest]
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+
+        - name: Install Zig
+          uses: mlugg/setup-zig@v2
+          with:
+            version: 0.15.2
       
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.8
-        with:
-          branch: gh-pages
-          folder: build
+        - name: Build&Run
+          run: zig build run
+          
+        - name: Deploy
+          uses: JamesIves/github-pages-deploy-action@4.1.8
+          with:
+            branch: gh-pages
+            folder: build
