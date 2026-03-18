@@ -8,7 +8,8 @@ pub fn main() !void {
     const allocator = gpa.allocator();
 
     // Parse command line arguments
-    var args = std.process.args();
+    var args = try std.process.argsWithAllocator(allocator);
+    defer args.deinit();
     _ = args.skip(); // Skip program name
 
     var posts_dir: []const u8 = "posts";
