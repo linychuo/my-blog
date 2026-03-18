@@ -8,19 +8,22 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
-    runs-on: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository ${{ matrix.os }}
         uses: actions/checkout@v3
 
-      - name: Install Zig
+      - name: Install Zig ${{ matrix.os }}
         uses: mlugg/setup-zig@v2
         with:
           version: 0.15.2
       
-      - name: Build&Run
+      - name: Build&Run $${ matrix.os }}
         run: zig build run
       
       - name: Deploy
