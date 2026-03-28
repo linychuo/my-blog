@@ -40,9 +40,9 @@ pub fn main() !void {
 
 fn printHelp() void {
     std.debug.print(
-        \\hello-zig - A static blog generator written in Zig
+        \\my-blog - A static blog generator written in Zig
         \\
-        \\Usage: hello-zig [OPTIONS]
+        \\Usage: my-blog [OPTIONS]
         \\
         \\Options:
         \\  -p, --posts <dir>    Posts source directory (default: posts)
@@ -50,7 +50,7 @@ fn printHelp() void {
         \\  -h, --help           Show this help message
         \\
         \\Example:
-        \\  hello-zig --posts ./blog-posts --output ./public
+        \\  my-blog --posts ./blog-posts --output ./public
         \\
     ,
         .{},
