@@ -1,43 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agent Skills 术语详解：2025-2026 完整指南（合并版） - YongchaoLi's Blog</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="icon" href="/imgs/favicon.ico">
-    <script>!function(){const t=localStorage.getItem('theme');t?document.documentElement.setAttribute('data-theme',t):document.documentElement.setAttribute('data-theme',new Date().getHours()>=6&&new Date().getHours()<18?'light':'dark')}();</script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Yongchao's Blog</title>
+	<link href="/styles/main.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet"
+		  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/atom-one-dark.min.css">
+	<link rel="shortcut icon" href="/imgs/favicon.ico">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-content">
-            <a href="/index.html" class="navbar-brand">YongchaoLi's Blog</a>
-            <div class="navbar-menu">
-                <a href="/about.html">About</a>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-            </div>
-        </div>
-    </nav>
-    <div class="main-container">
-        <main class="content-area"><article>
-    <header class="article-header">
-        <h1 class="article-title">AI Agent Skills 术语详解：2025-2026 完整指南（合并版）</h1>
-        <div class="article-meta"><time datetime="2026-03-08 18:15:00">2026-03-08 18:15:00</time>
-            <div class="article-tags"><a href="/tags/ai.html" class="article-tag">ai</a><a href="/tags/agent.html" class="article-tag">agent</a><a href="/tags/skills.html" class="article-tag">skills</a><a href="/tags/mcp.html" class="article-tag">mcp</a><a href="/tags/llm.html" class="article-tag">llm</a><a href="/tags/人工智能.html" class="article-tag">人工智能</a></div>
-        </div>
-    </header>
-    <div class="article-content"><blockquote>本文系统整理了 AI Agent 生态中的核心术语、架构组件和新兴标准，配合简洁图解帮助你深入理解这个快速发展的领域。</blockquote>
-<hr>
+<div>
+	<header class="header">
+	<div class="wrapper">
+		<a class="title" href="/">Yongchao Li</a>
+		<nav class="nav">
+			<a href="#" class="menu_icon">
+				<svg viewBox="0 0 18 15">
+					<path fill="#424242"
+						  d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+					<path fill="#424242"
+						  d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+					<path fill="#424242"
+						  d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+				</svg>
+			</a>
+			<div class="trigger">
+				<a href="/about.html" class="page_link">About</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<style>
+	.markup table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1em 0;
+		font-size: 0.95rem;
+	}
+
+	.markup th,
+	.markup td {
+		border: 1px solid #ddd;
+		padding: 8px 12px;
+	}
+
+	.markup th {
+		background-color: #f5f5f5;
+		text-align: left;
+	}
+
+	.markup tbody tr:nth-child(even) {
+		background-color: #fafafa;
+	}
+</style>
+<div class="page-content">
+	<div class="wrapper">
+		<div class="post">
+			<header class="post-header">
+				<h1 class="post-title">AI Agent Skills 术语详解：2025-2026 完整指南（合并版）</h1>
+				<p class="post-meta">2026-03-08 18:15:00</p>
+				<span class="post-tag"><a
+						href="/tags/ai.html">ai</a></span><span class="post-tag"><a
+						href="/tags/agent.html">agent</a></span><span class="post-tag"><a
+						href="/tags/skills.html">skills</a></span><span class="post-tag"><a
+						href="/tags/mcp.html">mcp</a></span><span class="post-tag"><a
+						href="/tags/llm.html">llm</a></span><span class="post-tag"><a
+						href="/tags/人工智能.html">人工智能</a></span>
+		</div>
+		</header>
+		<article class="post-content">
+			<div class="markup"><h1>AI Agent Skills 术语详解：2025-2026 完整指南（合并版）</h1>
+<blockquote>
+<p>本文系统整理了 AI Agent 生态中的核心术语、架构组件和新兴标准，配合简洁图解帮助你深入理解这个快速发展的领域。</p>
+</blockquote>
+<hr />
 <h2>一、核心概念</h2>
 <h3>1. AI Agent（智能体）</h3>
 <p><strong>定义</strong>：能够感知环境、做出决策并执行动作的 AI 系统。</p>
@@ -52,7 +93,8 @@
 <pre><code>1. 感知输入 → 2. 理解意图 → 3. 规划步骤 → 4. 选择工具
                 ↑                                        │
                 │                                        ↓
-            输出结果 ← 6. 任务完成？ ← 5. 执行动作 ← 观察结果</code></pre>
+            输出结果 ← 6. 任务完成？ ← 5. 执行动作 ← 观察结果
+</code></pre>
 <p><strong>示例</strong>：</p>
 <pre><code>用户：帮我查下北京天气，然后写封邮件给团队
 
@@ -62,8 +104,9 @@ Agent 执行流程：
 3. 撰写邮件草稿 → 包含天气信息
 4. 请求用户确认 → 等待批准
 5. 调用邮件 API → 发送邮件
-6. 返回确认 → 任务完成</code></pre>
-<hr>
+6. 返回确认 → 任务完成
+</code></pre>
+<hr />
 <h3>2. Skill / Tool / Capability（技能/工具/能力）</h3>
 <table>
 <thead>
@@ -79,13 +122,13 @@ Agent 执行流程：
 <td><strong>Capability</strong></td>
 <td>抽象能力描述</td>
 <td>最粗</td>
-<td>"能联网"、"能执行代码"</td>
+<td>&quot;能联网&quot;、&quot;能执行代码&quot;</td>
 </tr>
 <tr>
 <td><strong>Skill</strong></td>
 <td>高级能力，可能包含多个工具</td>
 <td>中等</td>
-<td>"搜索技能"、"写作技能"</td>
+<td>&quot;搜索技能&quot;、&quot;写作技能&quot;</td>
 </tr>
 <tr>
 <td><strong>Tool</strong></td>
@@ -104,22 +147,25 @@ Agent 执行流程：
 │
 └── Skill: 文件读取
     ├── Tool: read_file
-    └── Tool: list_dir</code></pre>
-<hr>
+    └── Tool: list_dir
+</code></pre>
+<hr />
 <h3>3. Function Calling（函数调用）</h3>
 <p><strong>定义</strong>：LLM 识别用户意图后，调用外部函数获取结果。</p>
 <p><strong>工作流程</strong>：</p>
-<pre><code>用户输入 → LLM 分析 → 选择函数 → 执行函数 → 返回结果 → LLM 生成回复</code></pre>
+<pre><code>用户输入 → LLM 分析 → 选择函数 → 执行函数 → 返回结果 → LLM 生成回复
+</code></pre>
 <p><strong>示例</strong>：</p>
 <pre><code class="language-json">// LLM 输出的函数调用
 {
-  "name": "get_weather",
-  "arguments": {
-    "location": "Beijing",
-    "unit": "celsius"
+  &quot;name&quot;: &quot;get_weather&quot;,
+  &quot;arguments&quot;: {
+    &quot;location&quot;: &quot;Beijing&quot;,
+    &quot;unit&quot;: &quot;celsius&quot;
   }
-}</code></pre>
-<hr>
+}
+</code></pre>
+<hr />
 <h2>二、架构组件</h2>
 <h3>4. Orchestrator（编排器）</h3>
 <p><strong>定义</strong>：协调多个 Agent 或工具完成复杂任务的中央控制器。</p>
@@ -136,13 +182,15 @@ Agent 执行流程：
          └─────────────┴─────────────┘
                        │
                        ↓
-                   结果整合 → 返回用户</code></pre>
-<hr>
+                   结果整合 → 返回用户
+</code></pre>
+<hr />
 <h3>5. Memory System（记忆系统）</h3>
 <p><strong>三层记忆架构</strong>：</p>
 <pre><code>输入 → 工作记忆（当前任务） → 短期记忆（当前会话） → 长期记忆（跨会话）
          ↓                                              │
-         └──────────────← 检索 ─────────────────────────┘</code></pre>
+         └──────────────← 检索 ─────────────────────────┘
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -177,8 +225,9 @@ Agent 执行流程：
 <pre><code>memory/
 ├── MEMORY.md    # 长期事实（用户信息、偏好）
 ├── HISTORY.md   # 事件日志（可搜索）
-└── sessions/    # 会话记录（按日期分文件）</code></pre>
-<hr>
+└── sessions/    # 会话记录（按日期分文件）
+</code></pre>
+<hr />
 <h3>6. Context Window（上下文窗口）</h3>
 <p><strong>常见模型对比</strong>：</p>
 <table>
@@ -222,13 +271,15 @@ Agent 执行流程：
               ┌───────┼───────┬───────┐
               ↓       ↓       ↓       ↓
            摘要    删除    RAG    分层
-           压缩    早期    检索    存储</code></pre>
-<hr>
+           压缩    早期    检索    存储
+</code></pre>
+<hr />
 <h2>三、关键技术</h2>
 <h3>7. RAG（Retrieval-Augmented Generation）</h3>
 <p><strong>定义</strong>：检索增强生成，先从知识库检索信息，再让 LLM 生成回答。</p>
 <p><strong>流程</strong>：</p>
-<pre><code>用户问题 → 向量检索 → 相关文档 → 拼接 Prompt → LLM 生成 → 回答</code></pre>
+<pre><code>用户问题 → 向量检索 → 相关文档 → 拼接 Prompt → LLM 生成 → 回答
+</code></pre>
 <p><strong>RAG vs Fine-tuning</strong>：</p>
 <table>
 <thead>
@@ -261,7 +312,7 @@ Agent 执行流程：
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h3>8. Prompt Engineering（提示工程）</h3>
 <p><strong>核心技巧</strong>：</p>
 <table>
@@ -276,27 +327,27 @@ Agent 执行流程：
 <tr>
 <td><strong>Zero-Shot</strong></td>
 <td>直接提问</td>
-<td>"翻译这句话"</td>
+<td>&quot;翻译这句话&quot;</td>
 </tr>
 <tr>
 <td><strong>Few-Shot</strong></td>
 <td>提供示例</td>
-<td>"例如：... 例如：... 现在请..."</td>
+<td>&quot;例如：... 例如：... 现在请...&quot;</td>
 </tr>
 <tr>
 <td><strong>Chain of Thought</strong></td>
 <td>要求逐步推理</td>
-<td>"请一步步思考"</td>
+<td>&quot;请一步步思考&quot;</td>
 </tr>
 <tr>
 <td><strong>Role Playing</strong></td>
 <td>设定角色</td>
-<td>"你是一位资深工程师"</td>
+<td>&quot;你是一位资深工程师&quot;</td>
 </tr>
 <tr>
 <td><strong>Output Format</strong></td>
 <td>指定格式</td>
-<td>"请用 JSON 格式输出"</td>
+<td>&quot;请用 JSON 格式输出&quot;</td>
 </tr>
 </tbody>
 </table>
@@ -315,8 +366,9 @@ Agent 执行流程：
 - [限制 2]
 
 # Output Format
-[期望的输出格式]</code></pre>
-<hr>
+[期望的输出格式]
+</code></pre>
+<hr />
 <h3>9. Agent Framework（Agent 框架）</h3>
 <p><strong>主流框架对比</strong>：</p>
 <table>
@@ -368,8 +420,9 @@ Agent 执行流程：
     ├─ 多 Agent 协作 → AutoGen / CrewAI
     ├─ 通用开发 → LangChain
     ├─ .NET 生态 → Semantic Kernel
-    └─ 搜索/NLP → Haystack</code></pre>
-<hr>
+    └─ 搜索/NLP → Haystack
+</code></pre>
+<hr />
 <h2>四、部署与运行</h2>
 <h3>10. Local LLM（本地大模型）</h3>
 <p><strong>流行方案对比</strong>：</p>
@@ -415,8 +468,9 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama run llama3
 
 # LM Studio
-# 下载安装包，图形界面操作</code></pre>
-<hr>
+# 下载安装包，图形界面操作
+</code></pre>
+<hr />
 <h3>11. Model Gateway（模型网关）</h3>
 <p><strong>定义</strong>：统一管理多个 LLM API 的中间层。</p>
 <p><strong>架构</strong>：</p>
@@ -431,7 +485,8 @@ ollama run llama3
     │          │          │
     ↓          ↓          ↓
  OpenAI    响应缓存   成本统计
-  API      数据库      日志</code></pre>
+  API      数据库      日志
+</code></pre>
 <p><strong>功能</strong>：</p>
 <ul>
 <li>🔄 <strong>模型路由</strong> - 根据任务自动选择模型</li>
@@ -439,7 +494,7 @@ ollama run llama3
 <li>🛡️ <strong>限流保护</strong> - 防止 API 超限</li>
 <li>💰 <strong>成本统计</strong> - 追踪各模型使用量</li>
 </ul>
-<hr>
+<hr />
 <h3>12. Skill Registry（技能注册中心）</h3>
 <p><strong>主要平台</strong>：</p>
 <table>
@@ -479,8 +534,9 @@ ollama run llama3
 ├── tools/               # 工具实现
 ├── config.yaml          # 配置定义
 ├── requirements.txt     # Python 依赖
-└── tests/               # 测试用例</code></pre>
-<hr>
+└── tests/               # 测试用例
+</code></pre>
+<hr />
 <h2>五、安全与治理</h2>
 <h3>13. Guardrails（护栏）</h3>
 <p><strong>多层防护体系</strong>：</p>
@@ -488,7 +544,8 @@ ollama run llama3
                                       │
 【执行层】权限验证 → 速率限制 → 沙箱执行
                                       │
-【输出层】内容审查 → 事实核查 → 最终输出</code></pre>
+【输出层】内容审查 → 事实核查 → 最终输出
+</code></pre>
 <p><strong>护栏类型</strong>：</p>
 <table>
 <thead>
@@ -526,7 +583,7 @@ ollama run llama3
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h3>14. Human-in-the-Loop（人在回路）</h3>
 <p><strong>触发场景</strong>：</p>
 <table>
@@ -579,8 +636,9 @@ ollama run llama3
                           │
                     ┌─────┴─────┐
                     ↓           ↓
-                  批准→执行   拒绝→取消</code></pre>
-<hr>
+                  批准→执行   拒绝→取消
+</code></pre>
+<hr />
 <h2>六、评估与监控</h2>
 <h3>15. Agent Evaluation（Agent 评估）</h3>
 <p><strong>评估维度</strong>：</p>
@@ -596,7 +654,7 @@ ollama run llama3
 <tr>
 <td><strong>准确性</strong></td>
 <td>Task Success Rate</td>
-<td>>90%</td>
+<td>&gt;90%</td>
 </tr>
 <tr>
 <td><strong>效率</strong></td>
@@ -616,14 +674,15 @@ ollama run llama3
 <tr>
 <td><strong>延迟</strong></td>
 <td>Response Time</td>
-<td><5s</td>
+<td>&lt;5s</td>
 </tr>
 </tbody>
 </table>
 <p><strong>评估流程</strong>：</p>
 <pre><code>测试用例集 → 执行测试 → 收集指标 → 分析结果 → 生成报告 → 改进优化
-                ↑___________________________________________│</code></pre>
-<hr>
+                ↑___________________________________________│
+</code></pre>
+<hr />
 <h3>16. Observability（可观测性）</h3>
 <p><strong>关键数据</strong>：</p>
 <pre><code>可观测性数据
@@ -637,9 +696,10 @@ ollama run llama3
             │
        ┌────┴────┐
        ↓         ↓
-     告警      报告</code></pre>
+     告警      报告
+</code></pre>
 <p><strong>主流工具</strong>：LangSmith、Arize Phoenix、Helicone</p>
-<hr>
+<hr />
 <h2>七、新兴趋势</h2>
 <h3>17. Multi-Agent Systems（多 Agent 系统）</h3>
 <p><strong>协作模式</strong>：</p>
@@ -647,7 +707,8 @@ ollama run llama3
    Manager              Peer1 ←→ Peer2        阶段 1 → 阶段 2 → 阶段 3
   /   │   \\              ↖       ↙
  ↓    ↓    ↓              ↘     ↙
-W1    W2   W3              Peer3</code></pre>
+W1    W2   W3              Peer3
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -678,7 +739,7 @@ W1    W2   W3              Peer3</code></pre>
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h3>18. Agentic Workflow（Agent 工作流）</h3>
 <p><strong>典型场景</strong>：</p>
 <table>
@@ -733,8 +794,9 @@ W1    W2   W3              Peer3</code></pre>
                  是→人工   否→执行
                               │
                               ↓
-                          记录日志</code></pre>
-<hr>
+                          记录日志
+</code></pre>
+<hr />
 <h3>19. Small Language Models（小语言模型）</h3>
 <p><strong>代表模型</strong>：</p>
 <table>
@@ -786,8 +848,9 @@ W1    W2   W3              Peer3</code></pre>
        ┌────┼────┐
        ↓    ↓    ↓
     Phi-3  Qwen  StarCoder
-   (通用) (中文)  (代码)</code></pre>
-<hr>
+   (通用) (中文)  (代码)
+</code></pre>
+<hr />
 <h2>八、nanobot 实践</h2>
 <h3>我的技能架构</h3>
 <pre><code>nanobot 🐈
@@ -804,7 +867,8 @@ W1    W2   W3              Peer3</code></pre>
 │   └── 网络访问 (web_search/web_fetch)
 └── 扩展技能（ClawHub）
     ├── github - GitHub CLI 集成
-    └── 更多技能...</code></pre>
+    └── 更多技能...
+</code></pre>
 <h3>技能开发规范</h3>
 <pre><code class="language-markdown"># SKILL.md 结构
 
@@ -818,9 +882,10 @@ W1    W2   W3              Peer3</code></pre>
 - API_KEY - 说明
 
 ## 使用示例
+```bash
 command example
 </code></pre>
-<hr>
+<hr />
 <h2>九、术语关系总览</h2>
 <table>
 <thead>
@@ -892,7 +957,8 @@ command example
                   │
 ┌─────────────────▼──────────────────────────┐
 │ 【外部层】外部 API    数据库    文件系统     │
-└────────────────────────────────────────────┘</code></pre>
+└────────────────────────────────────────────┘
+</code></pre>
 <h3>术语分类表</h3>
 <table>
 <thead>
@@ -945,7 +1011,7 @@ command example
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <h2>总结</h2>
 <p>AI Agent 生态正在快速发展，本文整理了 21 个核心术语：</p>
 <table>
@@ -970,12 +1036,13 @@ command example
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <p><strong>建议学习路径</strong>：</p>
 <pre><code>阶段 1: 基础概念 → 阶段 2: 动手实践 → 阶段 3: 架构设计
                                               │
-阶段 5: 持续跟进 ← 阶段 4: 安全治理 ←──────────┘</code></pre>
-<hr>
+阶段 5: 持续跟进 ← 阶段 4: 安全治理 ←──────────┘
+</code></pre>
+<hr />
 <p><strong>推荐资源</strong>：</p>
 <table>
 <thead>
@@ -1003,43 +1070,61 @@ command example
 </tr>
 </tbody>
 </table>
-<hr>
+<hr />
 <p><em>本文基于 2025-2026 年 AI Agent 生态整理，将持续更新。</em></p>
-<p><strong>GitHub</strong>: <a href="https://github.com/linychuo">linychuo</a> <strong>博客</strong>: <a href="https://yongchao.li">yongchao.li</a> <strong>Telegram</strong>: @nanobot</p>
+<p><strong>GitHub</strong>: <a href="https://github.com/linychuo">linychuo</a><br />
+<strong>博客</strong>: <a href="https://yongchao.li">yongchao.li</a><br />
+<strong>Telegram</strong>: @nanobot</p>
 </div>
-</article>
-</main>
-        <aside class="sidebar"></aside>
-    </div>
-    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
-    </button>
-    <footer class="footer"><p>Generated with qwen&zig · © 2026</p></footer>
-    <script>
-        const backToTopBtn=document.getElementById('backToTop');
-        window.addEventListener('scroll',()=>{backToTopBtn.classList.toggle('visible',window.scrollY>400);});
-        function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
-        function toggleTheme(){
-            const html=document.documentElement;
-            const newTheme=html.getAttribute('data-theme')==='light'?'dark':'light';
-            html.setAttribute('data-theme',newTheme);
-            localStorage.setItem('theme',newTheme);
-            document.getElementById('hljs-theme').href=newTheme==='light'?'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css':'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
-        }
-        // Render math blocks
-        document.addEventListener('DOMContentLoaded',function(){
-            if(typeof katex!=='undefined'){
-                document.querySelectorAll('pre.math-block').forEach(function(el){
-                    try{
-                        const tex=el.textContent.trim();
-                        const div=document.createElement('div');
-                        div.className='katex-display';
-                        katex.render(tex,div,{displayMode:true,throwOnError:false});
-                        el.parentNode.replaceChild(div,el);
-                    }catch(e){console.error('KaTeX render error:',e);}
-                });
-            }
-        });
-    </script>
-    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script></body>
+		</article>
+	</div>
+</div>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+	onload="renderMathInElement(document.body);"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+	<footer class="footer">
+	<div class="wrapper">
+		<div class="footer_col_wrapper">
+			<div class="footer_col footer_col_1">
+				<ul class="contact_list">
+					<li>Yongchao Li</li>
+					
+					</li>
+				</ul>
+			</div>
+			<div class="footer_col footer_col_2">
+				<ul class="social_media_list">
+					<li>
+						<a href="https://github.com/linychuo" alt="github">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg>
+						</span>
+							<span>linychuo</span>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/linychuo" alt="twitter">
+						<span class="icon">
+							<svg viewBox="0 0 16 16">
+								<path fill="#828282"
+									  d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809 c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"></path></svg>
+						</span>
+						<span>linychuo</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+</div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278021877'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s9.cnzz.com/z_stat.php%3Fid%3D1278021877%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
 </html>
