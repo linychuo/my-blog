@@ -14,13 +14,21 @@ pub const TemplateEngine = @import("engine.zig").TemplateEngine;
 pub const Context = @import("context.zig").Context;
 pub const TemplateError = @import("error.zig").TemplateError;
 pub const PartialsManager = @import("partials.zig").PartialsManager;
+pub const Loader = @import("loader.zig").Loader;
+pub const Renderer = @import("renderer.zig").Renderer;
 pub const escapeHtml = @import("html_escape.zig").escapeHtml;
+pub const parseTag = @import("tag_parser.zig").parseTag;
+pub const ParsedTag = @import("tag_parser.zig").ParsedTag;
+pub const VariableRenderer = @import("variable_renderer.zig").VariableRenderer;
 
 test {
-    // Run all tests from submodules
     std.testing.refAllDecls(@import("error.zig"));
     std.testing.refAllDecls(@import("html_escape.zig"));
     std.testing.refAllDecls(@import("context.zig"));
     std.testing.refAllDecls(@import("partials.zig"));
+    std.testing.refAllDecls(@import("loader.zig"));
+    std.testing.refAllDecls(@import("tag_parser.zig"));
+    std.testing.refAllDecls(@import("variable_renderer.zig"));
+    std.testing.refAllDecls(@import("renderer.zig"));
     std.testing.refAllDecls(@import("engine.zig"));
 }

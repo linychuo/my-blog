@@ -35,6 +35,19 @@ pub const ParserState = struct {
         if (buffer.items.len > 0) try buffer.append(allocator, '\n');
         try buffer.appendSlice(allocator, content);
     }
+
+    /// Returns true if currently in any list context
+    pub fn inList(self: *const ParserState) bool {
+        return self.in_list or self.in_ordered_list;
+    }
+
+    /// Close any open list item (used when transitioning between list types or ending list)
+    pub fn closeListItem(state: *ParserState, writer: *HtmlWriter, allocator: Allocator) !void {
+        if (state.list_item_open) {
+            try writer.write(allocator, "</li>\n");
+            state.list_item_open = false;
+        }
+    }
 };
 
 /// Close all open list tags
@@ -104,27 +117,4 @@ pub fn closeAll(state: *ParserState, writer: *HtmlWriter, allocator: Allocator) 
     }
     // Close table
     try closeTable(state, writer, allocator);
-}
-
-/// Render a header with given level
-pub fn renderHeader(
-    state: *ParserState,
-    writer: *HtmlWriter,
-    allocator: Allocator,
-    level: u8,
-    content: []const u8,
-) !void {
-    try closeTable(state, writer, allocator);
-    try closeParagraphAndLists(state, writer, allocator);
-    state.in_paragraph = false;
-
-    try writer.write(allocator, "<h");
-    try writer.result.print(allocator, "{d}", .{level});
-    try writer.write(allocator, ">");
-    const processed = try @import("inline.zig").processInline(allocator, content);
-    defer allocator.free(processed);
-    try writer.write(allocator, processed);
-    try writer.write(allocator, "</h");
-    try writer.result.print(allocator, "{d}", .{level});
-    try writer.write(allocator, ">\n");
 }

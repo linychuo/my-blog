@@ -264,10 +264,189 @@ test "complex document" {
     ;
     const html = try toHtml(allocator, markdown_text);
     defer allocator.free(html);
-    
+
     try std.testing.expect(std.mem.indexOf(u8, html, "<h1>Title</h1>") != null);
     try std.testing.expect(std.mem.indexOf(u8, html, "<h2>Section</h2>") != null);
     try std.testing.expect(std.mem.indexOf(u8, html, "<ul>") != null);
     try std.testing.expect(std.mem.indexOf(u8, html, "<pre><code") != null);
     try std.testing.expect(std.mem.indexOf(u8, html, "<table>") != null);
+}
+
+// Boundary tests
+test "unclosed bold in paragraph" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "This is **unclosed bold text";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    // Should output raw ** since it's not closed
+    try std.testing.expect(std.mem.indexOf(u8, html, "**unclosed") != null);
+}
+
+test "unclosed strikethrough" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "This is ~~unclosed strike";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "~~unclosed") != null);
+}
+
+test "unclosed inline code" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "Use `SELECT without closing tick";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    // The unclosed code should output as raw text
+    try std.testing.expect(std.mem.indexOf(u8, html, "`SELECT") != null);
+}
+
+test "incomplete link syntax" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "Click [here";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    // Should output raw [here since url is missing
+    try std.testing.expect(std.mem.indexOf(u8, html, "[here") != null);
+}
+
+test "incomplete image syntax" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "Image ![alt](url";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    // Should output raw ![alt] since it's malformed
+    try std.testing.expect(std.mem.indexOf(u8, html, "![alt]") != null);
+}
+
+test "malformed table missing cells" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\| A | B |
+        \\|---|---|
+        \\| C
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    // Should still produce table structure
+    try std.testing.expect(std.mem.indexOf(u8, html, "<table>") != null);
+}
+
+test "nested formatting in table cell" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\| **Bold** | *Italic* |
+        \\|----------|---------|
+        \\| ~~Strike~~ | `Code` |
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<strong>Bold</strong>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<em>Italic</em>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<del>Strike</del>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<code>Code</code>") != null);
+}
+
+test "very long ordered list" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\1. Item 1
+        \\2. Item 2
+        \\50. Item 50
+        \\999. Item 999
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<ol>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<li>Item 999</li>") != null);
+}
+
+test "code block without language" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\```
+        \\some code
+        \\```
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<pre><code") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "some code") != null);
+}
+
+test "math block with special characters" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "$$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<pre class=\"math-block\">") != null);
+}
+
+test "multiple paragraphs with different formats" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\Paragraph one with **bold**.
+        \\
+        \\Paragraph two with *italic*.
+        \\
+        \\Paragraph three with ~~strike~~.
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<p>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<strong>bold</strong>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<em>italic</em>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<del>strike</del>") != null);
+}
+
+test "unordered list with special markers" {
+    const allocator = std.testing.allocator;
+    const markdown_text =
+        \\- Item minus
+        \\* Item asterisk
+        \\+ Item plus
+    ;
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<ul>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "Item minus") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "Item asterisk") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "Item plus") != null);
+}
+
+test "blockquote with nested formatting" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "> This is **bold** quote";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<blockquote>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, html, "<strong>bold</strong>") != null);
+}
+
+test "headers with special characters" {
+    const allocator = std.testing.allocator;
+    const markdown_text = "## Header with \"quotes\" & ampersand";
+    const html = try toHtml(allocator, markdown_text);
+    defer allocator.free(html);
+
+    try std.testing.expect(std.mem.indexOf(u8, html, "<h2>") != null);
+}
+
+test "horizontal rules variations" {
+    const allocator = std.testing.allocator;
+
+    try std.testing.expect(std.mem.indexOf(u8, try toHtml(allocator, "---"), "<hr>") != null);
+    try std.testing.expect(std.mem.indexOf(u8, try toHtml(allocator, "--"), "<hr>") == null);
+    try std.testing.expect(std.mem.indexOf(u8, try toHtml(allocator, "----"), "<hr>") != null);
 }

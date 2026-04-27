@@ -65,22 +65,10 @@ pub const PartialsManager = struct {
         const content_copy = try self.allocator.dupe(u8, content);
         errdefer self.allocator.free(content_copy);
         const name_copy = try self.allocator.dupe(u8, name);
-        errdefer self.allocator.free(content_copy);
         errdefer self.allocator.free(name_copy);
         try self.cache.put(name_copy, content_copy);
 
         return content_copy;
-    }
-
-    /// Render a partial with context
-    pub fn renderPartial(
-        self: *PartialsManager,
-        name: []const u8,
-        context: *const Context,
-        render_fn: *const fn (Allocator, []const u8, *const Context) TemplateError![]const u8,
-    ) TemplateError![]const u8 {
-        const template = try self.loadPartial(name);
-        return render_fn(self.allocator, template, context);
     }
 };
 

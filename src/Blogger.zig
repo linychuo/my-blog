@@ -133,10 +133,6 @@ pub const Blogger = struct {
 
         while (try walker.next()) |entry| {
             if (entry.kind == .file) {
-                // Copy file
-                const src_path = try std.fs.path.join(self.allocator, &.{ static_dir, entry.path });
-                defer self.allocator.free(src_path);
-
                 const dest_path = try std.fs.path.join(self.allocator, &.{ self.dest_dir, entry.path });
                 defer self.allocator.free(dest_path);
 
@@ -202,19 +198,9 @@ pub const Blogger = struct {
         try ctx.set("date_time", post.date_time);
         try ctx.set("content", html_content);
 
-        // Build tags HTML
-        var tags_html = std.ArrayList(u8){};
-        defer tags_html.deinit(self.allocator);
-
-        var tag_iter = std.mem.tokenizeScalar(u8, post.tags, ' ');
-        while (tag_iter.next()) |tag| {
-            try tags_html.appendSlice(self.allocator, "<a href=\"/tags/");
-            try tags_html.appendSlice(self.allocator, tag);
-            try tags_html.appendSlice(self.allocator, ".html\" class=\"article-tag\">");
-            try tags_html.appendSlice(self.allocator, tag);
-            try tags_html.appendSlice(self.allocator, "</a>");
-        }
-        try ctx.set("tags", tags_html.items);
+        const tags_html = try buildTagsHtml(self.allocator, post.tags);
+        defer self.allocator.free(tags_html);
+        try ctx.set("tags", tags_html);
 
         // Render post.hbs to get page content
         const page_html = try self.template_engine.render("post.hbs", &ctx);
@@ -227,8 +213,7 @@ pub const Blogger = struct {
         try full_title.appendSlice(self.allocator, " - ");
         try ctx.set("page_title", full_title.items);
 
-        // Get current year for footer
-        const year = "2026";
+        const year = getCurrentYear();
         try ctx.set("year", year);
 
         self.template_engine.setPageContent(page_html);
@@ -240,61 +225,20 @@ pub const Blogger = struct {
     }
 
     fn writeHtmlFileWithDate(self: *Blogger, markdown_filename: []const u8, date_time: []const u8, html: []const u8) !void {
-        // Parse date from date_time string (format: "YYYY-MM-DD" or "YYYY-M-D")
-        if (date_time.len < 8) return;
+        const post_path = try buildPostPath(self.allocator, markdown_filename, date_time);
+        defer self.allocator.free(post_path);
 
-        // Extract year (always 4 digits)
-        const year = date_time[0..4];
-
-        // Extract month (1 or 2 digits until '-')
-        var pos: usize = 5;
-        var month_end = pos;
-        while (month_end < date_time.len and date_time[month_end] != '-') : (month_end += 1) {}
-        var month_buf: [2]u8 = undefined;
-        const month = if (month_end - pos == 1) blk: {
-            month_buf[0] = '0';
-            month_buf[1] = date_time[pos];
-            break :blk month_buf[0..2];
-        } else date_time[pos..month_end];
-
-        // Extract day (1 or 2 digits until ' ' or '-')
-        pos = month_end + 1;
-        var day_end = pos;
-        while (day_end < date_time.len and date_time[day_end] != ' ' and date_time[day_end] != '-') : (day_end += 1) {}
-        var day_buf: [2]u8 = undefined;
-        const day = if (day_end - pos == 1) blk: {
-            day_buf[0] = '0';
-            day_buf[1] = date_time[pos];
-            break :blk day_buf[0..2];
-        } else date_time[pos..day_end];
-
-        // Create output filename
-        var output_filename = std.ArrayList(u8){};
-        defer output_filename.deinit(self.allocator);
-        try output_filename.appendSlice(self.allocator, markdown_filename);
-        if (output_filename.items.len >= 9) output_filename.items.len -= 9;
-        try output_filename.appendSlice(self.allocator, ".html");
-
-        // Build path: dest_dir/YYYY/MM/DD/filename.html
         var output_path = std.ArrayList(u8){};
         defer output_path.deinit(self.allocator);
         try output_path.appendSlice(self.allocator, self.dest_dir);
         try output_path.appendSlice(self.allocator, "/");
-        try output_path.appendSlice(self.allocator, year);
-        try output_path.appendSlice(self.allocator, "/");
-        try output_path.appendSlice(self.allocator, month);
-        try output_path.appendSlice(self.allocator, "/");
-        try output_path.appendSlice(self.allocator, day);
-        try output_path.appendSlice(self.allocator, "/");
-        try output_path.appendSlice(self.allocator, output_filename.items);
+        try output_path.appendSlice(self.allocator, post_path);
 
-        // Create directory structure
         const dir_path = std.fs.path.dirname(output_path.items);
         if (dir_path) |dp| {
             try std.fs.cwd().makePath(dp);
         }
 
-        // Write file
         const file = try std.fs.cwd().createFile(output_path.items, .{});
         defer file.close();
         try file.writeAll(html);
@@ -305,60 +249,14 @@ pub const Blogger = struct {
         defer posts_html.deinit(self.allocator);
 
         for (posts) |post| {
-            // Build filename with date-based path
-            var filename = std.ArrayList(u8){};
-            defer filename.deinit(self.allocator);
+            const post_path = try buildPostPath(self.allocator, post.filename, post.date_time);
+            defer self.allocator.free(post_path);
 
-            // Parse date for path from date_time string
-            // Format can be "YYYY-MM-DD" or "YYYY-M-D" (with or without leading zeros)
-            if (post.date_time.len >= 8) {
-                // Extract year (always 4 digits)
-                try filename.appendSlice(self.allocator, post.date_time[0..4]);
-                try filename.appendSlice(self.allocator, "/");
-
-                // Extract month (1 or 2 digits until '-')
-                var pos: usize = 5;
-                var month_end = pos;
-                while (month_end < post.date_time.len and post.date_time[month_end] != '-') : (month_end += 1) {}
-                const month = post.date_time[pos..month_end];
-                // Pad month with leading zero if needed
-                if (month.len == 1) try filename.appendSlice(self.allocator, "0");
-                try filename.appendSlice(self.allocator, month);
-                try filename.appendSlice(self.allocator, "/");
-
-                // Extract day (1 or 2 digits until ' ' or '-')
-                pos = month_end + 1;
-                var day_end = pos;
-                while (day_end < post.date_time.len and post.date_time[day_end] != ' ' and post.date_time[day_end] != '-') : (day_end += 1) {}
-                const day = post.date_time[pos..day_end];
-                // Pad day with leading zero if needed
-                if (day.len == 1) try filename.appendSlice(self.allocator, "0");
-                try filename.appendSlice(self.allocator, day);
-                try filename.appendSlice(self.allocator, "/");
-            }
-
-            // Add base filename and replace .markdown with .html
-            const base_len = post.filename.len;
-            if (base_len >= 9 and std.mem.endsWith(u8, post.filename, ".markdown")) {
-                try filename.appendSlice(self.allocator, post.filename[0 .. base_len - 9]);
-            } else {
-                try filename.appendSlice(self.allocator, post.filename);
-            }
-            try filename.appendSlice(self.allocator, ".html");
-
-            var tags_html = std.ArrayList(u8){};
-            defer tags_html.deinit(self.allocator);
-            var tag_iter = std.mem.tokenizeScalar(u8, post.tags, ' ');
-            while (tag_iter.next()) |tag| {
-                try tags_html.appendSlice(self.allocator, "<a href=\"/tags/");
-                try tags_html.appendSlice(self.allocator, tag);
-                try tags_html.appendSlice(self.allocator, ".html\" class=\"article-tag\">");
-                try tags_html.appendSlice(self.allocator, tag);
-                try tags_html.appendSlice(self.allocator, "</a>");
-            }
+            const tags_html = try buildTagsHtml(self.allocator, post.tags);
+            defer self.allocator.free(tags_html);
 
             try posts_html.appendSlice(self.allocator, "<li class=\"post-item\"><div class=\"post-title\"><a href=\"/");
-            try posts_html.appendSlice(self.allocator, filename.items);
+            try posts_html.appendSlice(self.allocator, post_path);
             try posts_html.appendSlice(self.allocator, "\">");
             try posts_html.appendSlice(self.allocator, post.title);
             try posts_html.appendSlice(self.allocator, "</a></div><div class=\"post-meta\"><time class=\"post-date\" datetime=\"");
@@ -366,7 +264,7 @@ pub const Blogger = struct {
             try posts_html.appendSlice(self.allocator, "\">");
             try posts_html.appendSlice(self.allocator, post.date_time);
             try posts_html.appendSlice(self.allocator, "</time>");
-            try posts_html.appendSlice(self.allocator, tags_html.items);
+            try posts_html.appendSlice(self.allocator, tags_html);
             try posts_html.appendSlice(self.allocator, "</div></li>\n");
         }
 
@@ -375,15 +273,12 @@ pub const Blogger = struct {
         try ctx.set("subtitle", "Software development, technology, and more");
         try ctx.set("posts", posts_html.items);
 
-        // Render index.hbs to get page content
         const page_html = try self.template_engine.render("index.hbs", &ctx);
         defer self.allocator.free(page_html);
 
-        // Set empty page title for index (only show site_title)
         try ctx.set("page_title", "");
-        try ctx.set("year", "2026");
+        try ctx.set("year", getCurrentYear());
 
-        // Set page content and render layout
         self.template_engine.setPageContent(page_html);
         const html = try self.template_engine.render("layout.hbs", &ctx);
         defer self.allocator.free(html);
@@ -423,7 +318,7 @@ pub const Blogger = struct {
         try ctx.set("title", "About");
         try ctx.set("content", html_content);
         try ctx.set("page_title", "");
-        try ctx.set("year", "2026");
+        try ctx.set("year", getCurrentYear());
         try ctx.set("tags", "");
 
         // Render about.hbs to get page content
@@ -452,6 +347,7 @@ pub const Blogger = struct {
         defer {
             var it = tag_map.iterator();
             while (it.next()) |entry| {
+                self.allocator.free(entry.key_ptr.*);
                 entry.value_ptr.deinit(self.allocator);
             }
             tag_map.deinit();
@@ -461,7 +357,9 @@ pub const Blogger = struct {
         for (posts) |post| {
             var tag_iter = std.mem.tokenizeScalar(u8, post.tags, ' ');
             while (tag_iter.next()) |tag| {
-                const gop = try tag_map.getOrPut(tag);
+                const tag_copy = try self.allocator.dupe(u8, tag);
+                errdefer self.allocator.free(tag_copy);
+                const gop = try tag_map.getOrPut(tag_copy);
                 if (!gop.found_existing) {
                     gop.value_ptr.* = .{};
                 }
@@ -480,52 +378,14 @@ pub const Blogger = struct {
             defer posts_html.deinit(self.allocator);
 
             for (tag_posts.items) |post| {
-                // Build filename with date-based path
-                var filename = std.ArrayList(u8){};
-                defer filename.deinit(self.allocator);
+                const post_path = try buildPostPath(self.allocator, post.filename, post.date_time);
+                defer self.allocator.free(post_path);
 
-                if (post.date_time.len >= 8) {
-                    try filename.appendSlice(self.allocator, post.date_time[0..4]);
-                    try filename.appendSlice(self.allocator, "/");
-
-                    var pos: usize = 5;
-                    var month_end = pos;
-                    while (month_end < post.date_time.len and post.date_time[month_end] != '-') : (month_end += 1) {}
-                    const month = post.date_time[pos..month_end];
-                    if (month.len == 1) try filename.appendSlice(self.allocator, "0");
-                    try filename.appendSlice(self.allocator, month);
-                    try filename.appendSlice(self.allocator, "/");
-
-                    pos = month_end + 1;
-                    var day_end = pos;
-                    while (day_end < post.date_time.len and post.date_time[day_end] != ' ' and post.date_time[day_end] != '-') : (day_end += 1) {}
-                    const day = post.date_time[pos..day_end];
-                    if (day.len == 1) try filename.appendSlice(self.allocator, "0");
-                    try filename.appendSlice(self.allocator, day);
-                    try filename.appendSlice(self.allocator, "/");
-                }
-
-                const base_len = post.filename.len;
-                if (base_len >= 9 and std.mem.endsWith(u8, post.filename, ".markdown")) {
-                    try filename.appendSlice(self.allocator, post.filename[0 .. base_len - 9]);
-                } else {
-                    try filename.appendSlice(self.allocator, post.filename);
-                }
-                try filename.appendSlice(self.allocator, ".html");
-
-                var tags_html = std.ArrayList(u8){};
-                defer tags_html.deinit(self.allocator);
-                var t_iter = std.mem.tokenizeScalar(u8, post.tags, ' ');
-                while (t_iter.next()) |t| {
-                    try tags_html.appendSlice(self.allocator, "<a href=\"/tags/");
-                    try tags_html.appendSlice(self.allocator, t);
-                    try tags_html.appendSlice(self.allocator, ".html\" class=\"article-tag\">");
-                    try tags_html.appendSlice(self.allocator, t);
-                    try tags_html.appendSlice(self.allocator, "</a>");
-                }
+                const tags_html = try buildTagsHtml(self.allocator, post.tags);
+                defer self.allocator.free(tags_html);
 
                 try posts_html.appendSlice(self.allocator, "<li class=\"post-item\"><div class=\"post-title\"><a href=\"/");
-                try posts_html.appendSlice(self.allocator, filename.items);
+                try posts_html.appendSlice(self.allocator, post_path);
                 try posts_html.appendSlice(self.allocator, "\">");
                 try posts_html.appendSlice(self.allocator, post.title);
                 try posts_html.appendSlice(self.allocator, "</a></div><div class=\"post-meta\"><time class=\"post-date\" datetime=\"");
@@ -533,7 +393,7 @@ pub const Blogger = struct {
                 try posts_html.appendSlice(self.allocator, "\">");
                 try posts_html.appendSlice(self.allocator, post.date_time);
                 try posts_html.appendSlice(self.allocator, "</time>");
-                try posts_html.appendSlice(self.allocator, tags_html.items);
+                try posts_html.appendSlice(self.allocator, tags_html);
                 try posts_html.appendSlice(self.allocator, "</div></li>\n");
             }
 
@@ -550,7 +410,7 @@ pub const Blogger = struct {
             try ctx.set("post_count", post_count_str);
             try ctx.set("posts", posts_html.items);
             try ctx.set("page_title", page_title_str);
-            try ctx.set("year", "2026");
+            try ctx.set("year", getCurrentYear());
 
             // Render tag.hbs to get page content
             const page_html = try self.template_engine.render("tag.hbs", &ctx);
@@ -585,4 +445,61 @@ pub const Blogger = struct {
 
 fn sortPostsByDateDesc(_: void, a: Post, b: Post) bool {
     return std.mem.order(u8, a.date_time, b.date_time).compare(.gt);
+}
+
+fn getCurrentYear() []const u8 {
+    const timestamp = std.time.timestamp();
+    var buf: [5]u8 = undefined;
+    const year: i64 = 1970 + @divFloor(timestamp, 31536000);
+    return std.fmt.bufPrint(&buf, "{d}", .{year}) catch "2026";
+}
+
+fn buildPostPath(allocator: Allocator, filename: []const u8, date_time: []const u8) ![]const u8 {
+    var result = std.ArrayList(u8){};
+    errdefer result.deinit(allocator);
+
+    if (date_time.len >= 8) {
+        try result.appendSlice(allocator, date_time[0..4]);
+        try result.appendSlice(allocator, "/");
+
+        var pos: usize = 5;
+        while (pos < date_time.len and date_time[pos] != '-') : (pos += 1) {}
+        const month = date_time[5..pos];
+        if (month.len == 1) try result.appendSlice(allocator, "0");
+        try result.appendSlice(allocator, month);
+        try result.appendSlice(allocator, "/");
+
+        pos += 1;
+        var day_end = pos;
+        while (day_end < date_time.len and date_time[day_end] != ' ' and date_time[day_end] != '-') : (day_end += 1) {}
+        const day = date_time[pos..day_end];
+        if (day.len == 1) try result.appendSlice(allocator, "0");
+        try result.appendSlice(allocator, day);
+        try result.appendSlice(allocator, "/");
+    }
+
+    if (std.mem.endsWith(u8, filename, ".markdown")) {
+        try result.appendSlice(allocator, filename[0 .. filename.len - 9]);
+    } else {
+        try result.appendSlice(allocator, filename);
+    }
+    try result.appendSlice(allocator, ".html");
+
+    return result.toOwnedSlice(allocator);
+}
+
+fn buildTagsHtml(allocator: Allocator, tags: []const u8) ![]const u8 {
+    var html = std.ArrayList(u8){};
+    errdefer html.deinit(allocator);
+
+    var tag_iter = std.mem.tokenizeScalar(u8, tags, ' ');
+    while (tag_iter.next()) |tag| {
+        try html.appendSlice(allocator, "<a href=\"/tags/");
+        try html.appendSlice(allocator, tag);
+        try html.appendSlice(allocator, ".html\" class=\"article-tag\">");
+        try html.appendSlice(allocator, tag);
+        try html.appendSlice(allocator, "</a>");
+    }
+
+    return html.toOwnedSlice(allocator);
 }

@@ -8,10 +8,16 @@ const closeParagraphAndLists = @import("parser.zig").closeParagraphAndLists;
 const closeLists = @import("parser.zig").closeLists;
 const closeTable = @import("parser.zig").closeTable;
 const closeAll = @import("parser.zig").closeAll;
-const renderHeader = @import("parser.zig").renderHeader;
-const processInline = @import("inline.zig").processInline;
-const processLineBreaks = @import("inline.zig").processLineBreaks;
+
+// Block processors
 const table = @import("blocks/table.zig");
+const header = @import("blocks/header.zig");
+const hr = @import("blocks/hr.zig");
+const code_block = @import("blocks/code_block.zig");
+const list = @import("blocks/list.zig");
+const blockquote = @import("blocks/blockquote.zig");
+const paragraph = @import("blocks/paragraph.zig");
+const math_block = @import("blocks/math_block.zig");
 
 /// Convert markdown text to HTML
 pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
@@ -29,12 +35,12 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
         const trimmed = std.mem.trim(u8, line, " \r\n\t");
 
         // Math block toggle with $$
-        if (std.mem.startsWith(u8, trimmed, "$$")) {
+        if (math_block.isMathBlockDelimiter(line)) {
             if (state.in_math_block) {
                 try closeParagraphAndLists(&state, &writer, allocator);
-                try writer.write(allocator, "<pre class=\"math-block\">");
-                try writer.write(allocator, state.math_buffer.items);
-                try writer.write(allocator, "</pre>\n");
+                try math_block.renderMathBlockOpen(&writer, allocator);
+                try math_block.renderMathContent(&state, &writer, allocator);
+                try math_block.renderMathBlockClose(&writer, allocator);
                 state.math_buffer.clearRetainingCapacity();
                 state.in_math_block = false;
             } else {
@@ -51,28 +57,18 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
         }
 
         // Code block toggle with language
-        if (std.mem.startsWith(u8, trimmed, "```")) {
+        if (code_block.isCodeBlockDelimiter(line)) {
             if (state.in_code_block) {
                 try closeParagraphAndLists(&state, &writer, allocator);
-                try writer.write(allocator, "<pre><code");
-                if (state.code_language.items.len > 0) {
-                    try writer.write(allocator, " class=\"language-");
-                    try writer.write(allocator, state.code_language.items);
-                    try writer.write(allocator, "\"");
-                }
-                try writer.write(allocator, ">");
-                try writer.write(allocator, state.code_buffer.items);
-                try writer.write(allocator, "</code></pre>\n");
-                state.code_buffer.clearRetainingCapacity();
-                state.code_language.clearRetainingCapacity();
-                state.in_code_block = false;
+                try code_block.renderCodeBlockClose(&state, &writer, allocator);
             } else {
                 try closeParagraphAndLists(&state, &writer, allocator);
                 state.in_code_block = true;
-                if (trimmed.len > 3) {
-                    try state.code_language.appendSlice(allocator, trimmed[3..]);
-                    state.code_buffer.clearRetainingCapacity();
+                const t = std.mem.trim(u8, line, " \r\n\t");
+                if (t.len > 3) {
+                    try state.code_language.appendSlice(allocator, t[3..]);
                 }
+                state.code_buffer.clearRetainingCapacity();
             }
             continue;
         }
@@ -87,13 +83,10 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
         if (std.mem.startsWith(u8, trimmed, "|")) {
             try closeParagraphAndLists(&state, &writer, allocator);
 
-            // Check if this is a separator line (|---|---|)
             if (table.isTableSeparator(trimmed)) {
-                continue; // Skip separator line
+                continue;
             }
 
-            // Parse and render table row
-            // First row is header, subsequent rows are body
             try table.renderTableRow(&writer, allocator, trimmed, !state.in_table);
             state.in_table = true;
             continue;
@@ -104,16 +97,14 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
             if (state.in_table) {
                 try closeTable(&state, &writer, allocator);
             }
-            if (state.in_list or state.in_ordered_list) {
+            if (state.inList()) {
                 const content = std.mem.trimLeft(u8, line, " ");
                 if (state.list_item_open) {
                     try writer.write(allocator, "</li>\n");
                     state.list_item_open = false;
                 }
                 try writer.write(allocator, "<li class=\"continuation\">");
-                const processed = try processInline(allocator, content);
-                defer allocator.free(processed);
-                try writer.write(allocator, processed);
+                try writer.write(allocator, content);
                 try writer.write(allocator, "</li>\n");
                 continue;
             } else {
@@ -132,19 +123,19 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
                 try closeTable(&state, &writer, allocator);
             }
             if (state.in_paragraph) {
-                try writer.write(allocator, "</p>\n");
+                try paragraph.renderParagraphClose(&writer, allocator);
                 state.in_paragraph = false;
             }
             if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
+                try list.renderListItemClose(&writer, allocator);
                 state.list_item_open = false;
             }
             if (state.in_list) {
-                try writer.write(allocator, "</ul>\n");
+                try list.renderUnorderedListClose(&writer, allocator);
                 state.in_list = false;
             }
             if (state.in_ordered_list) {
-                try writer.write(allocator, "</ol>\n");
+                try list.renderOrderedListClose(&writer, allocator);
                 state.in_ordered_list = false;
             }
             if (state.code_buffer.items.len > 0) {
@@ -161,7 +152,8 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
                 try closeTable(&state, &writer, allocator);
             }
             try closeParagraphAndLists(&state, &writer, allocator);
-            try writer.write(allocator, "<ul>\n<li>");
+            try list.renderUnorderedListOpen(&writer, allocator);
+            try list.renderListItemOpen(&writer, allocator);
             try writer.write(allocator, "<strong>");
             try writer.write(allocator, trimmed[7..]);
             try writer.write(allocator, "</strong>");
@@ -171,125 +163,90 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
         }
 
         // Headers h1-h6
-        {
-            var header_matched = false;
-            inline for (.{ .{ "#", 1 }, .{ "##", 2 }, .{ "###", 3 }, .{ "####", 4 }, .{ "#####", 5 }, .{ "######", 6 } }) |header| {
-                const marker = header[0];
-                const level = header[1];
-                if (!header_matched and std.mem.startsWith(u8, trimmed, marker ++ " ")) {
-                    const content_start = marker.len + 1;
-                    try renderHeader(&state, &writer, allocator, level, trimmed[content_start..]);
-                    header_matched = true;
-                }
-            }
-            if (header_matched) continue;
-        }
-
-        // Ordered list items
-        if (std.mem.startsWith(u8, trimmed, "1. ") or
-            std.mem.startsWith(u8, trimmed, "2. ") or
-            std.mem.startsWith(u8, trimmed, "3. ") or
-            std.mem.startsWith(u8, trimmed, "4. ") or
-            std.mem.startsWith(u8, trimmed, "5. ") or
-            std.mem.startsWith(u8, trimmed, "6. ") or
-            std.mem.startsWith(u8, trimmed, "7. ") or
-            std.mem.startsWith(u8, trimmed, "8. ") or
-            std.mem.startsWith(u8, trimmed, "9. "))
-        {
-            if (state.in_paragraph) {
-                try writer.write(allocator, "</p>\n");
-                state.in_paragraph = false;
-            }
-            if (state.in_list) {
-                try writer.write(allocator, "</ul>\n");
-                state.in_list = false;
-            }
-            if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
-                state.list_item_open = false;
-            }
-            if (!state.in_ordered_list) {
-                try writer.write(allocator, "<ol>\n");
-                state.in_ordered_list = true;
-            }
-            var i: usize = 0;
-            while (i < trimmed.len and trimmed[i] != ' ') : (i += 1) {}
-            if (i < trimmed.len) i += 1;
-            try writer.write(allocator, "<li>");
-            const processed = try processInline(allocator, trimmed[i..]);
-            defer allocator.free(processed);
-            try writer.write(allocator, processed);
-            state.list_item_open = true;
+        if (header.detectHeader(line) > 0) {
+            const level = header.detectHeader(line);
+            const content = header.getHeaderContent(line, level);
+            try header.renderHeader(&state, &writer, allocator, level, content);
             continue;
         }
 
+        // Ordered list items
+        if (list.isOrderedListItem(line)) |list_num| {
+            if (list_num > 0) {
+                if (state.in_paragraph) {
+                    try paragraph.renderParagraphClose(&writer, allocator);
+                    state.in_paragraph = false;
+                }
+                if (state.in_list) {
+                    try list.renderUnorderedListClose(&writer, allocator);
+                    state.in_list = false;
+                }
+                if (state.list_item_open) {
+                    try list.renderListItemClose(&writer, allocator);
+                    state.list_item_open = false;
+                }
+                if (!state.in_ordered_list) {
+                    try list.renderOrderedListOpen(&writer, allocator);
+                    state.in_ordered_list = true;
+                }
+                try list.renderOrderedListItem(&writer, allocator, line);
+                state.list_item_open = true;
+                continue;
+            }
+        }
+
         // Unordered list items
-        if (std.mem.startsWith(u8, trimmed, "- ") or
-            std.mem.startsWith(u8, trimmed, "* ") or
-            std.mem.startsWith(u8, trimmed, "+ "))
-        {
+        if (list.isUnorderedListItem(line)) {
             if (state.in_paragraph) {
-                try writer.write(allocator, "</p>\n");
+                try paragraph.renderParagraphClose(&writer, allocator);
                 state.in_paragraph = false;
             }
             if (state.in_ordered_list) {
-                try writer.write(allocator, "</ol>\n");
+                try list.renderOrderedListClose(&writer, allocator);
                 state.in_ordered_list = false;
             }
             if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
+                try list.renderListItemClose(&writer, allocator);
                 state.list_item_open = false;
             }
             if (!state.in_list) {
-                try writer.write(allocator, "<ul>\n");
+                try list.renderUnorderedListOpen(&writer, allocator);
                 state.in_list = true;
             }
-            try writer.write(allocator, "<li>");
-            const processed = try processInline(allocator, trimmed[2..]);
-            defer allocator.free(processed);
-            try writer.write(allocator, processed);
+            try list.renderUnorderedListItem(&writer, allocator, line);
             state.list_item_open = true;
             continue;
         }
 
         // Blockquote
-        if (std.mem.startsWith(u8, trimmed, "> ")) {
+        if (blockquote.isBlockquote(line)) {
             if (state.in_paragraph) {
-                try writer.write(allocator, "</p>\n");
+                try paragraph.renderParagraphClose(&writer, allocator);
                 state.in_paragraph = false;
             }
             try closeLists(&state, &writer, allocator);
             if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
+                try list.renderListItemClose(&writer, allocator);
                 state.list_item_open = false;
             }
-            try writer.write(allocator, "<blockquote>");
-            const content = trimmed[2..];
-            const processed = try processInline(allocator, content);
-            const processed_with_break = try processLineBreaks(allocator, processed);
-            try writer.write(allocator, processed_with_break);
-            // Free the allocated memory
-            allocator.free(processed);
-            if (processed_with_break.ptr != processed.ptr) allocator.free(processed_with_break);
-            try writer.write(allocator, "</blockquote>\n");
+            try blockquote.renderBlockquoteOpen(&writer, allocator);
+            try blockquote.renderBlockquoteLine(&writer, allocator, line);
+            try blockquote.renderBlockquoteClose(&writer, allocator);
             continue;
         }
 
         // Horizontal rule
-        if (std.mem.eql(u8, trimmed, "---") or
-            std.mem.eql(u8, trimmed, "***") or
-            std.mem.eql(u8, trimmed, "___"))
-        {
+        if (hr.isHorizontalRule(line)) {
             if (state.in_paragraph) {
-                try writer.write(allocator, "</p>\n");
+                try paragraph.renderParagraphClose(&writer, allocator);
                 state.in_paragraph = false;
             }
             try closeLists(&state, &writer, allocator);
             if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
+                try list.renderListItemClose(&writer, allocator);
                 state.list_item_open = false;
             }
-            try writer.write(allocator, "<hr>\n");
+            try hr.renderHorizontalRule(&state, &writer, allocator);
             continue;
         }
 
@@ -297,20 +254,15 @@ pub fn toHtml(allocator: Allocator, markdown: []const u8) ![]const u8 {
         if (!state.in_paragraph) {
             try closeLists(&state, &writer, allocator);
             if (state.list_item_open) {
-                try writer.write(allocator, "</li>\n");
+                try list.renderListItemClose(&writer, allocator);
                 state.list_item_open = false;
             }
-            try writer.write(allocator, "<p>");
+            try paragraph.renderParagraphOpen(&writer, allocator);
             state.in_paragraph = true;
         } else {
-            try writer.write(allocator, " ");
+            try paragraph.renderParagraphSeparator(&writer, allocator);
         }
-        const processed = try processInline(allocator, trimmed);
-        const processed_with_break = try processLineBreaks(allocator, processed);
-        try writer.write(allocator, processed_with_break);
-        // Free the allocated memory
-        allocator.free(processed);
-        if (processed_with_break.ptr != processed.ptr) allocator.free(processed_with_break);
+        try paragraph.renderParagraphLine(&writer, allocator, trimmed);
     }
 
     // Close any open tags
