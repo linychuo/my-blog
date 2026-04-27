@@ -29,54 +29,7 @@
         </div>
     </nav>
     <div class="main-container">
-        <main class="content-area"><article>
-    <header class="article-header">
-        <h1 class="article-title">Cookieless cookies</h1>
-        <div class="article-meta"><time datetime="2019-09-11 20:43:30">2019-09-11 20:43:30</time>
-            <div class="article-tags"><a href="/tags/cookies.html" class="article-tag">cookies</a></div>
-        </div>
-    </header>
-    <div class="article-content"><h1>Cookieless cookies</h1>
-<p>There is another obscure way of tracking users without using cookies or even Javascript. It has <a href="http://en.wikipedia.org/wiki/HTTP_ETag#Tracking_using_ETags">already been used</a> by numerous websites but few people know of it. This page explains how it works and how to protect yourself.</p>
-<p>This tracking method works without needing to use:</p>
-<ul>
-<li>Cookies</li>
-<li>Javascript</li>
-<li>LocalStorage/SessionStorage/GlobalStorage</li>
-<li>Flash, Java or other plugins</li>
-<li>Your IP address or user agent string</li>
-<li>Any methods employed by <a href="https://panopticlick.eff.org/">Panopticlick</a></ul>
-</li>
-<p>Instead it uses another type of storage that is persistent between browser restarts: <strong>caching</strong>.</p>
-<p>Even when you disabled cookies entirely, have Javascript turned off and use a VPN service, this technique will still be able to track you. <hr/></p>
-<h2><a href="http://lucb1e.com/rp/cookielesscookies/">Demonstration</a></h2>
-<h2>So how does this work?</h2>
-<p>This is a general overview:</p>
-<p><img src="/imgs/etags.jpg" alt="etags"></p>
-<p>The ETag shown in the image is a sort of checksum. When the image changes, the checksum changes. So when the browser has the image and knows the checksum, it can send it to the webserver for verification. The webserver then checks whether the image has changed. If it hasn't, the image does not need to be retransmitted and lots of data is saved.</p>
-<p>Attentive readers might have noticed already how you can use this to track people: the browser sends the information back to the server that it previously received (the ETag). That sounds an awful lot like cookies, doesn't it? The server can simply give each browser an unique ETag, and when they connect again it can look it up in its database.</p>
-<p>Technical stuff (and bugs) specifically about this demo To demonstrate how this works without having to use Javascript, I had to find a piece of information that's relatively unique to you besides this ETag. The image is loaded after the page is loaded, but only the image contains the ETag. How can I display up to date info on the page? Turns out I can't really do that without dynamically updating the page, which requires javascript, which I wanted to avoid to show that it can be done without.</p>
-<p>This chicken and egg problem introduces a few bugs:</p>
-<ul>
-<li>All information you see was from your previous pageload. Press F5 to see updated data.</li>
-<li>When you visit a page where you don't have an ETag (like incognito mode), your session will be emptied. Again, this is only visible when you reload the page.</li>
-</ul>
-<p>I did not see a simple solution to these issues. Sure some things can be done, but nothing that other websites would use, and I wanted to keep the code as simple and as close to reality as possible.</p>
-<p>Note that these bugs normally don't exist when you really want to track someone because then you don't intend to show users that they are being tracked.</p>
-<h3>Source code</h3>
-<p><a href="https://github.com/lucb1e/cookielesscookies">https://github.com/lucb1e/cookielesscookies</a></p>
-<h2>What can we do to stop it?</h2>
-<p>One thing I would strongly recommend you to do anytime you visit a page where you want a little more security, is opening a private navigation window and using https exclusively. Doing this single-handedly eliminates attacks like BREACH (the latest https hack), disables any and all tracking cookies that you might have, and also eliminates cache tracking issues like I'm demonstrating on this page. I use this private navigation mode when I do online banking. In Firefox (and I think MSIE too) it's Ctrl+Shift+P, in Chrome it's Ctrl+Shift+N.</p>
-<p>Besides that, it depends on your level of paranoia.</p>
-<p>I currently have no straightforward answer since cache tracking is virtually undetectable, but also because caching itself is useful and saves people (including you) time and money. Website admins will consume less bandwidth (and if you think about it, in the end users are the ones that will have to pay the bill), your pages will load faster, and especially on mobile devices it makes a big difference if you don't have an unlimited 4G plan. It's even worse when you have a high-latency or low-bandwidth connection because you live in a rural area.</p>
-<p>If you're very paranoid, it's best to just disable caching altogether. This will stop any such tracking from happening, but I personally don't believe it's worth the downsides.</p>
-<p>The Firefox add-on Self-Destructing Cookies has the ability to empty your cache when you're not using your browser for a while. This might be an okay alternative to disabling caching; you can only be tracked during your visit, and they can already do that anyway by following which pages were visited by which IP address, so that's no big deal. Any later visits will appear as from a different user, assuming all other tracking methods have already been prevented.</p>
-<p>I'm not aware of any add-on that periodically removes your cache (e.g. once per 72 hours), but there might be. This would be another good alternative for 99% of the users because it has a relatively low performance impact while still limiting the tracking capabilities.</p>
-<p><strong>Update</strong>: I've heard the Firefox add-on SecretAgent also does ETag overwriting to prevent this kind of tracking method. You can whitelist websites to re-enable caching there while blocking tracking by other domains. It has been <a href="https://nodpi.org/forum/index.php/topic,4418.msg51737.html#msg51737">confirmed</a> that this add-on stops the tracking. <a href="https://www.dephormation.org.uk/index.php?page=81">SecretAgent's website</a>.</p>
-<p><a href="http://lucb1e.com/rp/cookielesscookies/">Origin Links of this article</a></p>
-</div>
-</article>
-</main>
+        <main class="content-area"></main>
         <aside class="sidebar"></aside>
     </div>
     <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">

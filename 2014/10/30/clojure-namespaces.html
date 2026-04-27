@@ -29,43 +29,7 @@
         </div>
     </nav>
     <div class="main-container">
-        <main class="content-area"><article>
-    <header class="article-header">
-        <h1 class="article-title">Clojure namespaces</h1>
-        <div class="article-meta"><time datetime="2014-10-30 09:35:32">2014-10-30 09:35:32</time>
-            <div class="article-tags"><a href="/tags/clojure.html" class="article-tag">clojure</a><a href="/tags/namespace.html" class="article-tag">namespace</a></div>
-        </div>
-    </header>
-    <div class="article-content"><pre><code class="language-clojure">(resolve sym)</code></pre>
-<p><em>resolve</em> returns namesapce of a variable or class.</p>
-<p>If you want switch another namespace, You should using <em>in-ns</em>:</p>
-<pre><code class="language-clojure">(in-ns name)</code></pre>
-<p>On the clojure, <em>import</em> tag only import java class</p>
-<pre><code class="language-clojure">(import '(java.io InputStream File))
-=> nil
-use=> File/separator
-=> "/"</code></pre>
-<p>But you want import some vaiables which was defined in the clojure code, using <em>require</em></p>
-<pre><code class="language-clojure">(require 'clojure.contrib.math)
-(clojure.contrib.math/round 1.7)
-=> 2
-(round 1.7)
-=> java.lang.Exception:Unable to resolve symbol: round in this context</code></pre>
-<p>If you want import a method into current namespace, you should using <em>use</em> tag</p>
-<pre><code class="language-clojure">(use 'clojure.contrib.math)
-=> nil
-(use '[clojure.contrib.math :only (round)])
-(round 1.2)
-=> 2</code></pre>
-<p>Behind <em>:only</em> tag, what you want import</p>
-<pre><code class="language-clojure">(ns name & references)</code></pre>
-<p><em>ns</em> tag was created new namespace, It contains <em>:import</em>, <em>:require</em>, <em>:use</em></p>
-<pre><code class="language-clojure">(ns examples.exploring
-	(:use examples.utils clojure.contrib.str-utils)
-	(:import (java.io File)))</code></pre>
-</div>
-</article>
-</main>
+        <main class="content-area"></main>
         <aside class="sidebar"></aside>
     </div>
     <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
