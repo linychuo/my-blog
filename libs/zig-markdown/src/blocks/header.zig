@@ -8,8 +8,6 @@ const closeParagraphAndLists = @import("../parser.zig").closeParagraphAndLists;
 const closeTable = @import("../parser.zig").closeTable;
 const processInline = @import("../inline.zig").processInline;
 
-const MAX_HEADER_LEVEL = 6;
-
 pub const HeaderProcessor = struct {};
 
 /// Check if line is a header and return header level (0 if not a header)
@@ -38,7 +36,7 @@ pub fn renderHeader(
     level: usize,
     content: []const u8,
 ) !void {
-    if (level < 1 or level > MAX_HEADER_LEVEL) return;
+    if (level < 1 or level > 6) return;
 
     if (state.in_table) {
         try closeTable(state, writer, allocator);

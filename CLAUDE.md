@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `zig build -Doptimize=ReleaseFast run` - Build and run in Release mode
 - `zig build test` - Run all tests
 
-CLI options: `-p/--posts <dir>` (posts source, default: `posts`), `-o/--output <dir>` (output directory, default: `zig-out/blog`)
+CLI options: `-p/--posts <dir>` (posts source, default: `posts`), `-o/--output <dir>` (output directory, default: `build`)
 
 ## Architecture
 
@@ -18,7 +18,17 @@ CLI options: `-p/--posts <dir>` (posts source, default: `posts`), `-o/--output <
 ### Key Modules
 
 - `src/main.zig` - Entry point; parses CLI args and invokes Blogger
-- `src/Blogger.zig` - Core logic: loads posts, generates pages (index, post, about, tag), copies static files
+- `src/Blogger.zig` - Orchestration: coordinates generators, manages post loading and sorting
+- `src/Post.zig` - Post data structure with frontmatter parsing
+- `src/FileSystem.zig` - File operations: static copy, post loading, HTML writing
+- `src/generators/` - Page generators
+  - `index.zig` - Homepage generation
+  - `post.zig` - Individual post page generation
+  - `about.zig` - About page generation
+  - `tag.zig` - Tag listing pages generation
+- `src/utils/` - Shared utilities
+  - `path.zig` - URL path building from date/filename
+  - `html.zig` - HTML snippet builders (tags, post items)
 
 ### zig-markdown (`libs/zig-markdown/src/`)
 
@@ -57,13 +67,13 @@ Custom Handlebars-style template engine.
 ### Data Flow
 
 1. `main.zig` parses `--posts` and `--output` paths
-2. `Blogger.loadPosts()` reads all `.markdown` files from `posts/`, extracts frontmatter
-3. `generate()` produces:
-   - `index.html` - post list
-   - `YYYY/MM/DD/slug.html` - date-based post URLs
-   - `about.html` - from `about.markdown`
-   - `tags/tag.html` - per-tag post lists
-   - Copies `static/` assets to output
+2. `FileSystem.loadPosts()` reads all `.markdown` files from `posts/`, extracts frontmatter
+3. `Blogger.generate()` orchestrates:
+   - Copies static files via `FileSystem.copyStaticFiles()`
+   - Generates post pages via `generators/post.zig`
+   - Generates index via `generators/index.zig`
+   - Generates about page via `generators/about.zig`
+   - Generates tag pages via `generators/tag.zig`
 
 ### Post Format
 
@@ -93,15 +103,15 @@ Uses Zig 0.15.2 with two local dependencies defined in `build.zig.zon`:
 
 ### Output Structure
 
-Generated site in `zig-out/blog/`:
+Generated site in `build/` (or `--output` directory):
 ```
-zig-out/blog/
+build/
 ├── index.html           # Homepage with post list
-├── about.html           # About page
-├── style.css            # Stylesheet
-├── imgs/                # Copied images
+├── about.html          # About page
+├── style.css           # Stylesheet
+├── imgs/               # Copied images
 ├── tags/
-│   └── tag.html         # Tag page
+│   └── tag.html        # Tag page
 └── YYYY/MM/DD/
-    └── post-name.html   # Date-based post URLs
+    └── post-name.html  # Date-based post URLs
 ```

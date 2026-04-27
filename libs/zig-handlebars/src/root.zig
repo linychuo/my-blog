@@ -9,7 +9,7 @@
 //! - No external dependencies
 
 // Export public API
-pub const std = @import("std");
+const std = @import("std");
 pub const TemplateEngine = @import("engine.zig").TemplateEngine;
 pub const Context = @import("context.zig").Context;
 pub const TemplateError = @import("error.zig").TemplateError;
