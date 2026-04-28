@@ -29,7 +29,42 @@
         </div>
     </nav>
     <div class="main-container">
-        <main class="content-area"></main>
+        <main class="content-area"><article>
+    <header class="article-header">
+        <h1 class="article-title">微服务架构</h1>
+        <div class="article-meta"><time datetime="2020-04-06 14:38:32">2020-04-06 14:38:32</time>
+            <div class="article-tags"><a href="/tags/microservice.html" class="article-tag">microservice</a></div>
+        </div>
+    </header>
+    <div class="article-content"><p>微服务是一种架构模式，这种架构是一组服务集合的应用程序，它有以下特征：</p>
+<ul>
+<li>易维护和测试</li>
+</li>
+<li>松散耦合</li>
+</li>
+<li>独立部署</li>
+</li>
+<li>围绕业务功能组织</li>
+</li>
+<li>每一个服务都可以由一个小团队来维护</li>
+</li>
+</ul>
+<p>微服务架构可以让团队快速，频繁可信的交付大型且复杂的应用程序，各服务可独立使用不同的技术栈来开发部署应用程序</p>
+<p><img src="/imgs/Microservice_Architecture.png" alt="Microservice_Architecture.png"></p>
+<p>每个服务间可以通过同步（HTTP/REST）或异步（AMQP）来通信，能够独立部署和开发，有着自己的数据库，通过Saga模式来解决多服务之前数据一致性的问题</p>
+<p>微服务架构带来了很多的优势，但也同时带来了很多问题</p>
+<ul>
+<li>开发者必须处理分布式系统带来的额外的复杂性，例如：服务间通讯问题，测试困难</li>
+</li>
+<li>部署也会变得复杂</li>
+</li>
+<li>内存消耗也在不断的递增</li>
+</li>
+<li>开发工具的限制</li>
+</ul>
+</div>
+</article>
+</main>
         <aside class="sidebar"></aside>
     </div>
     <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
