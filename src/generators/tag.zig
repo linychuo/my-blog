@@ -6,9 +6,8 @@ const Context = @import("zig-handlebars").Context;
 const FileSystem = @import("../FileSystem.zig");
 const path = @import("../utils/path.zig");
 const html = @import("../utils/html.zig");
-const datetime = @import("../utils/datetime.zig");
 
-pub fn generateTagPages(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, posts: []const Post) !void {
+pub fn generateTagPages(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, posts: []const Post, year: []const u8) !void {
     var tag_map = std.StringHashMap(std.ArrayListUnmanaged(Post)).init(allocator);
     defer {
         var it = tag_map.iterator();
@@ -68,7 +67,7 @@ pub fn generateTagPages(allocator: Allocator, template_engine: *TemplateEngine, 
         try ctx.set("post_count", post_count_str);
         try ctx.set("posts", posts_html.items);
         try ctx.set("page_title", page_title_str);
-        try ctx.set("year", datetime.getCurrentYear());
+        try ctx.set("year", year);
 
         const page_html = try template_engine.render("tag.hbs", &ctx);
         defer allocator.free(page_html);

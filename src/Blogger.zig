@@ -8,12 +8,14 @@ const post_gen = @import("generators/post.zig");
 const about_gen = @import("generators/about.zig");
 const tag_gen = @import("generators/tag.zig");
 const sortPostsByDateDesc = @import("Post.zig").sortPostsByDateDesc;
+const datetime = @import("utils/datetime.zig");
 
 pub const Blogger = struct {
     dest_dir: []const u8,
     posts_dir: []const u8,
     allocator: Allocator,
     template_engine: TemplateEngine,
+    current_year: []const u8,
 
     pub fn new(allocator: Allocator, posts_dir: []const u8, dest_dir: []const u8) Blogger {
         const engine = TemplateEngine.init(allocator, "templates");
@@ -22,7 +24,12 @@ pub const Blogger = struct {
             .posts_dir = posts_dir,
             .dest_dir = dest_dir,
             .template_engine = engine,
+            .current_year = datetime.getCurrentYear(),
         };
+    }
+
+    pub fn deinit(self: *Blogger) void {
+        self.template_engine.deinit();
     }
 
     pub fn generate(self: *Blogger) !void {
@@ -40,10 +47,10 @@ pub const Blogger = struct {
         try FileSystem.loadPosts(self.allocator, self.posts_dir, &posts);
         std.mem.sort(Post, posts.items, {}, sortPostsByDateDesc);
 
-        for (posts.items) |post| try post_gen.generatePostPage(self.allocator, &self.template_engine, self.dest_dir, post);
-        try index_gen.generateIndex(self.allocator, &self.template_engine, self.dest_dir, posts.items);
-        try about_gen.generateAbout(self.allocator, &self.template_engine, self.dest_dir, self.posts_dir);
-        try tag_gen.generateTagPages(self.allocator, &self.template_engine, self.dest_dir, posts.items);
+        for (posts.items) |post| try post_gen.generatePostPage(self.allocator, &self.template_engine, self.dest_dir, post, self.current_year);
+        try index_gen.generateIndex(self.allocator, &self.template_engine, self.dest_dir, posts.items, self.current_year);
+        try about_gen.generateAbout(self.allocator, &self.template_engine, self.dest_dir, self.posts_dir, self.current_year);
+        try tag_gen.generateTagPages(self.allocator, &self.template_engine, self.dest_dir, posts.items, self.current_year);
 
         std.debug.print("Blog generation complete!\n", .{});
     }

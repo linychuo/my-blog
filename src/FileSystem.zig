@@ -48,7 +48,8 @@ pub fn loadPosts(allocator: Allocator, posts_dir: []const u8, posts: *std.ArrayL
 
     while (try walker.next()) |entry| {
         if (entry.kind == .file and std.mem.endsWith(u8, entry.path, ".markdown")) {
-            if (std.mem.eql(u8, std.fs.path.basename(entry.path), "about.markdown")) {
+            const basename = std.fs.path.basename(entry.path);
+            if (std.mem.eql(u8, basename, "about.markdown")) {
                 continue;
             }
 
@@ -57,7 +58,7 @@ pub fn loadPosts(allocator: Allocator, posts_dir: []const u8, posts: *std.ArrayL
             const content = try file.readToEndAlloc(allocator, 1024 * 1024);
             defer allocator.free(content);
 
-            const post = Post.parse(allocator, content, std.fs.path.basename(entry.path)) catch |err| {
+            const post = Post.parse(allocator, content, basename) catch |err| {
                 std.debug.print("  Skipped ({s}): {s}\n", .{ @errorName(err), entry.path });
                 continue;
             };
@@ -68,19 +69,15 @@ pub fn loadPosts(allocator: Allocator, posts_dir: []const u8, posts: *std.ArrayL
 }
 
 pub fn writeHtmlFile(allocator: Allocator, dest_dir: []const u8, relative_path: []const u8, html: []const u8) !void {
-    var output_path = std.ArrayList(u8){};
-    defer output_path.deinit(allocator);
+    const output_path = try std.fs.path.join(allocator, &.{ dest_dir, relative_path });
+    defer allocator.free(output_path);
 
-    try output_path.appendSlice(allocator, dest_dir);
-    try output_path.appendSlice(allocator, "/");
-    try output_path.appendSlice(allocator, relative_path);
-
-    const dir_path = std.fs.path.dirname(output_path.items);
+    const dir_path = std.fs.path.dirname(output_path);
     if (dir_path) |dp| {
         try std.fs.cwd().makePath(dp);
     }
 
-    const file = try std.fs.cwd().createFile(output_path.items, .{});
+    const file = try std.fs.cwd().createFile(output_path, .{});
     defer file.close();
     try file.writeAll(html);
 }

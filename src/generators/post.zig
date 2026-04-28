@@ -7,9 +7,8 @@ const Context = @import("zig-handlebars").Context;
 const FileSystem = @import("../FileSystem.zig");
 const path = @import("../utils/path.zig");
 const html = @import("../utils/html.zig");
-const datetime = @import("../utils/datetime.zig");
 
-pub fn generatePostPage(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, post: Post) !void {
+pub fn generatePostPage(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, post: Post, year: []const u8) !void {
     const html_content = try markdown.toHtml(allocator, post.content);
     defer allocator.free(html_content);
 
@@ -29,7 +28,7 @@ pub fn generatePostPage(allocator: Allocator, template_engine: *TemplateEngine, 
     try full_title.appendSlice(allocator, post.title);
     try full_title.appendSlice(allocator, " - ");
     try ctx.set("page_title", full_title.items);
-    try ctx.set("year", datetime.getCurrentYear());
+    try ctx.set("year", year);
 
     const page_html = try template_engine.render("post.hbs", &ctx);
     defer allocator.free(page_html);

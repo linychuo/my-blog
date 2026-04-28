@@ -35,6 +35,7 @@ pub fn main() !void {
 
     // Create blogger and generate site
     var blogger = Blogger.new(allocator, posts_dir, dest_dir);
+    defer blogger.deinit();
     try blogger.generate();
 }
 

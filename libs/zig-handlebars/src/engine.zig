@@ -16,6 +16,7 @@ pub const TemplateEngine = struct {
     renderer: Renderer,
     page_content: ?[]const u8,
     partials_manager: ?PartialsManager,
+    template_cache: std.StringHashMap([]const u8),
 
     const Self = @This();
 
@@ -26,6 +27,7 @@ pub const TemplateEngine = struct {
             .renderer = Renderer.init(allocator),
             .page_content = null,
             .partials_manager = null,
+            .template_cache = std.StringHashMap([]const u8).init(allocator),
         };
     }
 
@@ -40,6 +42,7 @@ pub const TemplateEngine = struct {
             .renderer = Renderer.init(allocator),
             .page_content = null,
             .partials_manager = null,
+            .template_cache = std.StringHashMap([]const u8).init(allocator),
         };
     }
 
@@ -59,24 +62,48 @@ pub const TemplateEngine = struct {
         if (self.partials_manager) |*pm| {
             pm.deinit();
         }
+        var it = self.template_cache.iterator();
+        while (it.next()) |entry| {
+            self.allocator.free(entry.key_ptr.*);
+            self.allocator.free(entry.value_ptr.*);
+        }
+        self.template_cache.deinit();
     }
 
     pub fn render(self: *Self, name: []const u8, context: *const Context) TemplateError![]const u8 {
-        const template = try self.loader.load(name);
-        defer self.allocator.free(template);
-        return self.renderString(template, context);
+        if (self.template_cache.get(name)) |cached| {
+            return self.renderString(cached, context);
+        }
+        const loaded = try self.loader.load(name);
+        const cached = try self.allocator.dupe(u8, loaded);
+        self.allocator.free(loaded);
+
+        const name_copy = try self.allocator.dupe(u8, name);
+        errdefer self.allocator.free(name_copy);
+
+        const gop = self.template_cache.getOrPut(name_copy) catch |err| {
+            self.allocator.free(cached);
+            return err;
+        };
+        if (gop.found_existing) {
+            // Another thread already cached it (unlikely in single-threaded, but possible on error recovery)
+            self.allocator.free(cached);
+            return self.renderString(gop.value_ptr.*, context);
+        }
+        gop.value_ptr.* = cached;
+        return self.renderString(cached, context);
     }
 
     /// Render a template string with context, processing partials recursively
     pub fn renderString(self: *Self, template: []const u8, context: *const Context) TemplateError![]const u8 {
-        // First render: handles variables and marks partials
         var result = try self.renderer.render(template, context);
         errdefer self.allocator.free(result);
 
         // Process partials until none remain
-        while (std.mem.indexOf(u8, result, "{{>")) |_| {
+        var has_partials = true;
+        while (has_partials) {
             const old = result;
-            result = try self.processPartials(result, context);
+            result = try self.processPartials(result, context, &has_partials);
             self.allocator.free(old);
         }
 
@@ -84,13 +111,16 @@ pub const TemplateEngine = struct {
     }
 
     /// Process all partials in a rendered template
-    fn processPartials(self: *Self, input: []const u8, context: *const Context) TemplateError![]const u8 {
+    /// Sets has_partials to false if no partials were found
+    fn processPartials(self: *Self, input: []const u8, context: *const Context, has_partials: *bool) TemplateError![]const u8 {
         var result = std.ArrayList(u8).empty;
         errdefer result.deinit(self.allocator);
 
+        has_partials.* = false;
         var i: usize = 0;
         while (i < input.len) {
             if (i + 3 <= input.len and std.mem.eql(u8, input[i..i+3], "{{>")) {
+                has_partials.* = true;
                 const start = i + 3;
                 var end = start;
                 while (end < input.len and input[end] != '}') : (end += 1) {}

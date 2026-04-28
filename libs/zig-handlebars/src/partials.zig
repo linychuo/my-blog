@@ -43,11 +43,8 @@ pub const PartialsManager = struct {
             return cached;
         }
 
-        // Build path: partials_dir/name.hbs
-        const path = try std.fs.path.join(self.allocator, &.{ self.partials_dir, name });
-        defer self.allocator.free(path);
-
-        const path_with_ext = try std.fmt.allocPrint(self.allocator, "{s}.hbs", .{path});
+        // Build path: partials_dir/name.hbs in one allocation
+        const path_with_ext = try std.fmt.allocPrint(self.allocator, "{s}/{s}.hbs", .{ self.partials_dir, name });
         defer self.allocator.free(path_with_ext);
 
         const file = self.fs_dir.openFile(path_with_ext, .{}) catch |err| {
@@ -59,7 +56,7 @@ pub const PartialsManager = struct {
         const content = file.readToEndAlloc(self.allocator, 1024 * 1024) catch {
             return TemplateError.FileReadFailed;
         };
-        defer self.allocator.free(content); // Free the original after copying
+        defer self.allocator.free(content);
 
         // Cache the content - make a copy that we own
         const content_copy = try self.allocator.dupe(u8, content);

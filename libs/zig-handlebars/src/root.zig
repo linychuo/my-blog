@@ -19,7 +19,6 @@ pub const Renderer = @import("renderer.zig").Renderer;
 pub const escapeHtml = @import("html_escape.zig").escapeHtml;
 pub const parseTag = @import("tag_parser.zig").parseTag;
 pub const ParsedTag = @import("tag_parser.zig").ParsedTag;
-pub const VariableRenderer = @import("variable_renderer.zig").VariableRenderer;
 
 test {
     std.testing.refAllDecls(@import("error.zig"));
@@ -28,7 +27,6 @@ test {
     std.testing.refAllDecls(@import("partials.zig"));
     std.testing.refAllDecls(@import("loader.zig"));
     std.testing.refAllDecls(@import("tag_parser.zig"));
-    std.testing.refAllDecls(@import("variable_renderer.zig"));
     std.testing.refAllDecls(@import("renderer.zig"));
     std.testing.refAllDecls(@import("engine.zig"));
 }

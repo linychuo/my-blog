@@ -35,6 +35,12 @@ pub const Context = struct {
         try self.data.put(key_copy, value_copy);
     }
 
+    /// Set a variable assuming the caller transfers ownership of both key and value.
+    /// Neither key nor value will be copied - they must be heap-allocated and will be freed on deinit.
+    pub fn setAssumeOwned(self: *Context, key: []const u8, value: []const u8) !void {
+        try self.data.put(key, value);
+    }
+
     /// Get a variable from the context
     pub fn get(self: *const Context, key: []const u8) ?[]const u8 {
         return self.data.get(key);

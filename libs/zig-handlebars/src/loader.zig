@@ -30,7 +30,7 @@ pub const Loader = struct {
 
     /// Load a template file by name
     pub fn load(self: *const Loader, name: []const u8) TemplateError![]const u8 {
-        const path = try std.fs.path.join(self.allocator, &.{ self.templates_dir, name });
+        const path = try std.fmt.allocPrint(self.allocator, "{s}/{s}", .{ self.templates_dir, name });
         defer self.allocator.free(path);
 
         const file = self.fs_dir.openFile(path, .{}) catch |err| {

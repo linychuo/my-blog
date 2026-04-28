@@ -4,23 +4,23 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const TemplateError = @import("error.zig").TemplateError;
 const Context = @import("context.zig").Context;
-const VariableRenderer = @import("variable_renderer.zig").VariableRenderer;
+const escapeHtml = @import("html_escape.zig").escapeHtml;
 const parseTag = @import("tag_parser.zig").parseTag;
 const findTagEnd = @import("tag_parser.zig").findTagEnd;
 
 pub const Renderer = struct {
     allocator: Allocator,
-    variable_renderer: VariableRenderer,
+    escape_enabled: bool,
 
     pub fn init(allocator: Allocator) Renderer {
         return .{
             .allocator = allocator,
-            .variable_renderer = VariableRenderer.init(allocator),
+            .escape_enabled = true,
         };
     }
 
     pub fn setEscapeEnabled(self: *Renderer, enabled: bool) void {
-        self.variable_renderer.setEscapeEnabled(enabled);
+        self.escape_enabled = enabled;
     }
 
     /// Render a template string with context
@@ -44,7 +44,7 @@ pub const Renderer = struct {
                     try result.appendSlice(self.allocator, "}}");
                 } else {
                     const unescaped = t.tag_type == .unescaped_variable;
-                    try self.variable_renderer.renderVariable(&result, t.name, unescaped, context);
+                    try self.renderVariable(&result, t.name, unescaped, context);
                 }
 
                 i = end;
@@ -55,5 +55,30 @@ pub const Renderer = struct {
         }
 
         return result.toOwnedSlice(self.allocator);
+    }
+
+    /// Render a variable to the result array
+    fn renderVariable(
+        self: *Renderer,
+        result: *std.ArrayList(u8),
+        name: []const u8,
+        unescaped: bool,
+        context: *const Context,
+    ) !void {
+        if (std.mem.startsWith(u8, name, "~> page") or std.mem.startsWith(u8, name, "> page")) {
+            return;
+        }
+
+        if (context.get(name)) |value| {
+            if (unescaped) {
+                try result.appendSlice(self.allocator, value);
+            } else if (self.escape_enabled) {
+                const escaped = try escapeHtml(self.allocator, value);
+                defer self.allocator.free(escaped);
+                try result.appendSlice(self.allocator, escaped);
+            } else {
+                try result.appendSlice(self.allocator, value);
+            }
+        }
     }
 };
