@@ -6,13 +6,7 @@ const Context = @import("zig-handlebars").Context;
 const FileSystem = @import("../FileSystem.zig");
 const path = @import("../utils/path.zig");
 const html = @import("../utils/html.zig");
-
-fn getCurrentYear() []const u8 {
-    const timestamp = std.time.timestamp();
-    var buf: [5]u8 = undefined;
-    const year: i64 = 1970 + @divFloor(timestamp, 31536000);
-    return std.fmt.bufPrint(&buf, "{d}", .{year}) catch "2026";
-}
+const datetime = @import("../utils/datetime.zig");
 
 pub fn generateTagPages(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, posts: []const Post) !void {
     var tag_map = std.StringHashMap(std.ArrayListUnmanaged(Post)).init(allocator);
@@ -74,7 +68,7 @@ pub fn generateTagPages(allocator: Allocator, template_engine: *TemplateEngine, 
         try ctx.set("post_count", post_count_str);
         try ctx.set("posts", posts_html.items);
         try ctx.set("page_title", page_title_str);
-        try ctx.set("year", getCurrentYear());
+        try ctx.set("year", datetime.getCurrentYear());
 
         const page_html = try template_engine.render("tag.hbs", &ctx);
         defer allocator.free(page_html);

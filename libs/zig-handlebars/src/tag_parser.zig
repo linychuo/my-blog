@@ -33,6 +33,19 @@ pub fn parseTag(template: []const u8, i: usize) ?ParsedTag {
         while (pos < template.len and (template[pos] == ' ' or template[pos] == '\t')) : (pos += 1) {}
     }
 
+    // Handle tilde prefix for suppress whitespace partials: {{~> partial}}
+    // Note: tilde comes BEFORE the > in the tag, e.g. {{~> page}}
+    if (tag_type != .partial) {
+        if (pos < template.len and template[pos] == '~') {
+            pos += 1;
+            if (pos < template.len and template[pos] == '>') {
+                tag_type = .partial;
+                pos += 1;
+                while (pos < template.len and (template[pos] == ' ' or template[pos] == '\t')) : (pos += 1) {}
+            }
+        }
+    }
+
     var end = pos;
     while (end < template.len and template[end] != '}') : (end += 1) {}
 

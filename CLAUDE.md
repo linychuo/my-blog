@@ -29,6 +29,7 @@ CLI options: `-p/--posts <dir>` (posts source, default: `posts`), `-o/--output <
 - `src/utils/` - Shared utilities
   - `path.zig` - URL path building from date/filename
   - `html.zig` - HTML snippet builders (tags, post items)
+  - `datetime.zig` - Date/time utilities (current year)
 
 ### zig-markdown (`libs/zig-markdown/src/`)
 
@@ -55,7 +56,7 @@ Custom Markdown-to-HTML converter with block processor architecture.
 Custom Handlebars-style template engine.
 
 - `loader.zig` - Template file loading from filesystem
-- `tag_parser.zig` - Handlebars tag parsing ({{variable}}, {{{unescaped}}}, {{> partial}})
+- `tag_parser.zig` - Handlebars tag parsing ({{variable}}, {{{unescaped}}}, {{> partial}}, {{~> partial}})
 - `variable_renderer.zig` - Variable rendering with HTML escaping
 - `renderer.zig` - Template rendering (combines tag_parser + variable_renderer)
 - `engine.zig` - Orchestration: loads template, renders, processes partials recursively
@@ -63,6 +64,9 @@ Custom Handlebars-style template engine.
 - `context.zig` - Template variable storage
 - `html_escape.zig` - HTML entity escaping
 - `error.zig` - Error types
+
+**Template Inheritance:**
+Templates use inline partials with `{{#*inline "name"}}...{{/inline}}` and `{{~> (parent)}}` for inheritance. The `~` prefix on partials (`{{~> partial}}`) suppresses leading/trailing whitespace.
 
 ### Data Flow
 

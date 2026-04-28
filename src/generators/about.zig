@@ -4,13 +4,7 @@ const markdown = @import("zig-markdown");
 const TemplateEngine = @import("zig-handlebars").TemplateEngine;
 const Context = @import("zig-handlebars").Context;
 const FileSystem = @import("../FileSystem.zig");
-
-fn getCurrentYear() []const u8 {
-    const timestamp = std.time.timestamp();
-    var buf: [5]u8 = undefined;
-    const year: i64 = 1970 + @divFloor(timestamp, 31536000);
-    return std.fmt.bufPrint(&buf, "{d}", .{year}) catch "2026";
-}
+const datetime = @import("../utils/datetime.zig");
 
 pub fn generateAbout(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, posts_dir: []const u8) !void {
     const about_path = try std.fs.path.join(allocator, &.{ posts_dir, "about.markdown" });
@@ -34,7 +28,7 @@ pub fn generateAbout(allocator: Allocator, template_engine: *TemplateEngine, des
     try ctx.set("title", "About");
     try ctx.set("content", html_content);
     try ctx.set("page_title", "");
-    try ctx.set("year", getCurrentYear());
+    try ctx.set("year", datetime.getCurrentYear());
     try ctx.set("tags", "");
 
     const page_html = try template_engine.render("about.hbs", &ctx);
