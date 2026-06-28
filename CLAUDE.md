@@ -57,8 +57,7 @@ Custom Handlebars-style template engine.
 
 - `loader.zig` - Template file loading from filesystem
 - `tag_parser.zig` - Handlebars tag parsing ({{variable}}, {{{unescaped}}}, {{> partial}}, {{~> partial}})
-- `variable_renderer.zig` - Variable rendering with HTML escaping
-- `renderer.zig` - Template rendering (combines tag_parser + variable_renderer)
+- `renderer.zig` - Template rendering (tag parsing + variable rendering with HTML escaping)
 - `engine.zig` - Orchestration: loads template, renders, processes partials recursively
 - `partials.zig` - Partial template caching and loading
 - `context.zig` - Template variable storage

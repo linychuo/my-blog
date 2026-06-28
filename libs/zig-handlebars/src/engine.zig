@@ -144,8 +144,9 @@ pub const TemplateEngine = struct {
                 }
                 i = end;
             } else {
-                try result.append(self.allocator, input[i]);
-                i += 1;
+                const next = std.mem.indexOfPos(u8, input, i + 1, "{{>") orelse input.len;
+                try result.appendSlice(self.allocator, input[i..next]);
+                i = next;
             }
         }
 

@@ -24,16 +24,7 @@ pub fn copyStaticFiles(allocator: Allocator, static_dir: []const u8, dest_dir: [
                 try std.fs.cwd().makePath(dir_path);
             }
 
-            var src_file = try dir.openFile(entry.path, .{});
-            defer src_file.close();
-
-            const dest_file = try std.fs.cwd().createFile(dest_path, .{});
-            defer dest_file.close();
-
-            const content = try src_file.readToEndAlloc(allocator, 1024 * 1024);
-            defer allocator.free(content);
-
-            try dest_file.writeAll(content);
+            try std.fs.Dir.copyFile(dir, entry.path, std.fs.cwd(), dest_path, .{});
 
             std.debug.print("  Copied: {s}\n", .{entry.path});
         }

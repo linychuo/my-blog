@@ -49,8 +49,9 @@ pub const Renderer = struct {
 
                 i = end;
             } else {
-                try result.append(self.allocator, template[i]);
-                i += 1;
+                const next = std.mem.indexOfPos(u8, template, i + 1, "{{") orelse template.len;
+                try result.appendSlice(self.allocator, template[i..next]);
+                i = next;
             }
         }
 

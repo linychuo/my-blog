@@ -28,6 +28,9 @@ jobs:
       - name: Build & Run @${{ matrix.os }}
         run: zig build run
 
+      - name: Test @${{ matrix.os }}
+        run: zig build test
+
       - name: Deploy to gh-pages
         if: matrix.os == 'ubuntu-latest'
         uses: JamesIves/github-pages-deploy-action@4.1.8
