@@ -38,5 +38,8 @@ fn main() {
         }
     }
 
-    Blogger::copy_static_files(args.static_files_dir, args.build_dir);
+    if let Err(e) = Blogger::copy_static_files(args.static_files_dir, args.build_dir) {
+        eprintln!("Failed to copy static files: {}", e);
+        std::process::exit(1);
+    }
 }
