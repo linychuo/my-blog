@@ -82,7 +82,7 @@ impl Blogger {
         let dest_file_name = new_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
         let mut path = self.posts_dir.join(file_path);
         path.set_extension(DEFAULT_POST_EXT);
-        let contents = self.parse_content(&path);
+        let contents = self.parse_content(&path)?;
         self.render_template(
             dest_file_name,
             &json!({"parent": "layout", "contents": contents}),
@@ -91,21 +91,26 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) {
-        for entry in fs::read_dir(src_dir).unwrap() {
-            let entry_path = entry.unwrap().path();
-            let entry_path_name = entry_path.file_name().unwrap();
+    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) -> io::Result<()> {
+        for entry in fs::read_dir(src_dir)? {
+            let entry = entry?;
+            let entry_path = entry.path();
+            let entry_path_name = match entry_path.file_name() {
+                Some(name) => name,
+                None => continue,
+            };
             if entry_path.is_dir() {
                 let new_dir = dest_dir.join(entry_path_name);
-                Blogger::copy_static_files(entry_path, new_dir);
+                Blogger::copy_static_files(entry_path, new_dir)?;
             } else {
                 if !dest_dir.exists() {
-                    fs::create_dir_all(&dest_dir).unwrap();
+                    fs::create_dir_all(&dest_dir)?;
                 }
                 let new_file_path = dest_dir.join(entry_path_name);
-                fs::copy(&entry_path, &new_file_path).unwrap();
+                fs::copy(&entry_path, &new_file_path)?;
             }
         }
+        Ok(())
     }
 
     fn load_posts(&self, excludes: &[String]) -> io::Result<(Vec<Post>, Tags)> {
@@ -145,17 +150,20 @@ impl Blogger {
         Ok((all_posts, tags))
     }
 
-    fn parse_content(&self, entry_path: &Path) -> String {
-        let contents = fs::read_to_string(entry_path).unwrap();
-        comrak::markdown_to_html(&contents, &self.comrak_options)
+    fn parse_content(&self, entry_path: &Path) -> io::Result<String> {
+        let contents = fs::read_to_string(entry_path)?;
+        Ok(comrak::markdown_to_html(&contents, &self.comrak_options))
     }
 
     fn render_template(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
         let mut dest_file;
         if template_name == "tags" {
-            dest_file = self
-                .dest_dir
-                .join(format!("tags/{}", data["tag"].as_str().unwrap()));
+            dest_file = self.dest_dir.join(format!(
+                "tags/{}",
+                data["tag"]
+                    .as_str()
+                    .ok_or_else(|| RenderError::new("missing 'tag' key in data"))?
+            ));
         } else {
             dest_file = self.dest_dir.join(template_name);
         }
