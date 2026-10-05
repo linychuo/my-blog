@@ -12,11 +12,50 @@ use std::collections::HashMap;
 use tera::{Context, Tera};
 
 #[derive(Debug)]
-pub struct Blogger<'a> {
+pub enum BlogError {
+    Io(io::Error),
+    Tera(tera::Error),
+    Yaml(serde_yaml::Error),
+    MissingHeader(String),
+}
+
+impl std::fmt::Display for BlogError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BlogError::Io(e) => write!(f, "IO error: {}", e),
+            BlogError::Tera(e) => write!(f, "Template error: {}", e),
+            BlogError::Yaml(e) => write!(f, "YAML error: {}", e),
+            BlogError::MissingHeader(path) => write!(f, "Missing header in: {}", path),
+        }
+    }
+}
+
+impl std::error::Error for BlogError {}
+
+impl From<io::Error> for BlogError {
+    fn from(e: io::Error) -> Self {
+        BlogError::Io(e)
+    }
+}
+
+impl From<tera::Error> for BlogError {
+    fn from(e: tera::Error) -> Self {
+        BlogError::Tera(e)
+    }
+}
+
+impl From<serde_yaml::Error> for BlogError {
+    fn from(e: serde_yaml::Error) -> Self {
+        BlogError::Yaml(e)
+    }
+}
+
+#[derive(Debug)]
+pub struct Blogger {
     dest_dir: PathBuf,
     posts_dir: PathBuf,
     tera: Tera,
-    comrak_options: ComrakOptions<'a>,
+    comrak_options: ComrakOptions<'static>,
 }
 
 #[derive(Debug, Serialize)]
@@ -28,16 +67,8 @@ pub struct TagPost {
 
 type Tags = HashMap<String, Vec<TagPost>>;
 
-fn has_extension(path: &Path, ext: &str) -> bool {
-    path.extension().and_then(OsStr::to_str) == Some(ext)
-}
-
-fn contains(vec: &[String], s: &str) -> bool {
-    vec.iter().any(|item| item == s)
-}
-
-impl Blogger<'_> {
-    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger<'static> {
+impl Blogger {
+    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger {
         let mut tera = Tera::default();
         tera.autoescape_on(vec![]);
 
@@ -54,7 +85,8 @@ impl Blogger<'_> {
         for entry in &entries {
             if entry.file_stem().and_then(|s| s.to_str()) == Some("layout") {
                 let content = std::fs::read_to_string(entry).expect("failed to read layout");
-                tera.add_raw_template("layout", &content).expect("failed to add layout");
+                tera.add_raw_template("layout", &content)
+                    .expect("failed to add layout");
                 break;
             }
         }
@@ -64,7 +96,8 @@ impl Blogger<'_> {
             let name = entry.file_stem().and_then(|s| s.to_str()).unwrap_or("");
             if name != "layout" && !name.is_empty() {
                 let content = std::fs::read_to_string(&entry).expect("failed to read template");
-                tera.add_raw_template(name, &content).expect("failed to add template");
+                tera.add_raw_template(name, &content)
+                    .expect("failed to add template");
             }
         }
         fs::create_dir_all(dest_dir).expect("create dest dir failed");
@@ -80,10 +113,9 @@ impl Blogger<'_> {
         }
     }
 
-    pub fn render_posts(&self, exclude: &[String]) -> Result<(), tera::Error> {
+    pub fn render_posts(&self, exclude: &[String]) -> Result<(), BlogError> {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
-        all_posts.sort_by_key(|post| post.header.date_time.to_string());
-        all_posts.reverse();
+        all_posts.sort_by(|a, b| b.header.date_time.cmp(&a.header.date_time));
         self.render_template("index", &json!({"posts": all_posts}))?;
 
         for item in all_posts {
@@ -102,43 +134,20 @@ impl Blogger<'_> {
         Ok(())
     }
 
-    pub fn render(&self, file_path: &str) -> Result<(), tera::Error> {
+    pub fn render(&self, file_path: &str) -> Result<(), BlogError> {
         let new_path = Path::new(file_path);
         let dest_file_name = new_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
         let mut path = self.posts_dir.join(file_path);
         path.set_extension(DEFAULT_POST_EXT);
-        let contents = self.parse_content(&path)?;
-        self.render_template(
-            dest_file_name,
-            &json!({"contents": contents}),
-        )?;
+        let contents = self.render_markdown(&path)?;
+        self.render_template(dest_file_name, &json!({"contents": contents}))?;
 
         Ok(())
     }
 
-    pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) -> io::Result<()> {
-        for entry in fs::read_dir(src_dir)? {
-            let entry = entry?;
-            let entry_path = entry.path();
-            let entry_path_name = match entry_path.file_name() {
-                Some(name) => name,
-                None => continue,
-            };
-            if entry_path.is_dir() {
-                let new_dir = dest_dir.join(entry_path_name);
-                Blogger::copy_static_files(entry_path, new_dir)?;
-            } else {
-                if !dest_dir.exists() {
-                    fs::create_dir_all(&dest_dir)?;
-                }
-                let new_file_path = dest_dir.join(entry_path_name);
-                fs::copy(&entry_path, &new_file_path)?;
-            }
-        }
-        Ok(())
-    }
 
-    fn load_posts(&self, excludes: &[String]) -> io::Result<(Vec<Post>, Tags)> {
+
+    fn load_posts(&self, excludes: &[String]) -> Result<(Vec<Post>, Tags), BlogError> {
         let mut all_posts: Vec<Post> = vec![];
         let mut tags: Tags = HashMap::new();
         for entry in fs::read_dir(&self.posts_dir)? {
@@ -147,7 +156,7 @@ impl Blogger<'_> {
                 continue;
             }
 
-            if !has_extension(&entry_path, DEFAULT_POST_EXT) {
+            if entry_path.extension().and_then(|s| s.to_str()) != Some(DEFAULT_POST_EXT) {
                 continue;
             }
 
@@ -156,37 +165,50 @@ impl Blogger<'_> {
                 _ => continue,
             };
 
-            if contains(excludes, entry_name) {
+            if excludes.iter().any(|e| e == entry_name) {
                 continue;
             }
 
-            if let Some(post) = Post::of(entry_path.as_path(), entry_name, &self.comrak_options) {
-                for tag in &post.tags {
-                    tags.entry(tag.to_string()).or_default().push(TagPost {
-                        title: post.header.title.to_string(),
-                        created_date_time: post.header.date_time.to_string(),
-                        url: format!("/{}/{}.{}", post.dir, post.file_name, DEFAULT_HTML_EXT),
-                    });
+            match Post::of(entry_path.as_path(), entry_name, &self.comrak_options) {
+                Ok(post) => {
+                    for tag in &post.tags {
+                        tags.entry(tag.to_string()).or_default().push(TagPost {
+                            title: post.header.title.to_string(),
+                            created_date_time: post.header.date_time.to_string(),
+                            url: format!("/{}/{}.{}", post.dir, post.file_name, DEFAULT_HTML_EXT),
+                        });
+                    }
+                    all_posts.push(post);
                 }
-                all_posts.push(post);
+                Err(e) => {
+                    eprintln!("Warning: skipping '{}': {}", entry_path.display(), e);
+                }
             }
         }
 
         Ok((all_posts, tags))
     }
 
-    fn parse_content(&self, entry_path: &Path) -> io::Result<String> {
+    fn render_markdown(&self, entry_path: &Path) -> Result<String, BlogError> {
         let contents = fs::read_to_string(entry_path)?;
         Ok(comrak::markdown_to_html(&contents, &self.comrak_options))
     }
 
-    fn render_template(&self, template_name: &str, data: &Value) -> Result<(), tera::Error> {
+    fn render_template(&self, template_name: &str, data: &Value) -> Result<(), BlogError> {
         let mut dest_file = self.dest_dir.join(template_name);
         if template_name == "tags" {
-            dest_file = self.dest_dir.join(format!(
-                "tags/{}",
-                data["tag"].as_str().unwrap_or("")
-            ));
+            let tag = data["tag"].as_str().unwrap_or("");
+            // 只允许字母，数字，下划线，连字符
+            let safe_tag = if tag
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+            {
+                tag
+            } else {
+                "unknown"
+            };
+
+            dest_file = self.dest_dir.join(format!("tags/{}", safe_tag));
         }
         dest_file.set_extension(DEFAULT_HTML_EXT);
 
@@ -196,4 +218,26 @@ impl Blogger<'_> {
 
         Ok(())
     }
+}
+
+pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) -> Result<(), BlogError> {
+    for entry in fs::read_dir(src_dir)? {
+        let entry = entry?;
+        let entry_path = entry.path();
+        let entry_path_name = match entry_path.file_name() {
+            Some(name) => name,
+            None => continue,
+        };
+        if entry_path.is_dir() {
+            let new_dir = dest_dir.join(entry_path_name);
+            copy_static_files(entry_path, new_dir)?;
+        } else {
+            if !dest_dir.exists() {
+                fs::create_dir_all(&dest_dir)?;
+            }
+            let new_file_path = dest_dir.join(entry_path_name);
+            fs::copy(&entry_path, &new_file_path)?;
+        }
+    }
+    Ok(())
 }

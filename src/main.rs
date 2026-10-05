@@ -1,7 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 
-use crate::blogger::Blogger;
+use crate::blogger::{Blogger, copy_static_files};
 
 mod blogger;
 mod post;
@@ -38,12 +38,12 @@ fn main() {
 
     for it in &excludes {
         if let Err(e) = blog.render(it) {
-            eprintln!("Failed to render post '{}': {}", it, e);
+            eprintln!("Failed to render '{}': {}", it, e);
             std::process::exit(1);
         }
     }
 
-    if let Err(e) = Blogger::copy_static_files(static_files_dir, build_dir) {
+    if let Err(e) = copy_static_files(static_files_dir, build_dir) {
         eprintln!("Failed to copy static files: {}", e);
         std::process::exit(1);
     }

@@ -7,6 +7,9 @@ use serde_json::json;
 use tera::Tera;
 
 use crate::DEFAULT_HTML_EXT;
+use crate::blogger::BlogError;
+
+const YAML_DELIMITER: &str = "---";
 
 #[derive(Debug, Serialize)]
 pub struct Post {
@@ -24,13 +27,16 @@ pub struct Header {
     tags: String,
 }
 
-fn build_dir(date_time: &str) -> Option<String> {
-    let date = date_time.split_whitespace().next()?;
+fn build_dir(date_time: &str) -> Result<String, BlogError> {
+    let date = date_time
+        .split_whitespace()
+        .next()
+        .ok_or_else(|| BlogError::MissingHeader(date_time.to_string()))?;
     let v: Vec<&str> = date.split('-').collect();
     if v.len() >= 3 {
-        Some(format!("{}/{}/{}", v[0], v[1], v[2]))
+        Ok(format!("{}/{}/{}", v[0], v[1], v[2]))
     } else {
-        None
+        Err(BlogError::MissingHeader(date_time.to_string()))
     }
 }
 
@@ -38,39 +44,39 @@ fn build_tags(tags: &str) -> Vec<String> {
     tags.split_whitespace().map(|x| x.to_string()).collect()
 }
 
-fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Option<(Header, String)> {
-    let contents = fs::read_to_string(file_path).ok()?;
-    if contents.starts_with("---") {
-        let end_of_yaml = contents[4..].find("---").map(|i| i + 4)?;
-        let header = serde_yaml::from_str(&contents[..end_of_yaml]).ok()?;
-        let contents = comrak::markdown_to_html(&contents[end_of_yaml + 5..], comrak_options);
-        return Some((header, contents));
+fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Result<(Header, String), BlogError> {
+    let contents = fs::read_to_string(file_path)?;
+    if !contents.starts_with(YAML_DELIMITER) {
+        return Err(BlogError::MissingHeader(file_path.display().to_string()));
     }
-    None
+
+    let after_first = &contents[YAML_DELIMITER.len()..];
+    let end_of_yaml = after_first
+        .find(YAML_DELIMITER)
+        .ok_or_else(|| BlogError::MissingHeader(file_path.display().to_string()))?;
+    let header_str = &contents[YAML_DELIMITER.len()..YAML_DELIMITER.len() + end_of_yaml];
+    let header = serde_yaml::from_str(header_str)?;
+
+    let md_start = YAML_DELIMITER.len() + end_of_yaml + YAML_DELIMITER.len();
+    let md = contents[md_start..].trim_start();
+    let html = comrak::markdown_to_html(md, comrak_options);
+    Ok((header, html))
 }
 
 impl Post {
-    pub fn of(file_path: &Path, file_name: &str, comrak_options: &ComrakOptions) -> Option<Post> {
-        let result = parse_content(file_path, comrak_options);
-        match result {
-            Some((header, contents)) => {
-                let dir = build_dir(&header.date_time)?;
-                Some(Post {
-                    dir,
-                    tags: build_tags(&header.tags),
-                    file_name: file_name.to_string(),
-                    header,
-                    contents,
-                })
-            }
-            _ => {
-                eprintln!("Error parsing content for: {:#?}", file_path);
-                None
-            }
-        }
+    pub fn of(file_path: &Path, file_name: &str, comrak_options: &ComrakOptions) -> Result<Post, BlogError> {
+        let (header, contents) = parse_content(file_path, comrak_options)?;
+        let dir = build_dir(&header.date_time)?;
+        Ok(Post {
+            dir,
+            tags: build_tags(&header.tags),
+            file_name: file_name.to_string(),
+            header,
+            contents,
+        })
     }
 
-    pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<(), tera::Error> {
+    pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<(), BlogError> {
         let file_dir = parent_dir.join(&self.dir);
         fs::create_dir_all(&file_dir)?;
 
