@@ -69,47 +69,13 @@ type Tags = HashMap<String, Vec<TagPost>>;
 
 impl Blogger {
     pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger {
-        let mut tera = Tera::default();
-        tera.autoescape_on(vec![]);
-
-        // Load all templates manually to ensure correct order
-        let mut entries: Vec<_> = std::fs::read_dir(template_dir)
-            .expect("failed to read template dir")
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| p.extension().and_then(|s| s.to_str()) == Some("tera"))
-            .collect();
-        entries.sort();
-
-        // Load layout first
-        for entry in &entries {
-            if entry.file_stem().and_then(|s| s.to_str()) == Some("layout") {
-                let content = std::fs::read_to_string(entry).expect("failed to read layout");
-                tera.add_raw_template("layout", &content)
-                    .expect("failed to add layout");
-                break;
-            }
-        }
-
-        // Load other templates
-        for entry in entries {
-            let name = entry.file_stem().and_then(|s| s.to_str()).unwrap_or("");
-            if name != "layout" && !name.is_empty() {
-                let content = std::fs::read_to_string(&entry).expect("failed to read template");
-                tera.add_raw_template(name, &content)
-                    .expect("failed to add template");
-            }
-        }
         fs::create_dir_all(dest_dir).expect("create dest dir failed");
-
-        let mut comrak_options = ComrakOptions::default();
-        comrak_options.extension.table = true;
 
         Blogger {
             dest_dir: dest_dir.to_path_buf(),
             posts_dir: posts_dir.to_path_buf(),
-            tera,
-            comrak_options,
+            tera: load_templates(template_dir),
+            comrak_options: build_comrak_options(),
         }
     }
 
@@ -144,8 +110,6 @@ impl Blogger {
 
         Ok(())
     }
-
-
 
     fn load_posts(&self, excludes: &[String]) -> Result<(Vec<Post>, Tags), BlogError> {
         let mut all_posts: Vec<Post> = vec![];
@@ -218,6 +182,41 @@ impl Blogger {
 
         Ok(())
     }
+}
+
+fn load_templates(template_dir: &Path) -> Tera {
+    let mut tera = Tera::default();
+    tera.autoescape_on(vec![]);
+
+    let mut templates = read_template_files(template_dir);
+    // Sort: templates without extends first
+    templates.sort_by_key(|(_, c)| c.contains("{% extends"));
+
+    for (name, content) in templates {
+        tera.add_raw_template(&name, &content).expect("failed to add template");
+    }
+
+    tera
+}
+
+fn read_template_files(template_dir: &Path) -> Vec<(String, String)> {
+    std::fs::read_dir(template_dir)
+        .expect("failed to read template dir")
+        .filter_map(|e| e.ok())
+        .map(|e| e.path())
+        .filter(|p| p.extension().and_then(|s| s.to_str()) == Some("tera"))
+        .filter_map(|p| {
+            let name = p.file_stem()?.to_str()?.to_string();
+            let content = std::fs::read_to_string(&p).ok()?;
+            Some((name, content))
+        })
+        .collect()
+}
+
+fn build_comrak_options() -> ComrakOptions<'static> {
+    let mut options = ComrakOptions::default();
+    options.extension.table = true;
+    options
 }
 
 pub fn copy_static_files(src_dir: PathBuf, dest_dir: PathBuf) -> Result<(), BlogError> {
