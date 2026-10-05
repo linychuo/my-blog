@@ -1,0 +1,19 @@
+{% extends "layout" %}
+{% block content %}
+<div class="page-content">
+	<div class="wrapper">
+		<div>
+			<ul class="post-list">
+				{% for post in posts %}
+				<li>
+					<span class="post-meta">{{ post.header.date_time }}</span>
+					<h2><a class="post-link" href="/{{ post.dir }}/{{ post.file_name }}.html">{{ post.header.title }}</a></h2>
+					{% for tag in post.tags %}<span class="post-tag"><a
+							href="/tags/{{ tag }}.html">{{ tag }}</a></span>{% endfor %}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}

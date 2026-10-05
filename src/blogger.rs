@@ -1,22 +1,22 @@
 use std::ffi::OsStr;
-use std::fs::{self, File};
+use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
 use crate::post::Post;
 use crate::{DEFAULT_HTML_EXT, DEFAULT_POST_EXT};
 use comrak::ComrakOptions;
-use handlebars::{Handlebars, RenderError};
 use serde_derive::Serialize;
 use serde_json::{json, Value};
 use std::collections::HashMap;
+use tera::{Context, Tera};
 
 #[derive(Debug)]
-pub struct Blogger {
+pub struct Blogger<'a> {
     dest_dir: PathBuf,
     posts_dir: PathBuf,
-    hbs: Handlebars,
-    comrak_options: ComrakOptions,
+    tera: Tera,
+    comrak_options: ComrakOptions<'a>,
 }
 
 #[derive(Debug, Serialize)]
@@ -36,12 +36,37 @@ fn contains(vec: &[String], s: &str) -> bool {
     vec.iter().any(|item| item == s)
 }
 
-impl Blogger {
-    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger {
-        let mut hbs = Handlebars::new();
-        hbs.set_strict_mode(true);
-        hbs.register_templates_directory(".hbs", Path::new(template_dir))
-            .expect("register dir of templates failed");
+impl Blogger<'_> {
+    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Blogger<'static> {
+        let mut tera = Tera::default();
+        tera.autoescape_on(vec![]);
+
+        // Load all templates manually to ensure correct order
+        let mut entries: Vec<_> = std::fs::read_dir(template_dir)
+            .expect("failed to read template dir")
+            .filter_map(|e| e.ok())
+            .map(|e| e.path())
+            .filter(|p| p.extension().and_then(|s| s.to_str()) == Some("tera"))
+            .collect();
+        entries.sort();
+
+        // Load layout first
+        for entry in &entries {
+            if entry.file_stem().and_then(|s| s.to_str()) == Some("layout") {
+                let content = std::fs::read_to_string(entry).expect("failed to read layout");
+                tera.add_raw_template("layout", &content).expect("failed to add layout");
+                break;
+            }
+        }
+
+        // Load other templates
+        for entry in entries {
+            let name = entry.file_stem().and_then(|s| s.to_str()).unwrap_or("");
+            if name != "layout" && !name.is_empty() {
+                let content = std::fs::read_to_string(&entry).expect("failed to read template");
+                tera.add_raw_template(name, &content).expect("failed to add template");
+            }
+        }
         fs::create_dir_all(dest_dir).expect("create dest dir failed");
 
         let mut comrak_options = ComrakOptions::default();
@@ -50,19 +75,19 @@ impl Blogger {
         Blogger {
             dest_dir: dest_dir.to_path_buf(),
             posts_dir: posts_dir.to_path_buf(),
-            hbs,
+            tera,
             comrak_options,
         }
     }
 
-    pub fn render_posts(&self, exclude: &[String]) -> Result<(), RenderError> {
+    pub fn render_posts(&self, exclude: &[String]) -> Result<(), tera::Error> {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
         all_posts.sort_by_key(|post| post.header.date_time.to_string());
         all_posts.reverse();
-        self.render_template("index", &json!({"parent": "layout", "posts": all_posts}))?;
+        self.render_template("index", &json!({"posts": all_posts}))?;
 
         for item in all_posts {
-            item.render(&self.dest_dir, &self.hbs)?;
+            item.render(&self.dest_dir, &self.tera)?;
         }
 
         let tags_dir = self.dest_dir.join("tags");
@@ -71,13 +96,13 @@ impl Blogger {
         }
 
         for (k, v) in tags {
-            self.render_template("tags", &json!({"parent": "layout", "tag":k, "posts": v}))?;
+            self.render_template("tags", &json!({"tag": k, "posts": v}))?;
         }
 
         Ok(())
     }
 
-    pub fn render(&self, file_path: &str) -> Result<(), RenderError> {
+    pub fn render(&self, file_path: &str) -> Result<(), tera::Error> {
         let new_path = Path::new(file_path);
         let dest_file_name = new_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
         let mut path = self.posts_dir.join(file_path);
@@ -85,7 +110,7 @@ impl Blogger {
         let contents = self.parse_content(&path)?;
         self.render_template(
             dest_file_name,
-            &json!({"parent": "layout", "contents": contents}),
+            &json!({"contents": contents}),
         )?;
 
         Ok(())
@@ -155,22 +180,19 @@ impl Blogger {
         Ok(comrak::markdown_to_html(&contents, &self.comrak_options))
     }
 
-    fn render_template(&self, template_name: &str, data: &Value) -> Result<(), RenderError> {
-        let mut dest_file;
+    fn render_template(&self, template_name: &str, data: &Value) -> Result<(), tera::Error> {
+        let mut dest_file = self.dest_dir.join(template_name);
         if template_name == "tags" {
             dest_file = self.dest_dir.join(format!(
                 "tags/{}",
-                data["tag"]
-                    .as_str()
-                    .ok_or_else(|| RenderError::new("missing 'tag' key in data"))?
+                data["tag"].as_str().unwrap_or("")
             ));
-        } else {
-            dest_file = self.dest_dir.join(template_name);
         }
         dest_file.set_extension(DEFAULT_HTML_EXT);
 
-        let file = File::create(dest_file)?;
-        self.hbs.render_to_write(template_name, data, file)?;
+        let context = Context::from_serialize(data)?;
+        let rendered = self.tera.render(template_name, &context)?;
+        fs::write(dest_file, rendered)?;
 
         Ok(())
     }

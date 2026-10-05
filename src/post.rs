@@ -1,10 +1,10 @@
-use std::fs::{self, File};
+use std::fs;
 use std::path::Path;
 
 use comrak::ComrakOptions;
-use handlebars::{Handlebars, RenderError};
 use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
+use tera::Tera;
 
 use crate::DEFAULT_HTML_EXT;
 
@@ -70,20 +70,18 @@ impl Post {
         }
     }
 
-    pub fn render(&self, parent_dir: &Path, hbs: &Handlebars) -> Result<(), RenderError> {
+    pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<(), tera::Error> {
         let file_dir = parent_dir.join(&self.dir);
         fs::create_dir_all(&file_dir)?;
 
         let mut f = file_dir.join(&self.file_name);
         f.set_extension(DEFAULT_HTML_EXT);
-        let file = File::create(f)?;
-        hbs.render_to_write(
-            "post",
-            &json!({
-                "parent": "layout",
-                "post": self}),
-            file,
-        )?;
+
+        let context = tera::Context::from_serialize(json!({
+            "post": self,
+        }))?;
+        let rendered = tera.render("post", &context)?;
+        fs::write(f, rendered)?;
 
         Ok(())
     }
