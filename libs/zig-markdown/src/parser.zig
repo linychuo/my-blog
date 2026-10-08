@@ -109,6 +109,10 @@ pub fn closeAll(state: *ParserState, writer: *HtmlWriter, allocator: Allocator) 
     }
     // Close lists
     try closeLists(state, writer, allocator);
+    if (state.list_item_open) {
+        try writer.write(allocator, "</li>\n");
+        state.list_item_open = false;
+    }
     // Close any remaining code buffer
     if (state.code_buffer.items.len > 0) {
         try writer.write(allocator, "<pre><code>");

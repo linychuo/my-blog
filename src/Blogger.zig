@@ -15,7 +15,7 @@ pub const Blogger = struct {
     posts_dir: []const u8,
     allocator: Allocator,
     template_engine: TemplateEngine,
-    current_year: []const u8,
+    current_year: [5]u8,
 
     pub fn new(allocator: Allocator, posts_dir: []const u8, dest_dir: []const u8) Blogger {
         const engine = TemplateEngine.init(allocator, "templates");
@@ -47,10 +47,15 @@ pub const Blogger = struct {
         try FileSystem.loadPosts(self.allocator, self.posts_dir, &posts);
         std.mem.sort(Post, posts.items, {}, sortPostsByDateDesc);
 
-        for (posts.items) |post| try post_gen.generatePostPage(self.allocator, &self.template_engine, self.dest_dir, post, self.current_year);
-        try index_gen.generateIndex(self.allocator, &self.template_engine, self.dest_dir, posts.items, self.current_year);
-        try about_gen.generateAbout(self.allocator, &self.template_engine, self.dest_dir, self.posts_dir, self.current_year);
-        try tag_gen.generateTagPages(self.allocator, &self.template_engine, self.dest_dir, posts.items, self.current_year);
+        for (posts.items) |post| {
+            post_gen.generatePostPage(self.allocator, &self.template_engine, self.dest_dir, post, &self.current_year) catch |err| {
+                std.debug.print("  Warning: failed to generate page for {s}: {}\n", .{ post.filename, err });
+                continue;
+            };
+        }
+        try index_gen.generateIndex(self.allocator, &self.template_engine, self.dest_dir, posts.items, &self.current_year);
+        try about_gen.generateAbout(self.allocator, &self.template_engine, self.dest_dir, self.posts_dir, &self.current_year);
+        try tag_gen.generateTagPages(self.allocator, &self.template_engine, self.dest_dir, posts.items, &self.current_year);
 
         std.debug.print("Blog generation complete!\n", .{});
     }

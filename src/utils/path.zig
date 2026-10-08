@@ -5,7 +5,7 @@ pub fn buildPostPath(allocator: Allocator, filename: []const u8, date_time: []co
     var result = std.ArrayList(u8){};
     errdefer result.deinit(allocator);
 
-    if (date_time.len >= 8) {
+    if (date_time.len >= 10) {
         // Split date_time into year, month, day
         var date_parts = std.mem.splitScalar(u8, date_time[0..10], '-');
         const year = date_parts.next() orelse date_time[0..4];

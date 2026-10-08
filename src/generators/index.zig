@@ -10,6 +10,7 @@ const html = @import("../utils/html.zig");
 pub fn generateIndex(allocator: Allocator, template_engine: *TemplateEngine, dest_dir: []const u8, posts: []const Post, year: []const u8) !void {
     var posts_html = std.ArrayList(u8){};
     defer posts_html.deinit(allocator);
+    try posts_html.appendSlice(allocator, "<ul class=\"post-list\">");
 
     for (posts) |post| {
         const post_path = try path.buildPostPath(allocator, post.filename, post.date_time);
@@ -23,6 +24,8 @@ pub fn generateIndex(allocator: Allocator, template_engine: *TemplateEngine, des
 
         try posts_html.appendSlice(allocator, post_item_html);
     }
+
+    try posts_html.appendSlice(allocator, "</ul>");
 
     var ctx = Context.init(allocator);
     defer ctx.deinit();

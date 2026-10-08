@@ -52,7 +52,7 @@ pub const Post = struct {
         return Post{
             .title = title orelse return error.MissingTitle,
             .date_time = date_time orelse return error.MissingDateTime,
-            .tags = tags orelse "",
+            .tags = tags orelse try allocator.dupe(u8, ""),
             .content = try allocator.dupe(u8, content[content_start..]),
             .filename = try allocator.dupe(u8, filename),
         };
