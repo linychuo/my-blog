@@ -4,10 +4,10 @@ use std::path::Path;
 use comrak::ComrakOptions;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
-use tera::Tera;
+use tera::{Context, Tera};
 
 use crate::DEFAULT_HTML_EXT;
-use crate::blogger::BlogError;
+use crate::error::BlogError;
 
 const YAML_DELIMITER: &str = "---";
 
@@ -16,7 +16,7 @@ pub struct Post {
     pub dir: String,
     pub file_name: String,
     pub header: Header,
-    contents: String,
+    pub contents: String,
     pub tags: Vec<String>,
 }
 
@@ -25,6 +25,12 @@ pub struct Header {
     pub title: String,
     pub date_time: String,
     tags: String,
+}
+
+pub fn build_comrak_options() -> ComrakOptions<'static> {
+    let mut options = ComrakOptions::default();
+    options.extension.table = true;
+    options
 }
 
 fn build_dir(date_time: &str) -> Result<String, BlogError> {
@@ -77,18 +83,17 @@ impl Post {
     }
 
     pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<(), BlogError> {
+        let html = self.to_html(tera)?;
         let file_dir = parent_dir.join(&self.dir);
         fs::create_dir_all(&file_dir)?;
-
         let mut f = file_dir.join(&self.file_name);
         f.set_extension(DEFAULT_HTML_EXT);
-
-        let context = tera::Context::from_serialize(json!({
-            "post": self,
-        }))?;
-        let rendered = tera.render("post", &context)?;
-        fs::write(f, rendered)?;
-
+        fs::write(f, html)?;
         Ok(())
+    }
+
+    fn to_html(&self, tera: &Tera) -> Result<String, BlogError> {
+        let context = Context::from_serialize(json!({ "post": self }))?;
+        Ok(tera.render("post", &context)?)
     }
 }

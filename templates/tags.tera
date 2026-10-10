@@ -9,8 +9,8 @@
             <ul class="post-list">
                 {% for post in posts %}
                 <li>
-                    <span class="post-meta">{{ post.created_date_time }}</span>
-                    <h2><a class="post-link" href="{{ post.url }}">{{ post.title }}</a></h2>
+                    <span class="post-meta">{{ post.header.date_time }}</span>
+                    <h2><a class="post-link" href="/{{ post.dir }}/{{ post.file_name }}.html">{{ post.header.title }}</a></h2>
                 </li>
                 {% endfor %}
             </ul>
