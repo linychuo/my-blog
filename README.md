@@ -57,7 +57,6 @@ The `date_time` field is used for sorting and URL generation (`/YYYY/MM/DD/filen
 src/
 ├── lib.rs          # Crate root, public constants
 ├── main.rs         # Entry point, configuration loading
-├── error.rs        # Error type and trait implementations
 ├── post.rs         # Post parsing, Markdown rendering
 ├── template.rs     # Template loading and rendering
 ├── blogger.rs      # Core orchestration
@@ -73,6 +72,7 @@ build/              # Generated output
 
 - [comrak](https://github.com/kivikakk/comrak) — CommonMark markdown rendering
 - [tera](https://github.com/Keats/tera) — Template engine
+- [anyhow](https://github.com/dtolnay/anyhow) — Ergonomic error handling
 - [serde](https://serde.rs/) + serde_yaml / serde_json — Serialization
 
 ## License
