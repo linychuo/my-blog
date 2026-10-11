@@ -1,61 +1,35 @@
 use std::env;
 use std::path::PathBuf;
 
+use anyhow::Result;
+
 use my_blog::blogger::Blogger;
 use my_blog::static_files::copy_static_files;
 
-struct Config {
-    posts_dir: PathBuf,
-    static_dir: PathBuf,
-    templates_dir: PathBuf,
-    build_dir: PathBuf,
-    excludes: Vec<String>,
+fn env_dir(var: &str, default: &str) -> PathBuf {
+    env::var(var).map(PathBuf::from).unwrap_or_else(|_| PathBuf::from(default))
 }
 
-impl Config {
-    fn from_env() -> Self {
-        let dir = |var, default| {
-            env::var(var).map(PathBuf::from).unwrap_or_else(|_| PathBuf::from(default))
-        };
-        Config {
-            posts_dir: dir("POSTS_DIR", "./posts"),
-            static_dir: dir("STATIC_DIR", "./static"),
-            templates_dir: dir("TEMPLATES_DIR", "./templates"),
-            build_dir: dir("BUILD_DIR", "./build"),
-            excludes: env::var("EXCLUDES")
-                .unwrap_or_else(|_| "about".to_string())
-                .split(',')
-                .map(|s| s.trim().to_string())
-                .filter(|s| !s.is_empty())
-                .collect(),
-        }
-    }
-}
+fn main() -> Result<()> {
+    let posts_dir = env_dir("POSTS_DIR", "./posts");
+    let static_dir = env_dir("STATIC_DIR", "./static");
+    let templates_dir = env_dir("TEMPLATES_DIR", "./templates");
+    let build_dir = env_dir("BUILD_DIR", "./build");
+    let excludes: Vec<String> = env::var("EXCLUDES")
+        .unwrap_or_else(|_| "about".to_string())
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect();
 
-fn main() {
-    let config = Config::from_env();
-    let blog = match Blogger::new(&config.build_dir, &config.posts_dir, &config.templates_dir) {
-        Ok(b) => b,
-        Err(e) => {
-            eprintln!("Failed to initialize blogger: {}", e);
-            std::process::exit(1);
-        }
-    };
+    let blog = Blogger::new(&build_dir, &posts_dir, &templates_dir)?;
+    blog.render_posts(&excludes)?;
 
-    if let Err(e) = blog.render_posts(&config.excludes) {
-        eprintln!("Failed to render all posts: {}", e);
-        std::process::exit(1);
+    for it in &excludes {
+        blog.render(it)?;
     }
 
-    for it in &config.excludes {
-        if let Err(e) = blog.render(it) {
-            eprintln!("Failed to render '{}': {}", it, e);
-            std::process::exit(1);
-        }
-    }
+    copy_static_files(&static_dir, &build_dir)?;
 
-    if let Err(e) = copy_static_files(&config.static_dir, &config.build_dir) {
-        eprintln!("Failed to copy static files: {}", e);
-        std::process::exit(1);
-    }
+    Ok(())
 }
