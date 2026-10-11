@@ -6,8 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json::json;
 use tera::{Context, Tera};
 
+use anyhow::Result;
+use anyhow::Context as _;
+
 use crate::DEFAULT_HTML_EXT;
-use crate::error::BlogError;
 
 const YAML_DELIMITER: &str = "---";
 
@@ -33,16 +35,16 @@ pub fn build_comrak_options() -> ComrakOptions<'static> {
     options
 }
 
-fn build_dir(date_time: &str) -> Result<String, BlogError> {
+fn build_dir(date_time: &str) -> Result<String> {
     let date = date_time
         .split_whitespace()
         .next()
-        .ok_or_else(|| BlogError::MissingHeader(date_time.to_string()))?;
+        .context("missing date in header")?;
     let v: Vec<&str> = date.split('-').collect();
     if v.len() >= 3 {
         Ok(format!("{}/{}/{}", v[0], v[1], v[2]))
     } else {
-        Err(BlogError::MissingHeader(date_time.to_string()))
+        anyhow::bail!("invalid date format: {}", date_time)
     }
 }
 
@@ -50,18 +52,20 @@ fn build_tags(tags: &str) -> Vec<String> {
     tags.split_whitespace().map(|x| x.to_string()).collect()
 }
 
-fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Result<(Header, String), BlogError> {
-    let contents = fs::read_to_string(file_path)?;
+fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Result<(Header, String)> {
+    let contents = fs::read_to_string(file_path)
+        .with_context(|| format!("failed to read {}", file_path.display()))?;
     if !contents.starts_with(YAML_DELIMITER) {
-        return Err(BlogError::MissingHeader(file_path.display().to_string()));
+        anyhow::bail!("missing YAML header in {}", file_path.display());
     }
 
     let after_first = &contents[YAML_DELIMITER.len()..];
     let end_of_yaml = after_first
         .find(YAML_DELIMITER)
-        .ok_or_else(|| BlogError::MissingHeader(file_path.display().to_string()))?;
+        .context("missing closing YAML delimiter")?;
     let header_str = &contents[YAML_DELIMITER.len()..YAML_DELIMITER.len() + end_of_yaml];
-    let header = serde_yaml::from_str(header_str)?;
+    let header = serde_yaml::from_str(header_str)
+        .context("failed to parse YAML header")?;
 
     let md_start = YAML_DELIMITER.len() + end_of_yaml + YAML_DELIMITER.len();
     let md = contents[md_start..].trim_start();
@@ -70,7 +74,7 @@ fn parse_content(file_path: &Path, comrak_options: &ComrakOptions) -> Result<(He
 }
 
 impl Post {
-    pub fn of(file_path: &Path, file_name: &str, comrak_options: &ComrakOptions) -> Result<Post, BlogError> {
+    pub fn of(file_path: &Path, file_name: &str, comrak_options: &ComrakOptions) -> Result<Post> {
         let (header, contents) = parse_content(file_path, comrak_options)?;
         let dir = build_dir(&header.date_time)?;
         Ok(Post {
@@ -82,18 +86,21 @@ impl Post {
         })
     }
 
-    pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<(), BlogError> {
+    pub fn render(&self, parent_dir: &Path, tera: &Tera) -> Result<()> {
         let html = self.to_html(tera)?;
         let file_dir = parent_dir.join(&self.dir);
-        fs::create_dir_all(&file_dir)?;
+        fs::create_dir_all(&file_dir)
+            .with_context(|| format!("failed to create {}", file_dir.display()))?;
         let mut f = file_dir.join(&self.file_name);
         f.set_extension(DEFAULT_HTML_EXT);
         fs::write(f, html)?;
         Ok(())
     }
 
-    fn to_html(&self, tera: &Tera) -> Result<String, BlogError> {
-        let context = Context::from_serialize(json!({ "post": self }))?;
-        Ok(tera.render("post", &context)?)
+    fn to_html(&self, tera: &Tera) -> Result<String> {
+        let context = Context::from_serialize(json!({ "post": self }))
+            .context("failed to build template context")?;
+        tera.render("post", &context)
+            .with_context(|| format!("failed to render post template for {}", self.file_name))
     }
 }

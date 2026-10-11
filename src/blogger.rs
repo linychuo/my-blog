@@ -4,12 +4,12 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::collections::HashMap;
 
+use anyhow::Result;
 use comrak::ComrakOptions;
 use serde_json::json;
 use tera::Tera;
 
 use crate::DEFAULT_POST_EXT;
-use crate::error::BlogError;
 use crate::post::{self, Post};
 use crate::template;
 
@@ -24,7 +24,7 @@ pub struct Blogger {
 type Tags = HashMap<String, Vec<Rc<Post>>>;
 
 impl Blogger {
-    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Result<Blogger, BlogError> {
+    pub fn new(dest_dir: &Path, posts_dir: &Path, template_dir: &Path) -> Result<Blogger> {
         fs::create_dir_all(dest_dir).expect("create dest dir failed");
 
         Ok(Blogger {
@@ -35,7 +35,7 @@ impl Blogger {
         })
     }
 
-    pub fn render_posts(&self, exclude: &[String]) -> Result<(), BlogError> {
+    pub fn render_posts(&self, exclude: &[String]) -> Result<()> {
         let (mut all_posts, tags) = self.load_posts(exclude)?;
         all_posts.sort_by(|a, b| b.header.date_time.cmp(&a.header.date_time));
         self.render_template("index", &json!({"posts": all_posts}))?;
@@ -56,7 +56,7 @@ impl Blogger {
         Ok(())
     }
 
-    pub fn render(&self, file_path: &str) -> Result<(), BlogError> {
+    pub fn render(&self, file_path: &str) -> Result<()> {
         let new_path = Path::new(file_path);
         let dest_file_name = new_path.file_stem().and_then(OsStr::to_str).unwrap_or("");
         let mut path = self.posts_dir.join(file_path);
@@ -67,7 +67,7 @@ impl Blogger {
         Ok(())
     }
 
-    fn load_posts(&self, excludes: &[String]) -> Result<(Vec<Rc<Post>>, Tags), BlogError> {
+    fn load_posts(&self, excludes: &[String]) -> Result<(Vec<Rc<Post>>, Tags)> {
         let mut all_posts: Vec<Rc<Post>> = vec![];
         for entry in fs::read_dir(&self.posts_dir)? {
             let entry_path = entry?.path();
@@ -108,12 +108,12 @@ impl Blogger {
         Ok((all_posts, tags))
     }
 
-    fn render_markdown(&self, entry_path: &Path) -> Result<String, BlogError> {
+    fn render_markdown(&self, entry_path: &Path) -> Result<String> {
         let contents = fs::read_to_string(entry_path)?;
         Ok(comrak::markdown_to_html(&contents, &self.comrak_options))
     }
 
-    fn render_template(&self, template_name: &str, data: &serde_json::Value) -> Result<(), BlogError> {
+    fn render_template(&self, template_name: &str, data: &serde_json::Value) -> Result<()> {
         template::render_template(&self.tera, &self.dest_dir, template_name, data)
     }
 }

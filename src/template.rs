@@ -1,32 +1,34 @@
 use std::fs;
 use std::path::Path;
 
+use anyhow::Result;
+use anyhow::Context as _;
 use serde_json::Value;
-use tera::{Context, Tera};
+use tera::Tera;
 
 use crate::DEFAULT_HTML_EXT;
-use crate::error::BlogError;
 
-pub fn load_templates(template_dir: &Path) -> Result<Tera, BlogError> {
+pub fn load_templates(template_dir: &Path) -> Result<Tera> {
     let mut tera = Tera::default();
     tera.autoescape_on(vec![]);
 
-    let templates = read_template_files(template_dir)?;
+    let mut templates = read_template_files(template_dir)?;
     // Sort: templates without extends first
-    let mut templates = templates;
     templates.sort_by_key(|(_, c)| c.contains("{% extends"));
 
     for (name, content) in templates {
         tera.add_raw_template(&name, &content)
-            .map_err(|e| BlogError::Tera(e))?;
+            .with_context(|| format!("failed to add template '{}'", name))?;
     }
 
     Ok(tera)
 }
 
-fn read_template_files(template_dir: &Path) -> Result<Vec<(String, String)>, BlogError> {
+fn read_template_files(template_dir: &Path) -> Result<Vec<(String, String)>> {
     let mut result = Vec::new();
-    for entry in fs::read_dir(template_dir)? {
+    for entry in fs::read_dir(template_dir)
+        .with_context(|| format!("failed to read template dir {}", template_dir.display()))?
+    {
         let entry = entry?;
         let path = entry.path();
         if path.extension().and_then(|s| s.to_str()) != Some("tera") {
@@ -35,9 +37,10 @@ fn read_template_files(template_dir: &Path) -> Result<Vec<(String, String)>, Blo
         let name = path
             .file_stem()
             .and_then(|s| s.to_str())
-            .ok_or_else(|| BlogError::MissingHeader(path.display().to_string()))?
+            .with_context(|| format!("invalid template file name: {}", path.display()))?
             .to_string();
-        let content = fs::read_to_string(&path)?;
+        let content = fs::read_to_string(&path)
+            .with_context(|| format!("failed to read template {}", path.display()))?;
         result.push((name, content));
     }
     Ok(result)
@@ -48,7 +51,7 @@ pub fn render_template(
     dest_dir: &Path,
     template_name: &str,
     data: &Value,
-) -> Result<(), BlogError> {
+) -> Result<()> {
     let mut dest_file = dest_dir.join(template_name);
     if template_name == "tags" {
         let tag = data["tag"].as_str().unwrap_or("");
@@ -66,9 +69,12 @@ pub fn render_template(
     }
     dest_file.set_extension(DEFAULT_HTML_EXT);
 
-    let context = Context::from_serialize(data)?;
-    let rendered = tera.render(template_name, &context)?;
-    fs::write(dest_file, rendered)?;
+    let context = tera::Context::from_serialize(data)
+        .with_context(|| format!("failed to build context for template '{}'", template_name))?;
+    let rendered = tera.render(template_name, &context)
+        .with_context(|| format!("failed to render template '{}'", template_name))?;
+    fs::write(&dest_file, rendered)
+        .with_context(|| format!("failed to write {}", dest_file.display()))?;
 
     Ok(())
 }
